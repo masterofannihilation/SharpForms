@@ -6,11 +6,6 @@ namespace SharpForms.Api.DAL.Common.Repositories
 {
     public interface IAnswerRepository : IApiRepository<AnswerEntity>
     {
-        IList<AnswerEntity> GetAll();
-        AnswerEntity? GetById(Guid id);
-        Guid Insert(AnswerEntity answer);
-        Guid? Update(AnswerEntity answer);
-        void Remove(Guid id);
-        bool Exists(Guid id);
+        
     }
 }

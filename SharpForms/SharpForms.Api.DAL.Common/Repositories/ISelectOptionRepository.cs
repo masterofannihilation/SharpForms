@@ -6,11 +6,6 @@ namespace SharpForms.Api.DAL.Common.Repositories
 {
     public interface ISelectOptionRepository : IApiRepository<SelectOptionEntity>
     {
-        IList<SelectOptionEntity> GetAll();
-        SelectOptionEntity? GetById(Guid id);
-        Guid Insert(SelectOptionEntity selectOption);
-        Guid? Update(SelectOptionEntity selectOption);
-        void Remove(Guid id);
-        bool Exists(Guid id);
+        
     }
 }
