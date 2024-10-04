@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using SharpForms.Api.DAL.Common.Entities;
+using SharpForms.Api.DAL.Common.Repositories;
+
+namespace SharpForms.Api.DAL.Memory.Repositories
+{
+    public class FormRepository : IFormRepository
+    {
+        private readonly IList<FormEntity> _forms;
+        private readonly IMapper _mapper;
+
+        public FormRepository(Storage storage, IMapper mapper)
+        {
+            _forms = storage.Forms;
+            _mapper = mapper;
+        }
+
+        public IList<FormEntity> GetAll()
+        {
+            return _forms.ToList();
+        }
+
+        public FormEntity? GetById(Guid id)
+        {
+            var formEntity = _forms.SingleOrDefault(form => form.Id == id);
+            
+            if (formEntity != null)
+            {
+                formEntity.Questions = formEntity.Questions ?? new List<QuestionEntity>(); // Ensure questions are not null
+            }
+
+            return formEntity;
+        }
+
+        public Guid Insert(FormEntity form)
+        {
+            _forms.Add(form);
+            return form.Id;
+        }
+
+        public Guid? Update(FormEntity form)
+        {
+            var existingForm = _forms.SingleOrDefault(f => f.Id == form.Id);
+
+            if (existingForm == null)
+            {
+                return null; // Null if not found
+            }
+
+            _mapper.Map(form, existingForm); // Update properties to existing entity
+            return existingForm.Id;
+        }
+
+        public void Remove(Guid id)
+        {
+            var formToRemove = _forms.SingleOrDefault(f => f.Id == id);
+            if (formToRemove != null)
+            {
+                _forms.Remove(formToRemove);
+            }
+        }
+
+        public bool Exists(Guid id)
+        {
+            return _forms.Any(form => form.Id == id);
+        }
+    }
+}
