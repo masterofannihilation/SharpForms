@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\SharpForms.Api.DAL.Memory\SharpForms.Api.DAL.Memory.csproj" />
         <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj"/>
     </ItemGroup>
 

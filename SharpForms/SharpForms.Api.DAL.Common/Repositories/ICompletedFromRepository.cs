@@ -4,7 +4,7 @@ using SharpForms.Api.DAL.Common.Entities;
 
 namespace SharpForms.Api.DAL.Common.Repositories
 {
-    public interface ICompletedFormRepository
+    public interface ICompletedFormRepository : IApiRepository<CompletedFormEntity>
     {
         IList<CompletedFormEntity> GetAll();
         CompletedFormEntity? GetById(Guid id);

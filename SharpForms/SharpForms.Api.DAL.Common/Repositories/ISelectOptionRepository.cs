@@ -4,7 +4,7 @@ using SharpForms.Api.DAL.Common.Entities;
 
 namespace SharpForms.Api.DAL.Common.Repositories
 {
-    public interface ISelectOptionRepository
+    public interface ISelectOptionRepository : IApiRepository<SelectOptionEntity>
     {
         IList<SelectOptionEntity> GetAll();
         SelectOptionEntity? GetById(Guid id);

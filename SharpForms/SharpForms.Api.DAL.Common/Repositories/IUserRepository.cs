@@ -4,7 +4,7 @@ using SharpForms.Api.DAL.Common.Entities;
 
 namespace SharpForms.Api.DAL.Common.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IApiRepository<UserEntity>
     {
         IList<UserEntity> GetAll();
         UserEntity? GetById(Guid id);
