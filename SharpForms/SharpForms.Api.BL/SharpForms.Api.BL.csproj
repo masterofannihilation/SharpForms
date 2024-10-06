@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\SharpForms.Api.DAL.Common\SharpForms.Api.DAL.Common.csproj"/>
+        <ProjectReference Include="..\SharpForms.Api.DAL.Memory\SharpForms.Api.DAL.Memory.csproj"/>
+        <ProjectReference Include="..\SharpForms.Common.Models\SharpForms.Common.Models.csproj"/>
+    </ItemGroup>
+
 </Project>
