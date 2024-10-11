@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -12,6 +13,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         private readonly IList<QuestionEntity> _questions;
         private readonly IList<FormEntity> _forms;
         private readonly IList<SelectOptionEntity> _options;
+        private readonly IList<AnswerEntity> _answers;
         private readonly IMapper _mapper;
 
         public QuestionRepository(Storage storage, IMapper mapper)
@@ -19,6 +21,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             _questions = storage.Questions;
             _forms = storage.Forms;
             _options = storage.SelectOptions;
+            _answers = storage.Answers;
             _mapper = mapper;
         }
 
@@ -33,13 +36,13 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (questionEntity == null)
             {
-                return questionEntity;
+                return null;
             }
 
             // Load related data
             questionEntity.Form = _forms.SingleOrDefault(form => form.Id == questionEntity.FormId);
-            questionEntity.Options = questionEntity.Options ?? new List<SelectOptionEntity>();
-            questionEntity.Answers = questionEntity.Answers ?? new List<AnswerEntity>();
+            questionEntity.Options = _options.Where(so => so.QuestionId == id).ToList();
+            questionEntity.Answers = _answers.Where(a => a.QuestionId == id).ToList();
 
             return questionEntity;
         }
@@ -67,10 +70,27 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public void Remove(Guid id)
         {
             var questionToRemove = _questions.SingleOrDefault(q => q.Id == id);
-            if (questionToRemove != null)
+            if (questionToRemove == null)
             {
-                _questions.Remove(questionToRemove);
+                return;
             }
+
+            //remove all answers associated with this question
+            var answersToRemove = _answers.Where(a => a.QuestionId == id).ToList();
+            foreach (var answer in answersToRemove)
+            {
+                _answers.Remove(answer);
+            }
+
+            //remove all select options associated with this question
+            var optionsToRemove = _options.Where(o => o.QuestionId == id).ToList();
+            foreach (var option in optionsToRemove)
+            {
+                _options.Remove(option);
+            }
+
+            //remove the question itself
+            _questions.Remove(questionToRemove);
         }
 
         public bool Exists(Guid id)

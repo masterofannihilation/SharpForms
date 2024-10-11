@@ -11,6 +11,8 @@ namespace SharpForms.Api.DAL.Memory.Repositories
     {
         private readonly IList<CompletedFormEntity> completedForms;
         private readonly IList<AnswerEntity> answers;
+        private readonly IList<UserEntity> users;
+        private readonly IList<FormEntity> forms;
         private readonly IMapper mapper;
 
         public CompletedFormRepository(
@@ -19,6 +21,8 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             this.completedForms = storage.CompletedForms;
             this.answers = storage.Answers;
+            this.users = storage.Users;
+            this.forms = storage.Forms;
             this.mapper = mapper;
         }
 
@@ -30,10 +34,15 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public CompletedFormEntity? GetById(Guid id)
         {
             var completedForm = completedForms.SingleOrDefault(form => form.Id == id);
-            if (completedForm is not null)
+            if (completedForm == null)
             {
-                completedForm.Answers = GetAnswersByCompletedFormId(id);
+                return null;
             }
+            
+            completedForm.Answers = GetAnswersByCompletedFormId(id);
+            completedForm.Form = forms.SingleOrDefault(form => form.Id == completedForm.FormId);
+            completedForm.User = users.SingleOrDefault(user => user.Id == completedForm.UserId);
+            
             return completedForm;
         }
 
@@ -46,13 +55,14 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public Guid? Update(CompletedFormEntity completedForm)
         {
             var existingForm = completedForms.SingleOrDefault(form => form.Id == completedForm.Id);
-            if (existingForm != null)
+            if (existingForm == null)
             {
-                // Use AutoMapper to map the properties from completedForm to existingForm
-                mapper.Map(completedForm, existingForm);
-                return existingForm.Id;
+                return null;
             }
-            return null; // Null if not found
+
+            // Use AutoMapper to map the properties from completedForm to existingForm
+            mapper.Map(completedForm, existingForm);
+            return existingForm.Id;
         }
 
         public void Remove(Guid id)
@@ -64,7 +74,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             }
 
             // Remove all answers associated with this completed form
-            var answersToRemove = answers.Where(answer => answer.CompletedFormId == id).ToList();
+            var answersToRemove = answers.Where(a => a.CompletedFormId == id).ToList();
             foreach (var answer in answersToRemove)
             {
                 answers.Remove(answer);

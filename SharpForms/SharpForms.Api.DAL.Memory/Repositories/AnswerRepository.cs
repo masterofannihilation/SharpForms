@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Common.Repositories;
@@ -9,10 +11,16 @@ namespace SharpForms.Api.DAL.Memory.Repositories
     public class AnswerRepository : IAnswerRepository
     {
         private readonly IList<AnswerEntity> _answers;
+        private readonly IList<QuestionEntity> _questions;
+        private readonly IList<CompletedFormEntity> _completedForms;
+        private readonly IList<SelectOptionEntity> _selectOptions;
 
-        public AnswerRepository(IList<AnswerEntity> answersStorage)
+        public AnswerRepository(Storage storage)
         {
-            this._answers = answersStorage;
+            _answers = storage.Answers;
+            _questions = storage.Questions;
+            _completedForms = storage.CompletedForms;
+            _selectOptions = storage.SelectOptions;
         }
 
         public IList<AnswerEntity> GetAll()
@@ -22,7 +30,22 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public AnswerEntity? GetById(Guid id)
         {
-            return _answers.SingleOrDefault(answer => answer.Id == id);
+            var answer = _answers.SingleOrDefault(answer => answer.Id == id);
+            if (answer == null)
+            {
+                return null;
+            }
+
+            answer.Question = _questions.SingleOrDefault(q => q.Id == answer.QuestionId);
+            answer.CompletedForm = _completedForms.SingleOrDefault(cf => cf.Id == answer.CompletedFormId);
+            
+            // Ak SelectOptionId nie je null, načítať SelectOption
+            if (answer.SelectOptionId != null)
+            {
+                answer.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answer.SelectOptionId);
+            }
+
+            return answer;
         }
 
         public Guid Insert(AnswerEntity answer)
