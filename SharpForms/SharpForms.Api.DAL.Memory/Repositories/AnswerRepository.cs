@@ -39,7 +39,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             answer.Question = _questions.SingleOrDefault(q => q.Id == answer.QuestionId);
             answer.CompletedForm = _completedForms.SingleOrDefault(cf => cf.Id == answer.CompletedFormId);
             
-            // Ak SelectOptionId nie je null, načítať SelectOption
+            // If SelectOptionId is not null, load SelectOption
             if (answer.SelectOptionId != null)
             {
                 answer.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answer.SelectOptionId);

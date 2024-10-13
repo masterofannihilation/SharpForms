@@ -1,14 +1,20 @@
 using AutoMapper;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Common.Models.Answer;
-using SharpForms.Common.Extensions;
 
-namespace SharpForms.Api.BL.MapperProfiles;
-
-public class AnswerMapperProfile : Profile
+namespace SharpForms.Api.BL.MapperProfiles
 {
-    public AnswerMapperProfile()
+    public class AnswerMapperProfile : Profile
     {
-        CreateMap<AnswerEntity, AnswerListModel>().MapMember(dst => dst.Order, src => src.Question!.Order);
+        public AnswerMapperProfile()
+        {
+            CreateMap<AnswerEntity, AnswerDetailModel>()
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.CompletedForm!.User));
+            CreateMap<AnswerEntity, AnswerListModel>();
+            CreateMap<AnswerDetailModel, AnswerEntity>();
+            CreateMap<AnswerListModel, AnswerEntity>();
+            CreateMap<AnswerSubmitModel, AnswerEntity>();
+            CreateMap<AnswerEntity, AnswerSubmitModel>();
+        }
     }
 }

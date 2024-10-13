@@ -75,7 +75,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 form.CreatorId = null; // Set the CreatorId to null for forms created by this user
             }
 
-            // set all completed forms' FormId to null
+            // set all completed forms' UserId to null
             var completedFormsToNullify = _completedForms.Where(form => form.UserId == userToRemove.Id).ToList();
             foreach (var completedForm in completedFormsToNullify)
             {
