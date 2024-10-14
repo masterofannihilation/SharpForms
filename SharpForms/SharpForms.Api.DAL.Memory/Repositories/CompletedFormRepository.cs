@@ -28,7 +28,22 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<CompletedFormEntity> GetAll()
         {
-            return completedForms.ToList();
+            var cfs = new List<CompletedFormEntity>();
+            foreach (var f in completedForms)
+            {
+                cfs.Add(IncludeEntities(f));
+            }
+
+            return cfs;
+        }
+
+        private CompletedFormEntity IncludeEntities(CompletedFormEntity completedForm)
+        {
+            completedForm.Answers = GetAnswersByCompletedFormId(completedForm.Id);
+            completedForm.Form = forms.SingleOrDefault(form => form.Id == completedForm.FormId);
+            completedForm.User = users.SingleOrDefault(user => user.Id == completedForm.UserId);
+
+            return completedForm;
         }
 
         public CompletedFormEntity? GetById(Guid id)
@@ -38,12 +53,8 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             {
                 return null;
             }
-            
-            completedForm.Answers = GetAnswersByCompletedFormId(id);
-            completedForm.Form = forms.SingleOrDefault(form => form.Id == completedForm.FormId);
-            completedForm.User = users.SingleOrDefault(user => user.Id == completedForm.UserId);
-            
-            return completedForm;
+
+            return IncludeEntities(completedForm);
         }
 
         public Guid Insert(CompletedFormEntity completedForm)
@@ -79,12 +90,35 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             {
                 answers.Remove(answer);
             }
+
             completedForms.Remove(formToRemove);
         }
 
         public bool Exists(Guid id)
         {
             return completedForms.Any(form => form.Id == id);
+        }
+
+        public IList<CompletedFormEntity> GetAllFiltered(Guid? formId, Guid? userId)
+        {
+            var filtered = completedForms.AsQueryable();
+            if (formId != null)
+            {
+                filtered = filtered.Where(cf => cf.FormId == formId);
+            }
+
+            if (userId != null)
+            {
+                filtered = filtered.Where(cf => cf.UserId == userId);
+            }
+
+            var cfs = new List<CompletedFormEntity>();
+            foreach (var cf in filtered)
+            {
+                cfs.Add(IncludeEntities(cf));
+            }
+
+            return cfs;
         }
 
         private IList<AnswerEntity> GetAnswersByCompletedFormId(Guid completedFormId)

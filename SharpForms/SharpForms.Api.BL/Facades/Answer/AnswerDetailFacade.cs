@@ -30,7 +30,7 @@ public class AnswerDetailFacade(
         {
             model.User = userListFacade.GetById(entity!.CompletedForm.UserId.Value);
         }
-        
+
         model.Answer = entity.Question!.AnswerType switch
         {
             AnswerType.Text => entity.TextAnswer!,

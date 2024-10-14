@@ -57,7 +57,6 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             _mapper.Map(user, existingUser); // Update user
             return existingUser.Id;
-
         }
 
         public void Remove(Guid id)
@@ -88,6 +87,11 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public bool Exists(Guid id)
         {
             return _users.Any(user => user.Id == id);
+        }
+
+        public IList<UserEntity> GetAllFiltered(string name)
+        {
+            return _users.Where(u => u.Name.ToLower().Contains(name.ToLower())).ToList();
         }
     }
 }

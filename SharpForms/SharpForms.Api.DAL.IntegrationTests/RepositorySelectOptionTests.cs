@@ -45,7 +45,8 @@ namespace SharpForms.Api.DAL.IntegrationTests
         [Fact]
         public void Retrieve_SelectOptions_For_A_Question()
         {
-            var question = _storage.Questions.FirstOrDefault(q => q.AnswerType == SharpForms.Common.Enums.AnswerType.Selection);
+            var question =
+                _storage.Questions.FirstOrDefault(q => q.AnswerType == SharpForms.Common.Enums.AnswerType.Selection);
             Assert.NotNull(question);
 
             var options = _selectOptionRepository.GetAll().Where(o => o.QuestionId == question.Id).ToList();
@@ -81,9 +82,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
 
             var updatedOption = new SelectOptionEntity
             {
-                Id = selectOption.Id,
-                QuestionId = selectOption.QuestionId,
-                Option = "Updated Option"
+                Id = selectOption.Id, QuestionId = selectOption.QuestionId, Option = "Updated Option"
             };
 
             var updatedId = _selectOptionRepository.Update(updatedOption);
@@ -116,4 +115,3 @@ namespace SharpForms.Api.DAL.IntegrationTests
         }
     }
 }
-

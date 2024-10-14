@@ -13,18 +13,25 @@ public abstract class ListModelFacadeBase<TEntity, TListModel>(
     where TEntity : class, IEntity
     where TListModel : class, IModel
 {
+    protected virtual IEnumerable<TEntity> GetAllFetchMethod()
+    {
+        return entityRepository.GetAll().AsEnumerable();
+    }
+
     public List<TListModel> GetAll()
     {
-        return entityRepository.GetAll().Select(this.GetEntityToModel).Where(m => m != null).ToList()!;
+        return GetAllFetchMethod().Select(this.GetEntityToModel).ToList()!;
     }
 
     public TListModel? GetById(Guid id)
     {
-        return GetEntityToModel(entityRepository.GetById(id));
+        var entity = entityRepository.GetById(id);
+        if (entity == null) return null;
+        return GetEntityToModel(entity);
     }
 
-    protected virtual TListModel? GetEntityToModel(TEntity? entity)
+    protected virtual TListModel GetEntityToModel(TEntity entity)
     {
-        return entity == null ? null : modelMapper.Map<TListModel>(entity);
+        return modelMapper.Map<TListModel>(entity);
     }
 }

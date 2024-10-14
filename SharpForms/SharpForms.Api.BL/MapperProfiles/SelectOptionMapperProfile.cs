@@ -9,8 +9,8 @@ namespace SharpForms.Api.BL.MapperProfiles
         public SelectOptionMapperProfile()
         {
             CreateMap<SelectOptionEntity, SelectOptionEntity>()
-            .ForMember(dest => dest.Question, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+                .ForMember(dest => dest.Question, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<SelectOptionModel, SelectOptionEntity>();
         }

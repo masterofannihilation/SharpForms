@@ -14,6 +14,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         private readonly IList<QuestionEntity> _questions;
         private readonly IList<CompletedFormEntity> _completedForms;
         private readonly IList<SelectOptionEntity> _selectOptions;
+        private readonly IList<UserEntity> _users;
 
         public AnswerRepository(Storage storage)
         {
@@ -21,11 +22,31 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             _questions = storage.Questions;
             _completedForms = storage.CompletedForms;
             _selectOptions = storage.SelectOptions;
+            _users = storage.Users;
         }
 
         public IList<AnswerEntity> GetAll()
         {
             return _answers.ToList(); // Return a new list to avoid modifications
+        }
+
+        private AnswerEntity IncludeEntities(AnswerEntity answer)
+        {
+            answer.Question = _questions.SingleOrDefault(q => q.Id == answer.QuestionId);
+            answer.CompletedForm = _completedForms.SingleOrDefault(cf => cf.Id == answer.CompletedFormId);
+
+            // If SelectOptionId is not null, load SelectOption
+            if (answer.SelectOptionId != null)
+            {
+                answer.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answer.SelectOptionId);
+            }
+
+            if (answer.CompletedForm != null)
+            {
+                answer.CompletedForm.User = _users.SingleOrDefault(u => u.Id == answer.CompletedForm.UserId);
+            }
+
+            return answer;
         }
 
         public AnswerEntity? GetById(Guid id)
@@ -36,16 +57,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 return null;
             }
 
-            answer.Question = _questions.SingleOrDefault(q => q.Id == answer.QuestionId);
-            answer.CompletedForm = _completedForms.SingleOrDefault(cf => cf.Id == answer.CompletedFormId);
-            
-            // If SelectOptionId is not null, load SelectOption
-            if (answer.SelectOptionId != null)
-            {
-                answer.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answer.SelectOptionId);
-            }
-
-            return answer;
+            return IncludeEntities(answer);
         }
 
         public Guid Insert(AnswerEntity answer)
@@ -83,6 +95,28 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public bool Exists(Guid id)
         {
             return _answers.Any(answer => answer.Id == id);
+        }
+
+        public IList<AnswerEntity> GetAllWithUser(Guid? completedFormId, Guid? questionId)
+        {
+            var filtered = _answers.AsQueryable();
+            if (completedFormId != null)
+            {
+                filtered = filtered.Where(a => a.CompletedFormId == completedFormId);
+            }
+
+            if (questionId != null)
+            {
+                filtered = filtered.Where(a => a.QuestionId == questionId);
+            }
+
+            var answers = new List<AnswerEntity>();
+            foreach (var answer in filtered)
+            {
+                answers.Add(IncludeEntities(answer));
+            }
+
+            return answers;
         }
     }
 }

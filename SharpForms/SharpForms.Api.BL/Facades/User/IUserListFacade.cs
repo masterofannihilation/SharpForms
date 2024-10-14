@@ -6,4 +6,5 @@ namespace SharpForms.Api.BL.Facades.User;
 
 public interface IUserListFacade : IListModelFacade<UserEntity, UserListModel>
 {
+    List<UserListModel> SearchAllByName(string name);
 }

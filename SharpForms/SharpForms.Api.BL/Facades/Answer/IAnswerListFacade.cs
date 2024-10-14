@@ -6,4 +6,5 @@ namespace SharpForms.Api.BL.Facades.Answer;
 
 public interface IAnswerListFacade : IListModelFacade<AnswerEntity, AnswerListModel>
 {
+    List<AnswerListModel> GetAll(Guid? completedFormId, Guid? questionId);
 }

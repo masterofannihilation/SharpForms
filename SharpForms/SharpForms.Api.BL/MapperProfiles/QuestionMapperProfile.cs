@@ -9,7 +9,8 @@ namespace SharpForms.Api.BL.MapperProfiles
         public QuestionMapperProfile()
         {
             CreateMap<QuestionEntity, QuestionDetailModel>()
-                .ForMember(dest => dest.FormName, opt => opt.MapFrom(src => src.Form!.Name)); // Assuming Form has a Name property
+                .ForMember(dest => dest.FormName,
+                    opt => opt.MapFrom(src => src.Form!.Name)); // Assuming Form has a Name property
             CreateMap<QuestionEntity, QuestionListModel>();
             CreateMap<QuestionDetailModel, QuestionEntity>();
             CreateMap<QuestionListModel, QuestionEntity>();

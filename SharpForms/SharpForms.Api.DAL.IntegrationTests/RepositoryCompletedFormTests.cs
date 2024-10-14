@@ -52,12 +52,14 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Get_CompletedForm_By_Id_Check_Entities()
         {
             // Seed data
-            var completedFormId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"); 
-            var User = _storage.Users.SingleOrDefault(o => o.Id == new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783")); 
-            var Answer1 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
-            var Answer2 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
+            var completedFormId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8");
+            var User = _storage.Users.SingleOrDefault(o => o.Id == new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"));
+            var Answer1 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
+            var Answer2 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
             var Form = _storage.Forms.SingleOrDefault(o => o.Id == new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"));
-            
+
             var fetchedForm = _repository.GetById(completedFormId);
 
             Assert.NotNull(fetchedForm);
@@ -100,8 +102,10 @@ namespace SharpForms.Api.DAL.IntegrationTests
             _repository.Remove(formId);
 
             var deletedForm = _repository.GetById(formId);
-            var Answer1 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
-            var Answer2 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
+            var Answer1 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
+            var Answer2 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
 
             Assert.Null(deletedForm);
             Assert.Null(Answer1);

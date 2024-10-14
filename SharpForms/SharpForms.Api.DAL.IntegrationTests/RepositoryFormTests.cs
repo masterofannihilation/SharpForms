@@ -26,7 +26,10 @@ namespace SharpForms.Api.DAL.IntegrationTests
         [Fact]
         public void Insert_Form()
         {
-            var form = new FormEntity { Id = Guid.NewGuid(), Name = "Sample form", OpenUntil = DateTime.Now.AddDays(10) };
+            var form = new FormEntity
+            {
+                Id = Guid.NewGuid(), Name = "Sample form", OpenUntil = DateTime.Now.AddDays(10)
+            };
             var result = _repository.Insert(form);
 
             Assert.Equal(form.Id, result);
@@ -50,9 +53,12 @@ namespace SharpForms.Api.DAL.IntegrationTests
             // Seed data
             var FormId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8");
             var Creator = _storage.Users.SingleOrDefault(o => o.Id == new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"));
-            var Question1 = _storage.Questions.SingleOrDefault(o => o.Id == new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"));
-            var Question2 = _storage.Questions.SingleOrDefault(o => o.Id == new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"));
-            var CompletedForm = _storage.CompletedForms.SingleOrDefault(o => o.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
+            var Question1 =
+                _storage.Questions.SingleOrDefault(o => o.Id == new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"));
+            var Question2 =
+                _storage.Questions.SingleOrDefault(o => o.Id == new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"));
+            var CompletedForm =
+                _storage.CompletedForms.SingleOrDefault(o => o.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
 
             var fetchedForm = _repository.GetById(FormId);
 
@@ -96,12 +102,18 @@ namespace SharpForms.Api.DAL.IntegrationTests
             _repository.Remove(FormId);
 
             // Seed data
-            var Question1 = _storage.Questions.SingleOrDefault(o => o.Id == new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"));
-            var Question2 = _storage.Questions.SingleOrDefault(o => o.Id == new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"));
-            var CompletedForm = _storage.CompletedForms.SingleOrDefault(o => o.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
-            var Answer1 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
-            var Answer2 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
-            var SelectOption2 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("00fc620d-c945-412f-9555-08e3cb076884"));
+            var Question1 =
+                _storage.Questions.SingleOrDefault(o => o.Id == new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"));
+            var Question2 =
+                _storage.Questions.SingleOrDefault(o => o.Id == new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"));
+            var CompletedForm =
+                _storage.CompletedForms.SingleOrDefault(o => o.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
+            var Answer1 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
+            var Answer2 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
+            var SelectOption2 =
+                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("00fc620d-c945-412f-9555-08e3cb076884"));
 
             var fetchedForm = _repository.GetById(FormId);
 

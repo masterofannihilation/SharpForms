@@ -1,21 +1,26 @@
 using AutoMapper;
 using SharpForms.Api.BL.Facades.Common;
 using SharpForms.Api.DAL.Common.Entities;
-using SharpForms.Api.DAL.Memory.Repositories;
+using SharpForms.Api.DAL.Common.Repositories;
 using SharpForms.Common.Enums;
 using SharpForms.Common.Models.Answer;
 
 namespace SharpForms.Api.BL.Facades.Answer;
 
-public class AnswerListFacade(AnswerRepository answerRepository, IMapper mapper)
+public class AnswerListFacade(IAnswerRepository answerRepository, IMapper mapper)
     : ListModelFacadeBase<AnswerEntity, AnswerListModel>(answerRepository, mapper), IAnswerListFacade
 {
-    protected override AnswerListModel? GetEntityToModel(AnswerEntity? entity)
+    protected override IEnumerable<AnswerEntity> GetAllFetchMethod()
+    {
+        return answerRepository.GetAllWithUser(null, null).AsEnumerable();
+    }
+
+    protected override AnswerListModel GetEntityToModel(AnswerEntity entity)
     {
         var model = base.GetEntityToModel(entity);
-        if (model == null) return null;
 
         var question = entity!.Question!;
+        model.Order = question.Order;
         model.Answer = question.AnswerType switch
         {
             AnswerType.Text => entity.TextAnswer!,
@@ -30,5 +35,11 @@ public class AnswerListFacade(AnswerRepository answerRepository, IMapper mapper)
         }
 
         return model;
+    }
+
+    public List<AnswerListModel> GetAll(Guid? completedFormId, Guid? questionId)
+    {
+        return answerRepository.GetAllWithUser(completedFormId, questionId).AsEnumerable().Select(this.GetEntityToModel)
+            .ToList()!;
     }
 }

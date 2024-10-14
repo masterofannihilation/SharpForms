@@ -6,6 +6,5 @@ namespace SharpForms.Api.DAL.Common.Repositories
 {
     public interface ISelectOptionRepository : IApiRepository<SelectOptionEntity>
     {
-        
     }
 }

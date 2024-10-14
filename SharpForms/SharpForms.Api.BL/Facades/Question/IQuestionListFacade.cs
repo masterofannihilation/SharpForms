@@ -6,4 +6,5 @@ namespace SharpForms.Api.BL.Facades.Question;
 
 public interface IQuestionListFacade : IListModelFacade<QuestionEntity, QuestionListModel>
 {
+    List<QuestionListModel> GetAll(Guid? formId, string? filterText = null, string? filterDescription = null);
 }

@@ -22,15 +22,11 @@ namespace SharpForms.Api.DAL.Memory
         {
             var user1 = new UserEntity
             {
-                Id = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"),
-                Name = "John Doe",
-                Role = UserRole.General,
+                Id = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"), Name = "John Doe", Role = UserRole.General,
             };
             var user2 = new UserEntity
             {
-                Id = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"),
-                Name = "Jane Doe",
-                Role = UserRole.General,
+                Id = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), Name = "Jane Doe", Role = UserRole.General,
             };
             Users.Add(user1);
             Users.Add(user2);
@@ -72,7 +68,7 @@ namespace SharpForms.Api.DAL.Memory
             };
             var question3 = new QuestionEntity
             {
-                Id =new Guid("28974ee4-fda7-4357-ac75-d7a2388d51cf"),
+                Id = new Guid("28974ee4-fda7-4357-ac75-d7a2388d51cf"),
                 FormId = form2.Id,
                 Order = 1,
                 Text = "What position are you applying for?",
@@ -111,9 +107,7 @@ namespace SharpForms.Api.DAL.Memory
             };
             var option3 = new SelectOptionEntity
             {
-                Id = new Guid("8bbecf1d-9aef-4490-988d-57656790a4e4"),
-                QuestionId = question1.Id,
-                Option = "Average"
+                Id = new Guid("8bbecf1d-9aef-4490-988d-57656790a4e4"), QuestionId = question1.Id, Option = "Average"
             };
             var option4 = new SelectOptionEntity
             {
@@ -196,8 +190,5 @@ namespace SharpForms.Api.DAL.Memory
             completedForm2.Answers.Add(answer3);
             completedForm2.Answers.Add(answer4);
         }
-
     }
-
-
 }

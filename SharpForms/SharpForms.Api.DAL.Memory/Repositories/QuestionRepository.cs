@@ -64,7 +64,6 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             _mapper.Map(question, existingQuestion); // Updated properties of existing entity
             return existingQuestion.Id;
-
         }
 
         public void Remove(Guid id)
@@ -96,6 +95,28 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public bool Exists(Guid id)
         {
             return _questions.Any(question => question.Id == id);
+        }
+
+        public IList<QuestionEntity> GetAllFiltered(Guid? formId, string? filterText, string? filterDescription)
+        {
+            var filtered = _questions.AsQueryable();
+            if (formId != null)
+            {
+                filtered = filtered.Where(a => a.FormId == formId);
+            }
+
+            if (filterText != null)
+            {
+                filtered = filtered.Where(a => a.Text.Contains(filterText));
+            }
+
+            if (filterDescription != null)
+            {
+                filtered = filtered.Where(a => a.Description != null);
+                filtered = filtered.Where(a => a.Description!.Contains(filterDescription));
+            }
+
+            return filtered.ToList();
         }
     }
 }

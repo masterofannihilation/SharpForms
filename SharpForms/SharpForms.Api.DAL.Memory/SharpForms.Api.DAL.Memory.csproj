@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="AutoMapper" Version="13.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SharpForms.Api.DAL.Common\SharpForms.Api.DAL.Common.csproj" />
+        <ProjectReference Include="..\SharpForms.Api.DAL.Common\SharpForms.Api.DAL.Common.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -9,7 +9,8 @@ namespace SharpForms.Api.BL.MapperProfiles
         public CompletedFormMapperProfile()
         {
             CreateMap<CompletedFormEntity, CompletedFormDetailModel>()
-                .ForMember(dest => dest.FormName, opt => opt.MapFrom(src => src.Form!.Name)); // Assuming Form has a Name property
+                .ForMember(dest => dest.FormName,
+                    opt => opt.MapFrom(src => src.Form!.Name)); // Assuming Form has a Name property
             CreateMap<CompletedFormEntity, CompletedFormListModel>();
             CreateMap<CompletedFormDetailModel, CompletedFormEntity>();
             CreateMap<CompletedFormListModel, CompletedFormEntity>();

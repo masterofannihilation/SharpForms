@@ -54,7 +54,6 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             _mapper.Map(selectOption, existingOption); // Update option with new values
             return existingOption.Id;
-
         }
 
         public void Remove(Guid id)

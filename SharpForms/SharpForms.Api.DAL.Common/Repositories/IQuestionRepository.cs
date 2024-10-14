@@ -6,6 +6,6 @@ namespace SharpForms.Api.DAL.Common.Repositories
 {
     public interface IQuestionRepository : IApiRepository<QuestionEntity>
     {
-       
+        IList<QuestionEntity> GetAllFiltered(Guid? formId, string? filterText, string? filterDescription);
     }
 }

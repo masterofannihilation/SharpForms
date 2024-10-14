@@ -24,7 +24,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             _forms = storage.Forms;
             _questions = storage.Questions;
             _completedForms = storage.CompletedForms;
-            _answers =storage.Answers;
+            _answers = storage.Answers;
             _selectOptions = storage.SelectOptions;
             _users = storage.Users;
             _mapper = mapper;
@@ -32,7 +32,22 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<FormEntity> GetAll()
         {
-            return _forms.ToList();
+            var forms = new List<FormEntity>();
+            foreach (var formEntity in _forms)
+            {
+                forms.Add(IncludeEntities(formEntity));
+            }
+
+            return forms;
+        }
+
+        private FormEntity IncludeEntities(FormEntity formEntity)
+        {
+            formEntity.Questions = _questions.Where(q => q.FormId == formEntity.Id).ToList();
+            formEntity.Creator = _users.SingleOrDefault(user => user.Id == formEntity.CreatorId);
+            formEntity.Completions = _completedForms.Where(cf => cf.FormId == formEntity.Id).ToList();
+
+            return formEntity;
         }
 
         public FormEntity? GetById(Guid id)
@@ -44,11 +59,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 return null;
             }
 
-            formEntity.Questions = formEntity.Questions ?? new List<QuestionEntity>();
-            formEntity.Creator = _users.SingleOrDefault(user => user.Id == formEntity.CreatorId);
-            formEntity.Completions = _completedForms.Where(cf => cf.FormId == formEntity.Id).ToList();
-
-            return formEntity;
+            return IncludeEntities(formEntity);
         }
 
         public Guid Insert(FormEntity form)
@@ -92,6 +103,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                         _answers.Remove(answerToRemove);
                     }
                 }
+
                 _completedForms.Remove(completion); // Remove the completed form itself
             }
 
@@ -104,13 +116,14 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 {
                     _answers.Remove(answer);
                 }
+
                 // Step 6: Remove related select options if applicable
                 var relatedSelectOptions = _selectOptions.Where(so => so.QuestionId == question.Id).ToList();
                 foreach (var selectOption in relatedSelectOptions)
                 {
                     _selectOptions.Remove(selectOption); // Remove select options
                 }
-                
+
                 _questions.Remove(question); // Remove the question itself
             }
 
@@ -121,6 +134,28 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public bool Exists(Guid id)
         {
             return _forms.Any(form => form.Id == id);
+        }
+
+        public IList<FormEntity> GetAllFiltered(string? name, Guid? creatorId)
+        {
+            var filtered = _forms.AsQueryable();
+            if (name != null)
+            {
+                filtered = filtered.Where(f => f.Name.ToLower().Contains(name.ToLower()));
+            }
+
+            if (creatorId != null)
+            {
+                filtered = filtered.Where(f => f.CreatorId == creatorId);
+            }
+
+            var forms = new List<FormEntity>();
+            foreach (var form in filtered)
+            {
+                forms.Add(IncludeEntities(form));
+            }
+
+            return forms;
         }
     }
 }

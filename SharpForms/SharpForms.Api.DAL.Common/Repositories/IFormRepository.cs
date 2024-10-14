@@ -6,6 +6,6 @@ namespace SharpForms.Api.DAL.Common.Repositories
 {
     public interface IFormRepository : IApiRepository<FormEntity>
     {
-        
+        IList<FormEntity> GetAllFiltered(string? name, Guid? creatorId);
     }
 }

@@ -21,6 +21,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
             _storage = new Storage();
             _userRepository = new UserRepository(_storage, mapper);
         }
+
         [Fact]
         public void Get_Existing_User_By_Id()
         {
@@ -38,8 +39,11 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Get_Existing_User_By_Id_Check_Entities()
         {
             var userId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"); // Seed data
-            var createdForm = _storage.Forms.SingleOrDefault(form => form.Id == new Guid("8e1c3878-d661-4a57-86b4-d30ed1592558"));
-            var completedForm = _storage.CompletedForms.SingleOrDefault(form => form.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
+            var createdForm =
+                _storage.Forms.SingleOrDefault(form => form.Id == new Guid("8e1c3878-d661-4a57-86b4-d30ed1592558"));
+            var completedForm =
+                _storage.CompletedForms.SingleOrDefault(form =>
+                    form.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
             Assert.NotNull(createdForm);
             Assert.NotNull(completedForm);
 
@@ -65,9 +69,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var newUser = new UserEntity
             {
-                Id = Guid.NewGuid(),
-                Name = "Josh",
-                Role = SharpForms.Common.Enums.UserRole.General
+                Id = Guid.NewGuid(), Name = "Josh", Role = SharpForms.Common.Enums.UserRole.General
             };
 
             var userId = _userRepository.Insert(newUser);
@@ -111,8 +113,11 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var userId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"); // Seed data
 
             _userRepository.Remove(userId);
-            var createdForm = _storage.Forms.SingleOrDefault(form => form.Id == new Guid("8e1c3878-d661-4a57-86b4-d30ed1592558"));
-            var completedForm = _storage.CompletedForms.SingleOrDefault(form => form.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
+            var createdForm =
+                _storage.Forms.SingleOrDefault(form => form.Id == new Guid("8e1c3878-d661-4a57-86b4-d30ed1592558"));
+            var completedForm =
+                _storage.CompletedForms.SingleOrDefault(form =>
+                    form.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
 
             var user = _userRepository.GetById(userId);
             Assert.Null(user);

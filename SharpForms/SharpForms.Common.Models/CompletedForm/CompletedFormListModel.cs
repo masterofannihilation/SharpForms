@@ -5,7 +5,7 @@ namespace SharpForms.Common.Models.CompletedForm
 {
     public record CompletedFormListModel : BaseModel
     {
-        public UserListModel? User { get; set; }
+        public string? UserName { get; set; }
         public DateTime? CompletedDate { get; set; }
     }
 }
