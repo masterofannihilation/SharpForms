@@ -1,30 +1,15 @@
-using System;
-using System.Linq;
-using Xunit;
 using AutoMapper;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Api.DAL.Common.Entities;
-using Moq;
 using SharpForms.Api.BL.MapperProfiles;
 
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
-    public class RepositorySelectOptionTests
+    public class RepositorySelectOptionTests : RepositoryTestFixture
     {
-        private readonly Storage _storage;
-        private readonly SelectOptionRepository _selectOptionRepository;
-
-        public RepositorySelectOptionTests()
-        {
-            _storage = new Storage();
-
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<SelectOptionMapperProfile>());
-            var mapper = config.CreateMapper();
-
-            _selectOptionRepository = new SelectOptionRepository(_storage, mapper);
-        }
+        public RepositorySelectOptionTests() { }
 
         [Fact]
         public void Get_SelectOption_By_Id_Check_Entities()

@@ -1,5 +1,3 @@
-using System;
-using Xunit;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.BL.MapperProfiles;
@@ -8,19 +6,10 @@ using SharpForms.Api.DAL.Memory.Repositories;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
-    public class RepositoryUserTests
+    public class RepositoryUserTests : RepositoryTestFixture
     {
-        private readonly UserRepository _userRepository;
-        private readonly Storage _storage;
 
-        public RepositoryUserTests()
-        {
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<UserMapperProfile>());
-            var mapper = config.CreateMapper();
-
-            _storage = new Storage();
-            _userRepository = new UserRepository(_storage, mapper);
-        }
+        public RepositoryUserTests() { }
 
         [Fact]
         public void Get_Existing_User_By_Id()

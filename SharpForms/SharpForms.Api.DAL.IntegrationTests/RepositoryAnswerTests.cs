@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Memory.Repositories;
@@ -11,37 +9,28 @@ using SharpForms.Api.BL.MapperProfiles;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
-    public class RepositoryAnswerTests
+    public class RepositoryAnswerTests : RepositoryTestFixture
     {
-        private readonly Storage _storage;
-        private readonly AnswerRepository _repository;
 
-        public RepositoryAnswerTests()
-        {
-            _storage = new Storage();
+        public RepositoryAnswerTests() { }
 
-            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<AnswerMapperProfile>());
-            var mapper = new Mapper(mapperConfiguration);
-
-            _repository = new AnswerRepository(_storage);
-        }
 
         [Fact]
         public void Insert_New_Answer()
         {
             var answer = new AnswerEntity { Id = Guid.NewGuid(), TextAnswer = "Sample answer" };
-            var result = _repository.Insert(answer);
-            var insertedAnswer = _repository.GetById(answer.Id);
+            var result = _answerRepository.Insert(answer);
+            var insertedAnswer = _answerRepository.GetById(answer.Id);
 
             Assert.Equal(answer.Id, result);
-            Assert.Contains(answer, _repository.GetAll());
+            Assert.Contains(answer, _answerRepository.GetAll());
             Assert.NotNull(insertedAnswer);
         }
 
         [Fact]
         public void Get_Answer_By_Id()
         {
-            var fetchedAnswer = _repository.GetById(new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425")); // Seed data
+            var fetchedAnswer = _answerRepository.GetById(new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425")); // Seed data
 
             Assert.NotNull(fetchedAnswer);
             Assert.Equal("Software Engineer", fetchedAnswer.TextAnswer);
@@ -50,7 +39,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         [Fact]
         public void Get_Answer_By_Id_Check_Included_Entities()
         {
-            var fetchedAnswer = _repository.GetById(new Guid("b4505f75-f177-4076-832d-8fd1677c9a18")); // Seed data
+            var fetchedAnswer = _answerRepository.GetById(new Guid("b4505f75-f177-4076-832d-8fd1677c9a18")); // Seed data
 
             var question =
                 _storage.Questions.SingleOrDefault(o =>
@@ -72,15 +61,15 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Update_Existing_Answer()
         {
             var answer = new AnswerEntity { Id = Guid.NewGuid(), TextAnswer = "Old answer" };
-            _repository.Insert(answer);
-            var oldAnswer = _repository.GetById(answer.Id);
+            _answerRepository.Insert(answer);
+            var oldAnswer = _answerRepository.GetById(answer.Id);
             Assert.NotNull(oldAnswer);
             Assert.Equal(oldAnswer.TextAnswer, answer.TextAnswer);
 
             answer.TextAnswer = "Updated answer";
-            _repository.Update(answer);
+            _answerRepository.Update(answer);
 
-            var updatedAnswer = _repository.GetById(answer.Id);
+            var updatedAnswer = _answerRepository.GetById(answer.Id);
             Assert.NotNull(updatedAnswer);
             Assert.Equal("Updated answer", updatedAnswer.TextAnswer);
         }
@@ -89,9 +78,9 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Remove_Answer()
         {
             var answerId = new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"); // Seed data
-            _repository.Remove(answerId);
+            _answerRepository.Remove(answerId);
 
-            var deletedAnswer = _repository.GetById(answerId);
+            var deletedAnswer = _answerRepository.GetById(answerId);
 
             Assert.Null(deletedAnswer);
         }
@@ -101,7 +90,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var answerId = new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"); // Seed data
 
-            Assert.True(_repository.Exists(answerId));
+            Assert.True(_answerRepository.Exists(answerId));
         }
     }
 }

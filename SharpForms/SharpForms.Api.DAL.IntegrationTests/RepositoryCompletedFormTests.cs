@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Memory.Repositories;
@@ -11,29 +6,19 @@ using SharpForms.Api.BL.MapperProfiles;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
-    public class RepositoryCompletedFormTests
+    public class RepositoryCompletedFormTests : RepositoryTestFixture
     {
-        private readonly CompletedFormRepository _repository;
-        private readonly Storage _storage;
 
-        public RepositoryCompletedFormTests()
-        {
-            _storage = new Storage();
-
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<CompletedFormMapperProfile>());
-            var mapper = config.CreateMapper();
-
-            _repository = new CompletedFormRepository(_storage, mapper);
-        }
+        public RepositoryCompletedFormTests() { }
 
         [Fact]
         public void Insert_CompletedForm()
         {
             var completedForm = new CompletedFormEntity { Id = Guid.NewGuid(), CompletedDate = DateTime.Now };
-            var result = _repository.Insert(completedForm);
+            var result = _completedFormRepository.Insert(completedForm);
 
             Assert.Equal(completedForm.Id, result);
-            Assert.Contains(completedForm, _repository.GetAll());
+            Assert.Contains(completedForm, _completedFormRepository.GetAll());
         }
 
         [Fact]
@@ -42,7 +27,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var completedFormId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"); // Seed data
             var FormUserId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"); // Seed data
 
-            var fetchedForm = _repository.GetById(completedFormId);
+            var fetchedForm = _completedFormRepository.GetById(completedFormId);
 
             Assert.NotNull(fetchedForm);
             Assert.Equal(FormUserId, fetchedForm.UserId);
@@ -60,7 +45,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
                 _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
             var Form = _storage.Forms.SingleOrDefault(o => o.Id == new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"));
 
-            var fetchedForm = _repository.GetById(completedFormId);
+            var fetchedForm = _completedFormRepository.GetById(completedFormId);
 
             Assert.NotNull(fetchedForm);
             Assert.Equal(User, fetchedForm.User);
@@ -73,12 +58,12 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Update_Existing_CompletedForm()
         {
             var completedForm = new CompletedFormEntity { Id = Guid.NewGuid(), CompletedDate = DateTime.Now };
-            _repository.Insert(completedForm);
+            _completedFormRepository.Insert(completedForm);
 
             completedForm.CompletedDate = DateTime.Now.AddDays(2);
-            _repository.Update(completedForm);
+            _completedFormRepository.Update(completedForm);
 
-            var updatedForm = _repository.GetById(completedForm.Id);
+            var updatedForm = _completedFormRepository.GetById(completedForm.Id);
 
             Assert.NotNull(updatedForm);
             Assert.Equal(completedForm.CompletedDate, updatedForm.CompletedDate);
@@ -88,9 +73,9 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Remove_CompletedForm()
         {
             var formId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"); // Seed data
-            _repository.Remove(formId);
+            _completedFormRepository.Remove(formId);
 
-            var deletedForm = _repository.GetById(formId);
+            var deletedForm = _completedFormRepository.GetById(formId);
 
             Assert.Null(deletedForm);
         }
@@ -99,9 +84,9 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Remove_CompletedForm_Cascade_Delete_Answers()
         {
             var formId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"); // Seed data
-            _repository.Remove(formId);
+            _completedFormRepository.Remove(formId);
 
-            var deletedForm = _repository.GetById(formId);
+            var deletedForm = _completedFormRepository.GetById(formId);
             var Answer1 =
                 _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
             var Answer2 =
@@ -117,7 +102,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var formId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"); // Seed data
 
-            var exists = _repository.Exists(formId);
+            var exists = _completedFormRepository.Exists(formId);
 
             Assert.True(exists);
         }

@@ -1,7 +1,3 @@
-using System;
-using Xunit;
-using System;
-using Xunit;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.DAL.Common.Entities;
 using AutoMapper;
@@ -11,18 +7,10 @@ using SharpForms.Api.BL.MapperProfiles;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
-    public class RepositoryQuestionTests
+    public class RepositoryQuestionTests : RepositoryTestFixture
     {
-        private readonly QuestionRepository _repository;
-        private readonly Storage _storage;
-
-        public RepositoryQuestionTests()
-        {
-            _storage = new Storage();
-            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<QuestionMapperProfile>());
-            var mapper = new Mapper(mapperConfiguration);
-            _repository = new QuestionRepository(_storage, mapper);
-        }
+        
+        public RepositoryQuestionTests() { }
 
         [Fact]
         public void Insert_New_Question()
@@ -31,10 +19,10 @@ namespace SharpForms.Api.DAL.IntegrationTests
             {
                 Id = Guid.NewGuid(), Text = "Sample question", Order = 1, AnswerType = AnswerType.Text
             };
-            var result = _repository.Insert(question);
+            var result = _questionRepository.Insert(question);
 
             Assert.Equal(question.Id, result);
-            Assert.Contains(question, _repository.GetAll());
+            Assert.Contains(question, _questionRepository.GetAll());
         }
 
         [Fact]
@@ -42,7 +30,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var questionId = new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"); // Seed data
 
-            var fetchedQuestion = _repository.GetById(questionId);
+            var fetchedQuestion = _questionRepository.GetById(questionId);
 
             Assert.NotNull(fetchedQuestion);
             Assert.Equal("Please provide additional feedback.", fetchedQuestion.Text);
@@ -51,7 +39,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         [Fact]
         public void Get_Question_By_Id_Check_Included_Entities()
         {
-            var fetchedQuestion = _repository.GetById(new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1")); // Seed data
+            var fetchedQuestion = _questionRepository.GetById(new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1")); // Seed data
 
             var Answer =
                 _storage.Answers.SingleOrDefault(o =>
@@ -72,13 +60,13 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Update_Question()
         {
             var questionId = new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"); // Seed data
-            var question = _repository.GetById(questionId);
+            var question = _questionRepository.GetById(questionId);
 
             Assert.NotNull(question);
             question.Text = "Updated question";
-            _repository.Update(question);
+            _questionRepository.Update(question);
 
-            var updatedQuestion = _repository.GetById(question.Id);
+            var updatedQuestion = _questionRepository.GetById(question.Id);
             Assert.NotNull(updatedQuestion);
             Assert.Equal("Updated question", updatedQuestion.Text);
         }
@@ -88,9 +76,9 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var questionId = new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"); // Seed data
 
-            _repository.Remove(questionId);
+            _questionRepository.Remove(questionId);
 
-            var deletedQuestion = _repository.GetById(questionId);
+            var deletedQuestion = _questionRepository.GetById(questionId);
 
             Assert.Null(deletedQuestion);
         }
@@ -100,9 +88,9 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var questionId = new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"); // Seed data
 
-            _repository.Remove(questionId);
+            _questionRepository.Remove(questionId);
 
-            var fetchedQuestion = _repository.GetById(questionId); // Seed data
+            var fetchedQuestion = _questionRepository.GetById(questionId); // Seed data
 
             var Answer =
                 _storage.Answers.SingleOrDefault(o =>
@@ -123,7 +111,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var questionId = new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"); // Seed data
 
-            var exists = _repository.Exists(questionId);
+            var exists = _questionRepository.Exists(questionId);
 
             Assert.True(exists);
         }

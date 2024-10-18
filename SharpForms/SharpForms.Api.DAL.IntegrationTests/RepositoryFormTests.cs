@@ -1,5 +1,3 @@
-using System;
-using Xunit;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.DAL.Common.Entities;
 using AutoMapper;
@@ -8,20 +6,11 @@ using SharpForms.Api.BL.MapperProfiles;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
-    public class RepositoryFormTests
+    public class RepositoryFormTests : RepositoryTestFixture
     {
-        private readonly FormRepository _repository;
-        private readonly Storage _storage;
 
-        public RepositoryFormTests()
-        {
-            _storage = new Storage();
-
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<FormMapperProfile>());
-            var mapper = config.CreateMapper();
-
-            _repository = new FormRepository(_storage, mapper);
-        }
+        public RepositoryFormTests() { }
+        
 
         [Fact]
         public void Insert_Form()
@@ -30,10 +19,10 @@ namespace SharpForms.Api.DAL.IntegrationTests
             {
                 Id = Guid.NewGuid(), Name = "Sample form", OpenUntil = DateTime.Now.AddDays(10)
             };
-            var result = _repository.Insert(form);
+            var result = _formRepository.Insert(form);
 
             Assert.Equal(form.Id, result);
-            Assert.Contains(form, _repository.GetAll());
+            Assert.Contains(form, _formRepository.GetAll());
         }
 
         [Fact]
@@ -41,7 +30,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var formId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"); //Seed data
 
-            var fetchedForm = _repository.GetById(formId);
+            var fetchedForm = _formRepository.GetById(formId);
 
             Assert.NotNull(fetchedForm);
             Assert.Equal("Customer Feedback", fetchedForm.Name);
@@ -60,7 +49,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var CompletedForm =
                 _storage.CompletedForms.SingleOrDefault(o => o.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
 
-            var fetchedForm = _repository.GetById(FormId);
+            var fetchedForm = _formRepository.GetById(FormId);
 
             Assert.NotNull(fetchedForm);
             Assert.Equal(Creator, fetchedForm.Creator);
@@ -73,13 +62,13 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Update_Form()
         {
             var formId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"); //Seed data
-            var fetchedForm = _repository.GetById(formId);
+            var fetchedForm = _formRepository.GetById(formId);
 
             Assert.NotNull(fetchedForm);
             fetchedForm.Name = "Updated form";
-            _repository.Update(fetchedForm);
+            _formRepository.Update(fetchedForm);
 
-            var updatedForm = _repository.GetById(fetchedForm.Id);
+            var updatedForm = _formRepository.GetById(fetchedForm.Id);
             Assert.NotNull(updatedForm);
             Assert.Equal("Updated form", updatedForm.Name);
         }
@@ -88,9 +77,9 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Remove_Form()
         {
             var formId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"); //Seed data
-            _repository.Remove(formId);
+            _formRepository.Remove(formId);
 
-            var deletedForm = _repository.GetById(formId);
+            var deletedForm = _formRepository.GetById(formId);
 
             Assert.Null(deletedForm);
         }
@@ -99,7 +88,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         public void Remove_Form_Cascade_Delete_Entities()
         {
             var FormId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8");
-            _repository.Remove(FormId);
+            _formRepository.Remove(FormId);
 
             // Seed data
             var Question1 =
@@ -115,7 +104,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var SelectOption2 =
                 _storage.Answers.SingleOrDefault(o => o.Id == new Guid("00fc620d-c945-412f-9555-08e3cb076884"));
 
-            var fetchedForm = _repository.GetById(FormId);
+            var fetchedForm = _formRepository.GetById(FormId);
 
             Assert.Null(fetchedForm);
             Assert.Null(Question1);
@@ -131,7 +120,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var formId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"); //Seed data
 
-            var exists = _repository.Exists(formId);
+            var exists = _formRepository.Exists(formId);
 
             Assert.True(exists);
         }
