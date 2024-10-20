@@ -1,9 +1,10 @@
 ﻿using SharpForms.Common.Models;
 using SharpForms.Api.DAL.Common.Entities.Interfaces;
+using SharpForms.Common.BL.Facades;
 
 namespace SharpForms.Api.BL.Facades.Common;
 
-public interface IDetailModelFacade<TEntity, TDetailModel>
+public interface IDetailModelFacade<TEntity, TDetailModel> : IAppFacade
     where TEntity : IEntity
     where TDetailModel : IModel
 {

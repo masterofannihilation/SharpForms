@@ -107,7 +107,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (filterText != null)
             {
-                filtered = filtered.Where(a => a.Text.Contains(filterText));
+                filtered = filtered.Where(a => a.Text.ToLower().Contains(filterText.ToLower()));
             }
 
             if (filterDescription != null)

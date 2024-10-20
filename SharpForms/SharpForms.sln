@@ -35,6 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpForms.Api.BL.IntegrationTests", "SharpForms.Api.BL.IntegrationTests\SharpForms.Api.BL.IntegrationTests.csproj", "{4CC08FFD-6F31-4A9C-BC3F-FBA19FF1EC45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpForms.Api.App", "SharpForms.Api.App\SharpForms.Api.App.csproj", "{DC5A97D4-3648-4C12-BEBB-358658F563B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpForms.Api.App.EndToEndTests", "SharpForms.Api.App.EndToEndTests\SharpForms.Api.App.EndToEndTests.csproj", "{02D8D611-0E55-459F-9F8A-7027079B10F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +77,14 @@ Global
 		{4CC08FFD-6F31-4A9C-BC3F-FBA19FF1EC45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CC08FFD-6F31-4A9C-BC3F-FBA19FF1EC45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CC08FFD-6F31-4A9C-BC3F-FBA19FF1EC45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5A97D4-3648-4C12-BEBB-358658F563B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5A97D4-3648-4C12-BEBB-358658F563B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5A97D4-3648-4C12-BEBB-358658F563B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5A97D4-3648-4C12-BEBB-358658F563B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D8D611-0E55-459F-9F8A-7027079B10F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D8D611-0E55-459F-9F8A-7027079B10F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D8D611-0E55-459F-9F8A-7027079B10F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D8D611-0E55-459F-9F8A-7027079B10F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +100,8 @@ Global
 		{9DBA5DBF-9004-45FF-BAA3-6EEC518FF5A7} = {3F41232D-8491-4E41-B1B5-BEC220DA91D9}
 		{028A9578-EAA6-40F0-A8F3-254A0809B949} = {459EF215-D364-4C1C-BE28-DEDCD7555F6A}
 		{4CC08FFD-6F31-4A9C-BC3F-FBA19FF1EC45} = {478A0D00-E7C1-4E6A-A94A-8CCDEEF89778}
+		{DC5A97D4-3648-4C12-BEBB-358658F563B5} = {3F41232D-8491-4E41-B1B5-BEC220DA91D9}
+		{02D8D611-0E55-459F-9F8A-7027079B10F3} = {3F41232D-8491-4E41-B1B5-BEC220DA91D9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1BDC254B-8869-45D9-AAFB-F9390518ECBE}

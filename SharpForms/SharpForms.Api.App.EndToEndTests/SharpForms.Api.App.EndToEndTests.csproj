@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
-        <PackageReference Include="Scrutor" Version="4.2.2" />
         <PackageReference Include="xunit" Version="2.4.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,10 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SharpForms.Api.BL\SharpForms.Api.BL.csproj"/>
-        <ProjectReference Include="..\SharpForms.Api.DAL.Common\SharpForms.Api.DAL.Common.csproj"/>
-        <ProjectReference Include="..\SharpForms.Api.DAL.Memory\SharpForms.Api.DAL.Memory.csproj"/>
-        <ProjectReference Include="..\SharpForms.Common.Models\SharpForms.Common.Models.csproj"/>
+        <ProjectReference Include="..\SharpForms.Api.App\SharpForms.Api.App.csproj"/>
+        <ProjectReference Include="..\SharpForms.Common.BL\SharpForms.Common.BL.csproj"/>
+        <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj"/>
     </ItemGroup>
 
 </Project>
