@@ -2,7 +2,6 @@ using AutoMapper;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.DAL.Common.Repositories;
-using SharpForms.Api.BL.Facades.Answer;
 using SharpForms.Api.BL.MapperProfiles;
 
 namespace SharpForms.Api.BL.IntegrationTests.Fixtures;
@@ -16,6 +15,7 @@ public class FacadeTestFixture
     protected readonly IFormRepository _formRepository;
     protected readonly IQuestionRepository _questionRepository;
     protected readonly IUserRepository _userRepository;
+    protected readonly ISelectOptionRepository _selectOptionRepository;
 
     public FacadeTestFixture()
     {
@@ -28,6 +28,7 @@ public class FacadeTestFixture
             cfg.AddProfile<CompletedFormMapperProfile>();
             cfg.AddProfile<QuestionMapperProfile>();
             cfg.AddProfile<UserMapperProfile>();
+            cfg.AddProfile<SelectOptionMapperProfile>();
         });
         _mapper = new Mapper(mapperConfiguration);
 
@@ -36,5 +37,6 @@ public class FacadeTestFixture
         _formRepository = new FormRepository(storage, _mapper);
         _questionRepository = new QuestionRepository(storage, _mapper);
         _userRepository = new UserRepository(storage, _mapper);
+        _selectOptionRepository = new SelectOptionRepository(storage, _mapper);
     }
 }

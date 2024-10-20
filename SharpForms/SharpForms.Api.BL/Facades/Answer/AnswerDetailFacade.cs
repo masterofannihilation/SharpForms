@@ -3,14 +3,14 @@ using SharpForms.Api.BL.Facades.Common;
 using SharpForms.Api.BL.Facades.Question;
 using SharpForms.Api.BL.Facades.User;
 using SharpForms.Api.DAL.Common.Entities;
-using SharpForms.Api.DAL.Memory.Repositories;
+using SharpForms.Api.DAL.Common.Repositories;
 using SharpForms.Common.Enums;
 using SharpForms.Common.Models.Answer;
 
 namespace SharpForms.Api.BL.Facades.Answer;
 
 public class AnswerDetailFacade(
-    AnswerRepository answerRepository,
+    IAnswerRepository answerRepository,
     IMapper mapper,
     IUserListFacade userListFacade,
     IQuestionListFacade questionListFacade)
@@ -21,8 +21,8 @@ public class AnswerDetailFacade(
     public override AnswerDetailModel? GetById(Guid id)
     {
         var entity = answerRepository.GetById(id);
+        if (entity == null) return null;
         var model = _mapper.Map<AnswerDetailModel>(entity);
-
         if (model == null) return null;
 
         model.Question = questionListFacade.GetById(entity!.QuestionId)!;
