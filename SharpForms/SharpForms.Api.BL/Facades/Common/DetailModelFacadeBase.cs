@@ -7,15 +7,16 @@ namespace SharpForms.Api.BL.Facades.Common;
 
 public abstract class DetailModelFacadeBase<TEntity, TDetailModel>(
     IApiRepository<TEntity> entityRepository,
-    IMapper modelMapper)
+    IMapper mapper)
     : IDetailModelFacade<TEntity, TDetailModel>
     where TEntity : IEntity
     where TDetailModel : IModel
 {
+    
     public virtual TDetailModel? GetById(Guid id)
     {
         var entity = entityRepository.GetById(id);
-        return modelMapper.Map<TDetailModel>(entity);
+        return mapper.Map<TDetailModel>(entity);
     }
 
     public Guid CreateOrUpdate(TDetailModel model)
@@ -27,13 +28,13 @@ public abstract class DetailModelFacadeBase<TEntity, TDetailModel>(
 
     public virtual Guid Create(TDetailModel model)
     {
-        var entity = modelMapper.Map<TEntity>(model);
+        var entity = mapper.Map<TEntity>(model);
         return entityRepository.Insert(entity);
     }
 
     public virtual Guid? Update(TDetailModel model)
     {
-        var entity = modelMapper.Map<TEntity>(model);
+        var entity = mapper.Map<TEntity>(model);
         return entityRepository.Update(entity);
     }
 

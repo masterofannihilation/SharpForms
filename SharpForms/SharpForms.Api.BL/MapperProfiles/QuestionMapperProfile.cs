@@ -10,7 +10,8 @@ namespace SharpForms.Api.BL.MapperProfiles
         {
             CreateMap<QuestionEntity, QuestionDetailModel>()
                 .ForMember(dest => dest.FormName,
-                    opt => opt.MapFrom(src => src.Form!.Name));
+                    opt => opt.MapFrom(src => src.Form!.Name))
+                .ForMember(dest => dest.Options, opt => opt.Ignore());
             CreateMap<QuestionEntity, QuestionListModel>();
             CreateMap<QuestionDetailModel, QuestionEntity>();
             CreateMap<QuestionListModel, QuestionEntity>();
