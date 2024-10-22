@@ -26,10 +26,9 @@ public class AnswerDetailFacade(
         if (model == null) return null;
 
         model.Question = questionListFacade.GetById(entity!.QuestionId)!;
-        if (entity!.CompletedForm!.UserId != null)
-        {
+
+        if(entity.CompletedForm != null && entity.CompletedForm.UserId != null)
             model.User = userListFacade.GetById(entity!.CompletedForm.UserId.Value);
-        }
 
         model.Answer = entity.Question!.AnswerType switch
         {

@@ -29,7 +29,7 @@ namespace SharpForms.Api.BL.Facades.Answer
             this.questionListFacade = questionListFacade;
         }
 
-        public Guid CreateOrUpdate(AnswerSubmitModel model)
+        public Guid? CreateOrUpdate(AnswerSubmitModel model)
         {
             var existingAnswer = answerRepository.GetById(model.Id);
             var newAnswer = new AnswerEntity
@@ -63,14 +63,9 @@ namespace SharpForms.Api.BL.Facades.Answer
             }
 
             if (existingAnswer != null)
-            {
-                answerRepository.Update(newAnswer);
-                return newAnswer.Id;
-            }
+                return answerRepository.Update(newAnswer);
             else
-            {
                 return answerRepository.Insert(newAnswer);
-            }
         }
     }
 }
