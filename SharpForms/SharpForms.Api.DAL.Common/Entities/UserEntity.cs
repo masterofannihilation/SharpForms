@@ -18,7 +18,7 @@ namespace SharpForms.Api.DAL.Common.Entities
 
             return new UserEntity
             {
-                Id = this.Id, // Copy Id from EntityBase
+                Id = this.Id,
                 Name = this.Name,
                 PhotoUrl = this.PhotoUrl,
                 Role = this.Role,

@@ -20,7 +20,7 @@ namespace SharpForms.Api.DAL.Common.Entities
 
             return new CompletedFormEntity
             {
-                Id = this.Id, // Copy Id from EntityBase
+                Id = this.Id,
                 FormId = this.FormId,
                 UserId = this.UserId,
                 DateTime = this.DateTime,

@@ -27,7 +27,7 @@ namespace SharpForms.Api.DAL.Common.Entities
 
             return new QuestionEntity
             {
-                Id = this.Id, // Copy Id from EntityBase
+                Id = this.Id,
                 FormId = this.FormId,
                 Order = this.Order,
                 Text = this.Text,

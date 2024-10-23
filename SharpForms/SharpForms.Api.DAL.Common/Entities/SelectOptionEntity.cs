@@ -12,10 +12,10 @@ namespace SharpForms.Api.DAL.Common.Entities
         {
             return new SelectOptionEntity
             {
-                Id = this.Id, // Copy Id from EntityBase
+                Id = this.Id,
                 QuestionId = this.QuestionId,
                 Option = this.Option,
-                Question = Question?.DeepCopy() // Assuming deep copy of Question
+                Question = Question?.DeepCopy()
             };
         }
     }
