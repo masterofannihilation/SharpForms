@@ -7,10 +7,10 @@ namespace SharpForms.Api.DAL.Common.Entities
         public Guid FormId { get; set; }
         public FormEntity? Form { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         public UserEntity? User { get; set; }
 
-        public DateTime? DateTime { get; set; }
+        public DateTime CompletedDate { get; set; }
 
         public ICollection<AnswerEntity> Answers { get; set; } = new List<AnswerEntity>();
         

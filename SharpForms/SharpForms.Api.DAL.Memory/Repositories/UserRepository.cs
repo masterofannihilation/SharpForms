@@ -61,21 +61,41 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             _mapper.Map(user, existingUser); // Update user
             return existingUser.Id;
-
         }
 
         public void Remove(Guid id)
         {
             var userToRemove = _users.SingleOrDefault(user => user.Id == id);
-            if (userToRemove != null)
+            if (userToRemove == null)
             {
-                _users.Remove(userToRemove);
+                return;
             }
+
+            // Set all created forms' CreatorId to null
+            var createdFormsToNullify = _createdForms.Where(form => form.CreatorId == userToRemove.Id).ToList();
+            foreach (var form in createdFormsToNullify)
+            {
+                form.CreatorId = null; // Set the CreatorId to null for forms created by this user
+            }
+
+            // set all completed forms' UserId to null
+            var completedFormsToNullify = _completedForms.Where(form => form.UserId == userToRemove.Id).ToList();
+            foreach (var completedForm in completedFormsToNullify)
+            {
+                completedForm.UserId = null;
+            }
+
+            _users.Remove(userToRemove);
         }
 
         public bool Exists(Guid id)
         {
             return _users.Any(user => user.Id == id);
+        }
+
+        public IList<UserEntity> GetAllFiltered(string name)
+        {
+            return _users.Where(u => u.Name.ToLower().Contains(name.ToLower())).ToList();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace SharpForms.Api.DAL.Memory.Repositories
     {
         private readonly IList<CompletedFormEntity> completedForms;
         private readonly IList<AnswerEntity> answers;
+        private readonly IList<UserEntity> users;
+        private readonly IList<FormEntity> forms;
         private readonly IMapper mapper;
 
         public CompletedFormRepository(
@@ -19,21 +21,40 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             this.completedForms = storage.CompletedForms;
             this.answers = storage.Answers;
+            this.users = storage.Users;
+            this.forms = storage.Forms;
             this.mapper = mapper;
         }
 
         public IList<CompletedFormEntity> GetAll()
         {
-            return completedForms.Select(form => form.DeepCopy()).ToList();
+            var cfs = new List<CompletedFormEntity>();
+            foreach (var f in completedForms)
+            {
+                cfs.Add(IncludeEntities(f));
+            }
+
+            return cfs;
+        }
+
+        private CompletedFormEntity IncludeEntities(CompletedFormEntity completedForm)
+        {
+            completedForm.Answers = GetAnswersByCompletedFormId(completedForm.Id);
+            completedForm.Form = forms.SingleOrDefault(form => form.Id == completedForm.FormId);
+            completedForm.User = users.SingleOrDefault(user => user.Id == completedForm.UserId);
+
+            return completedForm;
         }
 
         public CompletedFormEntity? GetById(Guid id)
         {
             var completedForm = completedForms.SingleOrDefault(form => form.Id == id);
-            if (completedForm == null) return null;
-            
-            completedForm.Answers = GetAnswersByCompletedFormId(id);
-            return completedForm.DeepCopy();
+            if (completedForm == null)
+            {
+                return null;
+            }
+
+            return IncludeEntities(completedForm);
         }
 
         public Guid Insert(CompletedFormEntity completedForm)
@@ -69,12 +90,35 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             {
                 answers.Remove(answer);
             }
+
             completedForms.Remove(formToRemove);
         }
 
         public bool Exists(Guid id)
         {
             return completedForms.Any(form => form.Id == id);
+        }
+
+        public IList<CompletedFormEntity> GetAllFiltered(Guid? formId, Guid? userId)
+        {
+            var filtered = completedForms.AsQueryable();
+            if (formId != null)
+            {
+                filtered = filtered.Where(cf => cf.FormId == formId);
+            }
+
+            if (userId != null)
+            {
+                filtered = filtered.Where(cf => cf.UserId == userId);
+            }
+
+            var cfs = new List<CompletedFormEntity>();
+            foreach (var cf in filtered)
+            {
+                cfs.Add(IncludeEntities(cf));
+            }
+
+            return cfs;
         }
 
         private IList<AnswerEntity> GetAnswersByCompletedFormId(Guid completedFormId)

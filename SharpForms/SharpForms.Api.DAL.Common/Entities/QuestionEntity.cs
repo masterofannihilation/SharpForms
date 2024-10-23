@@ -8,9 +8,9 @@ namespace SharpForms.Api.DAL.Common.Entities
         public FormEntity? Form { get; set; }
 
         public int Order { get; set; }
-        public string? Text { get; set; }
+        public required string Text { get; set; }
         public string? Description { get; set; }
-        public AnswerType? AnswerType { get; set; }
+        public AnswerType AnswerType { get; set; }
 
         public double? MinNumber { get; set; }
         public double? MaxNumber { get; set; }
