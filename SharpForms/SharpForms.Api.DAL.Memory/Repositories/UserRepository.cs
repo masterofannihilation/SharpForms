@@ -33,17 +33,22 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (userEntity == null) return null;
 
-            userEntity.CompletedForms = _completedForms
+            // Clone the user and populate related data
+            var clonedUser = userEntity.DeepCopy();
+
+            // Load related completed forms
+            clonedUser.CompletedForms = _completedForms
                 .Where(form => form.UserId == userEntity.Id)
                 .Select(form => form.DeepCopy())
                 .ToList();
-                
-            userEntity.CreatedForms = _createdForms
+
+            // Load related created forms
+            clonedUser.CreatedForms = _createdForms
                 .Where(form => form.CreatorId == userEntity.Id)
                 .Select(form => form.DeepCopy())
                 .ToList();
-                
-            return userEntity.DeepCopy();
+
+            return clonedUser;
         }
 
         public Guid Insert(UserEntity user)
@@ -59,9 +64,20 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (existingUser == null) return null;
 
-            _mapper.Map(user, existingUser); // Update user
+            // Manually update properties of the existing user
+            existingUser.Name = user.Name;
+            existingUser.PhotoUrl = user.PhotoUrl;
+            existingUser.Role = user.Role;
+
+            // Update the CompletedForms collection (deep copy to ensure no references are kept)
+            existingUser.CompletedForms = user.CompletedForms.Select(form => form.DeepCopy()).ToList();
+
+            // Update the CreatedForms collection (deep copy to ensure no references are kept)
+            existingUser.CreatedForms = user.CreatedForms.Select(form => form.DeepCopy()).ToList();
+
             return existingUser.Id;
         }
+
 
         public void Remove(Guid id)
         {
@@ -95,7 +111,10 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<UserEntity> GetAllFiltered(string name)
         {
-            return _users.Where(u => u.Name.ToLower().Contains(name.ToLower())).ToList();
+            return _users
+                .Where(u => u.Name.ToLower().Contains(name.ToLower()))
+                .Select(user => user.DeepCopy()) // Return deep copies of filtered users
+                .ToList();
         }
     }
 }

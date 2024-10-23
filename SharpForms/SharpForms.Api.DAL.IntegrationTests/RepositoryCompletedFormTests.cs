@@ -19,8 +19,18 @@ namespace SharpForms.Api.DAL.IntegrationTests
 
             Assert.Equal(completedForm.Id, result);
             Assert.Contains(completedForm, _completedFormRepository.GetAll());
-        }
+            
+            // Compare properties explicitly
+            var retrievedForm = _completedFormRepository.GetAll().FirstOrDefault(f => f.Id == completedForm.Id);
 
+            Assert.NotNull(retrievedForm);
+            Assert.Equal(completedForm.Id, retrievedForm.Id);
+            Assert.Equal(completedForm.CompletedDate, retrievedForm.CompletedDate);  // Compare the DateTime
+            Assert.Equal(completedForm.FormId, retrievedForm.FormId);  // Compare FormId
+            Assert.Equal(completedForm.UserId, retrievedForm.UserId);  // Compare UserId
+            Assert.Equal(completedForm.Answers.Count, retrievedForm.Answers.Count);  // Compare Answer counts
+        }
+        
         [Fact]
         public void Get_CompletedForm_By_Id()
         {

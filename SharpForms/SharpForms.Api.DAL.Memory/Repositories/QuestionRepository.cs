@@ -27,6 +27,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<QuestionEntity> GetAll()
         {
+            return _questions.Select(question => question.DeepCopy()).ToList();
         }
 
         public QuestionEntity? GetById(Guid id)
@@ -35,12 +36,13 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (questionEntity == null) return null;
 
-            // Load related data
-            questionEntity.Form = _forms.SingleOrDefault(form => form.Id == questionEntity.FormId);
-            questionEntity.Options = _options.Where(so => so.QuestionId == id).ToList();
-            questionEntity.Answers = _answers.Where(a => a.QuestionId == id).ToList();
+            // Load related data and return a deep copy
+            var clonedQuestion = questionEntity.DeepCopy();
+            clonedQuestion.Form = _forms.SingleOrDefault(form => form.Id == clonedQuestion.FormId);
+            clonedQuestion.Options = _options.Where(so => so.QuestionId == id).Select(option => option.DeepCopy()).ToList();
+            clonedQuestion.Answers = _answers.Where(a => a.QuestionId == id).Select(answer => answer.DeepCopy()).ToList();
 
-            return questionEntity.DeepCopy();
+            return clonedQuestion;
         }
 
         public Guid Insert(QuestionEntity question)
@@ -56,12 +58,36 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (existingQuestion == null)
             {
-                return null; // Null if not found
+                return null; // Return null if the question is not found
             }
 
-            _mapper.Map(question, existingQuestion); // Updated properties of existing entity
+            // Manually update each property of the existingQuestion
+            existingQuestion.FormId = question.FormId;
+            existingQuestion.Form = question.Form;
+            existingQuestion.Order = question.Order;
+            existingQuestion.Text = question.Text;
+            existingQuestion.Description = question.Description;
+            existingQuestion.AnswerType = question.AnswerType;
+            existingQuestion.MinNumber = question.MinNumber;
+            existingQuestion.MaxNumber = question.MaxNumber;
+
+            // Manually update the Options collection
+            existingQuestion.Options.Clear();
+            foreach (var option in question.Options)
+            {
+                existingQuestion.Options.Add(option); // Or deep copy if needed
+            }
+
+            // Manually update the Answers collection
+            existingQuestion.Answers.Clear();
+            foreach (var answer in question.Answers)
+            {
+                existingQuestion.Answers.Add(answer); // Or deep copy if needed
+            }
+
             return existingQuestion.Id;
         }
+
 
         public void Remove(Guid id)
         {
@@ -113,7 +139,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 filtered = filtered.Where(a => a.Description!.Contains(filterDescription));
             }
 
-            return filtered.ToList();
+            return filtered.Select(question => question.DeepCopy()).ToList();
         }
     }
 }

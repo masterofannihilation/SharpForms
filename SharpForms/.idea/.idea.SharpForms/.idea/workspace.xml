@@ -13,7 +13,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0366a212-dbfe-4d20-8688-432c4f0b6ad3" name="Changes" comment="" />
+    <list default="true" id="0366a212-dbfe-4d20-8688-432c4f0b6ad3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.SharpForms/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SharpForms/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Common/Entities/AnswerEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Common/Entities/AnswerEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Common/Entities/CompletedFormEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Common/Entities/CompletedFormEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.IntegrationTests/RepositoryCompletedFormTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.IntegrationTests/RepositoryCompletedFormTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/AnswerRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/AnswerRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/CompletedFormRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/CompletedFormRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/FormRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/FormRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/QuestionRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/QuestionRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/SelectOptionRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/SelectOptionRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/UserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/UserRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/SharpForms.Api.DAL.Memory.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SharpForms.Api.DAL.Memory/SharpForms.Api.DAL.Memory.csproj" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,8 +45,16 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Common/Repositories/IAnswerRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Common/Repositories/ICompletedFromRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/AnswerRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/CompletedFormRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/FormRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/QuestionRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/SelectOptionRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Repositories/UserRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SharpForms.Api.DAL.Memory/Storage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/21ff22cf362d4bdbafe09ecf5335945619050/5c/c9f5eb18/Assert.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/24372012c6c94138bf3f496e104366ffc8f918/a2/2f5b630e/ICollection`1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/285675a6903d43ca89ed13e37e2bfe3c2d4d0/5b/6da6b2ff/Assert.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9a00b514f1a941dd9f060453de7f7c4043200/be/3507ed42/IMapper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9a00b514f1a941dd9f060453de7f7c4043200/ce/9127c9f0/IMapperBase.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/38284ca4f4afe378f96fccac3e179f4bceda7a74eb151623b66d2dc3634d9b/ExceptionAggregator.cs" root0="FORCE_HIGHLIGHTING" />
@@ -43,8 +63,12 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/487764c4dc815ef1e9090514895a23ed9e2d8eda1f7fd6958ac0fb25e8437/Guid.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/999ae9cc4ab7b7cfbc5080803e994426e97fd9d87c5b1f44544a799bc114/StringAsserts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a53b6656d53296976cb3cae7c3f3c3797af4d1063d91228a4f1dabbd5398890/XunitTestInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ad8b2779652854276d03ec153d51377686c7193799d1688e119272770d0cf/EqualityAsserts.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d5bbff7f0797f8a5eac558803fc11ee7d94c9e84440dc58bc674915efec8/TestRunner.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f5545b2656401abe1a371ad2756d7d2328a38293f7ee8b163801bbf55cee8/TestInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -65,10 +89,12 @@
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.40839696&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.5906433&quot;,
     &quot;b75747d0-9ae4-4c56-9356-b7d366a6bb15.executor&quot;: &quot;Debug&quot;,
     &quot;d5e089f5-cb9f-4881-b701-a7edfd74b312.executor&quot;: &quot;Debug&quot;,
     &quot;de73d8d4-b239-4850-9f8c-9a847343708a.executor&quot;: &quot;Debug&quot;,
+    &quot;ef5f5977-a18b-40d4-9a56-3dcc89aa6214.executor&quot;: &quot;Debug&quot;,
+    &quot;efa3a0ab-3d83-4b26-8cd6-a5d9fa1df42c.executor&quot;: &quot;Debug&quot;,
     &quot;git-widget-placeholder&quot;: &quot;api__dal__memory__repositories&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -151,6 +177,9 @@
       <workItem from="1729445326987" duration="684000" />
       <workItem from="1729446077231" duration="5180000" />
       <workItem from="1729458490210" duration="653000" />
+      <workItem from="1729692790453" duration="6561000" />
+      <workItem from="1729699427192" duration="5173000" />
+      <workItem from="1729722560097" duration="649000" />
     </task>
     <servers />
   </component>
@@ -181,6 +210,32 @@
           </properties>
           <option name="timeStamp" value="2" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/SharpForms.API.DAL.IntegrationTests/RepositoryCompletedFormTests.cs</url>
+          <line>68</line>
+          <properties documentPath="C:\00_school\iw5\project\SharpForms\SharpForms.API.DAL.IntegrationTests\RepositoryCompletedFormTests.cs" containingFunctionPresentation="Method 'Update_Existing_CompletedForm'">
+            <startOffsets>
+              <option value="3023" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3024" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/SharpForms.API.DAL.IntegrationTests/RepositoryUserTests.cs</url>
+          <line>41</line>
+          <properties documentPath="C:\00_school\iw5\project\SharpForms\SharpForms.API.DAL.IntegrationTests\RepositoryUserTests.cs" containingFunctionPresentation="Method 'Get_Existing_User_By_Id_Check_Entities'">
+            <startOffsets>
+              <option value="1434" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1482" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

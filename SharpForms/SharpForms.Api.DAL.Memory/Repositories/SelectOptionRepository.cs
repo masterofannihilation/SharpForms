@@ -22,6 +22,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<SelectOptionEntity> GetAll()
         {
+            return _selectOptions.Select(option => option.DeepCopy()).ToList();
         }
 
         public SelectOptionEntity? GetById(Guid id)
@@ -30,8 +31,10 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (selectOptionEntity == null) return null;
 
-            selectOptionEntity.Question = _questions.SingleOrDefault(q => q.Id == selectOptionEntity.QuestionId);
-            return selectOptionEntity.DeepCopy();
+            // Load related data and return a deep copy
+            var clonedOption = selectOptionEntity.DeepCopy();
+            clonedOption.Question = _questions.SingleOrDefault(q => q.Id == clonedOption.QuestionId);
+            return clonedOption;
         }
 
         public Guid Insert(SelectOptionEntity selectOption)

@@ -31,9 +31,9 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var cfs = new List<CompletedFormEntity>();
             foreach (var f in completedForms)
             {
-                cfs.Add(IncludeEntities(f));
+                cfs.Add(IncludeEntities(f.DeepCopy()));
             }
-
+            
             return cfs;
         }
 
@@ -54,7 +54,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 return null;
             }
 
-            return IncludeEntities(completedForm);
+            return IncludeEntities(completedForm.DeepCopy());
         }
 
         public Guid Insert(CompletedFormEntity completedForm)
@@ -69,11 +69,23 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var existingForm = completedForms.SingleOrDefault(form => form.Id == completedForm.Id);
             if (existingForm != null)
             {
-                // Use AutoMapper to map the properties from completedForm to existingForm
-                mapper.Map(completedForm, existingForm);
+                // Manually updating each property
+                existingForm.FormId = completedForm.FormId;
+                existingForm.Form = completedForm.Form;
+                existingForm.UserId = completedForm.UserId;
+                existingForm.User = completedForm.User;
+                existingForm.CompletedDate = completedForm.CompletedDate;
+
+                // If Answers is a collection, you might want to clear and re-add or update them
+                existingForm.Answers.Clear();
+                foreach (var answer in completedForm.Answers)
+                {
+                    existingForm.Answers.Add(answer); // Or use a deep copy if needed
+                }
+
                 return existingForm.Id;
             }
-            return null; // Null if not found
+            return null;
         }
 
         public void Remove(Guid id)
@@ -115,7 +127,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var cfs = new List<CompletedFormEntity>();
             foreach (var cf in filtered)
             {
-                cfs.Add(IncludeEntities(cf));
+                cfs.Add(IncludeEntities(cf.DeepCopy()));
             }
 
             return cfs;
