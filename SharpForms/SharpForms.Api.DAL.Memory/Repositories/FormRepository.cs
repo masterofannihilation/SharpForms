@@ -20,37 +20,32 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<FormEntity> GetAll()
         {
-            return _forms.ToList();
+            return _forms.Select(form => form.DeepCopy()).ToList();
         }
 
         public FormEntity? GetById(Guid id)
         {
             var formEntity = _forms.SingleOrDefault(form => form.Id == id);
-            
-            if (formEntity != null)
-            {
-                formEntity.Questions = formEntity.Questions ?? new List<QuestionEntity>(); // Ensure questions are not null
-            }
+            if (formEntity == null) return null;
 
-            return formEntity;
+            formEntity.Questions = formEntity.Questions ?? new List<QuestionEntity>();
+            return formEntity.DeepCopy();
         }
 
         public Guid Insert(FormEntity form)
         {
-            _forms.Add(form);
-            return form.Id;
+            var formCopy = form.DeepCopy();
+            _forms.Add(formCopy);
+            return formCopy.Id;
         }
 
         public Guid? Update(FormEntity form)
         {
             var existingForm = _forms.SingleOrDefault(f => f.Id == form.Id);
 
-            if (existingForm == null)
-            {
-                return null; // Null if not found
-            }
+            if (existingForm == null) return null;
 
-            _mapper.Map(form, existingForm); // Update properties to existing entity
+            _mapper.Map(form, existingForm); 
             return existingForm.Id;
         }
 

@@ -13,5 +13,19 @@ namespace SharpForms.Api.DAL.Common.Entities
         public DateTime? DateTime { get; set; }
 
         public ICollection<AnswerEntity> Answers { get; set; } = new List<AnswerEntity>();
+        
+        public CompletedFormEntity DeepCopy()
+        {
+            var clonedAnswers = Answers.Select(answer => answer.DeepCopy()).ToList();
+
+            return new CompletedFormEntity
+            {
+                Id = this.Id, // Copy Id from EntityBase
+                FormId = this.FormId,
+                UserId = this.UserId,
+                DateTime = this.DateTime,
+                Answers = clonedAnswers
+            };
+        }
     }
 }

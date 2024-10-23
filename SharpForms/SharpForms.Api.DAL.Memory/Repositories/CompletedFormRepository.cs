@@ -24,23 +24,23 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<CompletedFormEntity> GetAll()
         {
-            return completedForms.ToList();
+            return completedForms.Select(form => form.DeepCopy()).ToList();
         }
 
         public CompletedFormEntity? GetById(Guid id)
         {
             var completedForm = completedForms.SingleOrDefault(form => form.Id == id);
-            if (completedForm is not null)
-            {
-                completedForm.Answers = GetAnswersByCompletedFormId(id);
-            }
-            return completedForm;
+            if (completedForm == null) return null;
+            
+            completedForm.Answers = GetAnswersByCompletedFormId(id);
+            return completedForm.DeepCopy();
         }
 
         public Guid Insert(CompletedFormEntity completedForm)
         {
-            completedForms.Add(completedForm);
-            return completedForm.Id; // ID of new form
+            var completedFormCopy = completedForm.DeepCopy();
+            completedForms.Add(completedFormCopy);
+            return completedFormCopy.Id;
         }
 
         public Guid? Update(CompletedFormEntity completedForm)

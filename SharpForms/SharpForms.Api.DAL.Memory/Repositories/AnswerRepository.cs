@@ -17,18 +17,21 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<AnswerEntity> GetAll()
         {
-            return _answers.ToList(); // Return a new list to avoid modifications
+            return _answers.Select(answer => answer.DeepCopy()).ToList(); 
         }
 
         public AnswerEntity? GetById(Guid id)
         {
-            return _answers.SingleOrDefault(answer => answer.Id == id);
+            var answer = _answers.SingleOrDefault(answer => answer.Id == id);
+            return answer?.DeepCopy();
         }
 
         public Guid Insert(AnswerEntity answer)
         {
-            _answers.Add(answer);
-            return answer.Id; // Return the ID of the newly added answer
+            // insert a deep copy of the original as the original might be modified
+            var answerCopy = answer.DeepCopy();
+            _answers.Add(answerCopy);
+            return answerCopy.Id;
         }
 
         public Guid? Update(AnswerEntity answer)

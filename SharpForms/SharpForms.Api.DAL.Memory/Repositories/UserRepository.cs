@@ -24,36 +24,40 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<UserEntity> GetAll()
         {
-            return _users.ToList();
+            return _users.Select(user => user.DeepCopy()).ToList();
         }
 
         public UserEntity? GetById(Guid id)
         {
             var userEntity = _users.SingleOrDefault(user => user.Id == id);
 
-            if (userEntity != null)
-            {
-                userEntity.CompletedForms = _completedForms.Where(form => form.UserId == userEntity.Id).ToList();
-                userEntity.CreatedForms = _createdForms.Where(form => form.CreatorId == userEntity.Id).ToList();
-            }
+            if (userEntity == null) return null;
 
-            return userEntity;
+            userEntity.CompletedForms = _completedForms
+                .Where(form => form.UserId == userEntity.Id)
+                .Select(form => form.DeepCopy())
+                .ToList();
+                
+            userEntity.CreatedForms = _createdForms
+                .Where(form => form.CreatorId == userEntity.Id)
+                .Select(form => form.DeepCopy())
+                .ToList();
+                
+            return userEntity.DeepCopy();
         }
 
         public Guid Insert(UserEntity user)
         {
-            _users.Add(user);
-            return user.Id;
+            var userCopy = user.DeepCopy();
+            _users.Add(userCopy);
+            return userCopy.Id;
         }
 
         public Guid? Update(UserEntity user)
         {
             var existingUser = _users.SingleOrDefault(u => u.Id == user.Id);
 
-            if (existingUser == null)
-            {
-                return null; // Null if not found
-            }
+            if (existingUser == null) return null;
 
             _mapper.Map(user, existingUser); // Update user
             return existingUser.Id;

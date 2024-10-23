@@ -19,5 +19,25 @@ namespace SharpForms.Api.DAL.Common.Entities
         public ICollection<SelectOptionEntity> Options { get; set; } = new List<SelectOptionEntity>();
 
         public ICollection<AnswerEntity> Answers { get; set; } = new List<AnswerEntity>();
+
+        public QuestionEntity DeepCopy()
+        {
+            var clonedOptions = Options.Select(option => option.DeepCopy()).ToList();
+            var clonedAnswers = Answers.Select(answer => answer.DeepCopy()).ToList();
+
+            return new QuestionEntity
+            {
+                Id = this.Id, // Copy Id from EntityBase
+                FormId = this.FormId,
+                Order = this.Order,
+                Text = this.Text,
+                Description = this.Description,
+                AnswerType = this.AnswerType,
+                MinNumber = this.MinNumber,
+                MaxNumber = this.MaxNumber,
+                Options = clonedOptions,
+                Answers = clonedAnswers
+            };
+        }
     }
 }

@@ -24,30 +24,27 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<QuestionEntity> GetAll()
         {
-            return _questions.ToList();
+            return _questions.Select(question => question.DeepCopy()).ToList();
         }
 
         public QuestionEntity? GetById(Guid id)
         {
             var questionEntity = _questions.SingleOrDefault(question => question.Id == id);
 
-            if (questionEntity == null)
-            {
-                return questionEntity;
-            }
+            if (questionEntity == null) return null;
 
-            // Load related data
             questionEntity.Form = _forms.SingleOrDefault(form => form.Id == questionEntity.FormId);
             questionEntity.Options = questionEntity.Options ?? new List<SelectOptionEntity>();
             questionEntity.Answers = questionEntity.Answers ?? new List<AnswerEntity>();
 
-            return questionEntity;
+            return questionEntity.DeepCopy();
         }
 
         public Guid Insert(QuestionEntity question)
         {
-            _questions.Add(question);
-            return question.Id;
+            var questionCopy = question.DeepCopy();
+            _questions.Add(questionCopy);
+            return questionCopy.Id;
         }
 
         public Guid? Update(QuestionEntity question)
