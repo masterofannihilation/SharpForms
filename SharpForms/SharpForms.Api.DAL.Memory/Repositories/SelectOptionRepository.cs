@@ -22,35 +22,33 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<SelectOptionEntity> GetAll()
         {
-            return _selectOptions.ToList();
+            return _selectOptions.Select(option => option.DeepCopy()).ToList();
         }
 
         public SelectOptionEntity? GetById(Guid id)
         {
             var selectOptionEntity = _selectOptions.SingleOrDefault(option => option.Id == id);
 
-            if (selectOptionEntity != null)
-            {
-                selectOptionEntity.Question = _questions.SingleOrDefault(q => q.Id == selectOptionEntity.QuestionId);
-            }
+            if (selectOptionEntity == null) return null;
 
-            return selectOptionEntity;
+            // Load related data and return a deep copy
+            var clonedOption = selectOptionEntity.DeepCopy();
+            clonedOption.Question = _questions.SingleOrDefault(q => q.Id == clonedOption.QuestionId);
+            return clonedOption;
         }
 
         public Guid Insert(SelectOptionEntity selectOption)
         {
-            _selectOptions.Add(selectOption);
-            return selectOption.Id;
+            var optionCopy = selectOption.DeepCopy();
+            _selectOptions.Add(optionCopy);
+            return optionCopy.Id;
         }
 
         public Guid? Update(SelectOptionEntity selectOption)
         {
             var existingOption = _selectOptions.SingleOrDefault(option => option.Id == selectOption.Id);
 
-            if (existingOption == null)
-            {
-                return null; // Null if not founds
-            }
+            if (existingOption == null) return null;
 
             _mapper.Map(selectOption, existingOption); // Update option with new values
             return existingOption.Id;

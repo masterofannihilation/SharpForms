@@ -27,26 +27,28 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<AnswerEntity> GetAll()
         {
-            return _answers.ToList(); // Return a new list to avoid modifications
+            return _answers.Select(answer => answer.DeepCopy()).ToList(); 
         }
 
         private AnswerEntity IncludeEntities(AnswerEntity answer)
         {
-            answer.Question = _questions.SingleOrDefault(q => q.Id == answer.QuestionId);
-            answer.CompletedForm = _completedForms.SingleOrDefault(cf => cf.Id == answer.CompletedFormId);
+            var answerCopy = answer.DeepCopy();
+
+            answerCopy.Question = _questions.SingleOrDefault(q => q.Id == answerCopy.QuestionId);
+            answerCopy.CompletedForm = _completedForms.SingleOrDefault(cf => cf.Id == answerCopy.CompletedFormId);
 
             // If SelectOptionId is not null, load SelectOption
-            if (answer.SelectOptionId != null)
+            if (answerCopy.SelectOptionId != null)
             {
-                answer.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answer.SelectOptionId);
+                answerCopy.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answerCopy.SelectOptionId);
             }
 
-            if (answer.CompletedForm != null)
+            if (answerCopy.CompletedForm != null)
             {
-                answer.CompletedForm.User = _users.SingleOrDefault(u => u.Id == answer.CompletedForm.UserId);
+                answerCopy.CompletedForm.User = _users.SingleOrDefault(u => u.Id == answerCopy.CompletedForm.UserId);
             }
 
-            return answer;
+            return answerCopy;
         }
 
         public AnswerEntity? GetById(Guid id)
@@ -62,8 +64,9 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public Guid Insert(AnswerEntity answer)
         {
-            _answers.Add(answer);
-            return answer.Id; // Return the ID of the newly added answer
+            var answerCopy = answer.DeepCopy();
+            _answers.Add(answerCopy);
+            return answerCopy.Id;
         }
 
         public Guid? Update(AnswerEntity answer)

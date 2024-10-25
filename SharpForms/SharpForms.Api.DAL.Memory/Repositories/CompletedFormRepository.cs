@@ -31,9 +31,9 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var cfs = new List<CompletedFormEntity>();
             foreach (var f in completedForms)
             {
-                cfs.Add(IncludeEntities(f));
+                cfs.Add(IncludeEntities(f.DeepCopy()));
             }
-
+            
             return cfs;
         }
 
@@ -54,26 +54,38 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 return null;
             }
 
-            return IncludeEntities(completedForm);
+            return IncludeEntities(completedForm.DeepCopy());
         }
 
         public Guid Insert(CompletedFormEntity completedForm)
         {
-            completedForms.Add(completedForm);
-            return completedForm.Id; // ID of new form
+            var completedFormCopy = completedForm.DeepCopy();
+            completedForms.Add(completedFormCopy);
+            return completedFormCopy.Id;
         }
 
         public Guid? Update(CompletedFormEntity completedForm)
         {
             var existingForm = completedForms.SingleOrDefault(form => form.Id == completedForm.Id);
-            if (existingForm == null)
+            if (existingForm != null)
             {
-                return null;
-            }
+                existingForm.FormId = completedForm.FormId;
+                existingForm.Form = completedForm.Form;
+                existingForm.UserId = completedForm.UserId;
+                existingForm.User = completedForm.User;
+                existingForm.CompletedDate = completedForm.CompletedDate;
 
-            // Use AutoMapper to map the properties from completedForm to existingForm
-            mapper.Map(completedForm, existingForm);
-            return existingForm.Id;
+                if(existingForm.Answers != null)
+                {
+                    existingForm.Answers.Clear();
+                    if (completedForm.Answers != null)
+                        foreach (var answer in completedForm.Answers)
+                            existingForm.Answers.Add(answer);
+                }
+
+                return existingForm.Id;
+            }
+            return null;
         }
 
         public void Remove(Guid id)
@@ -85,7 +97,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             }
 
             // Remove all answers associated with this completed form
-            var answersToRemove = answers.Where(a => a.CompletedFormId == id).ToList();
+            var answersToRemove = answers.Where(answer => answer.CompletedFormId == id).ToList();
             foreach (var answer in answersToRemove)
             {
                 answers.Remove(answer);
@@ -115,7 +127,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var cfs = new List<CompletedFormEntity>();
             foreach (var cf in filtered)
             {
-                cfs.Add(IncludeEntities(cf));
+                cfs.Add(IncludeEntities(cf.DeepCopy()));
             }
 
             return cfs;

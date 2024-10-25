@@ -24,40 +24,60 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<UserEntity> GetAll()
         {
-            return _users.ToList();
+            return _users.Select(user => user.DeepCopy()).ToList();
         }
 
         public UserEntity? GetById(Guid id)
         {
             var userEntity = _users.SingleOrDefault(user => user.Id == id);
 
-            if (userEntity != null)
-            {
-                userEntity.CompletedForms = _completedForms.Where(form => form.UserId == userEntity.Id).ToList();
-                userEntity.CreatedForms = _createdForms.Where(form => form.CreatorId == userEntity.Id).ToList();
-            }
+            if (userEntity == null) return null;
 
-            return userEntity;
+            // Clone the user and populate related data
+            var clonedUser = userEntity.DeepCopy();
+
+            // Load related completed forms
+            clonedUser.CompletedForms = _completedForms
+                .Where(form => form.UserId == userEntity.Id)
+                .Select(form => form.DeepCopy())
+                .ToList();
+
+            // Load related created forms
+            clonedUser.CreatedForms = _createdForms
+                .Where(form => form.CreatorId == userEntity.Id)
+                .Select(form => form.DeepCopy())
+                .ToList();
+
+            return clonedUser;
         }
 
         public Guid Insert(UserEntity user)
         {
-            _users.Add(user);
-            return user.Id;
+            var userCopy = user.DeepCopy();
+            _users.Add(userCopy);
+            return userCopy.Id;
         }
 
         public Guid? Update(UserEntity user)
         {
             var existingUser = _users.SingleOrDefault(u => u.Id == user.Id);
 
-            if (existingUser == null)
-            {
-                return null; // Null if not found
-            }
+            if (existingUser == null) return null;
 
-            _mapper.Map(user, existingUser); // Update user
+            // Manually update properties of the existing user
+            existingUser.Name = user.Name;
+            existingUser.PhotoUrl = user.PhotoUrl;
+            existingUser.Role = user.Role;
+
+            // Update the CompletedForms collection (deep copy to ensure no references are kept)
+            existingUser.CompletedForms = user.CompletedForms.Select(form => form.DeepCopy()).ToList();
+
+            // Update the CreatedForms collection (deep copy to ensure no references are kept)
+            existingUser.CreatedForms = user.CreatedForms.Select(form => form.DeepCopy()).ToList();
+
             return existingUser.Id;
         }
+
 
         public void Remove(Guid id)
         {
@@ -91,7 +111,10 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public IList<UserEntity> GetAllFiltered(string name)
         {
-            return _users.Where(u => u.Name.ToLower().Contains(name.ToLower())).ToList();
+            return _users
+                .Where(u => u.Name.ToLower().Contains(name.ToLower()))
+                .Select(user => user.DeepCopy()) // Return deep copies of filtered users
+                .ToList();
         }
     }
 }

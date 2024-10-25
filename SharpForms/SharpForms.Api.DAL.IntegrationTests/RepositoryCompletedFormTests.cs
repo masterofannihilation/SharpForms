@@ -3,6 +3,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.BL.MapperProfiles;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -18,9 +19,17 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var result = _completedFormRepository.Insert(completedForm);
 
             Assert.Equal(completedForm.Id, result);
-            Assert.Contains(completedForm, _completedFormRepository.GetAll());
-        }
+            var forms = _completedFormRepository.GetAll();
+            
+            var newForm = _completedFormRepository.GetById(completedForm.Id);
 
+            Assert.NotNull(forms);
+            Assert.NotNull(newForm);
+
+            forms.Should().ContainEquivalentOf(completedForm);
+            newForm.Should().BeEquivalentTo(completedForm);
+        }
+        
         [Fact]
         public void Get_CompletedForm_By_Id()
         {

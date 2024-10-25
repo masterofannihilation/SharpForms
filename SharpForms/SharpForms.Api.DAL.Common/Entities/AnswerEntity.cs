@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -14,5 +14,15 @@ namespace SharpForms.Api.DAL.Common.Entities
         public double? NumberAnswer { get; set; }
         public Guid? SelectOptionId { get; set; }
         public SelectOptionEntity? SelectOption { get; set; }
+        
+        public AnswerEntity DeepCopy()
+        {
+            return this with
+            {
+                Question = null,
+                CompletedForm = null,
+                SelectOption = null
+            };
+        }
     }
 }

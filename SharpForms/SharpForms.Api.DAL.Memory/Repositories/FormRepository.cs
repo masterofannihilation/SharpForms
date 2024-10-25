@@ -35,7 +35,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var forms = new List<FormEntity>();
             foreach (var formEntity in _forms)
             {
-                forms.Add(IncludeEntities(formEntity));
+                forms.Add(IncludeEntities(formEntity.DeepCopy()));
             }
 
             return forms;
@@ -59,26 +59,37 @@ namespace SharpForms.Api.DAL.Memory.Repositories
                 return null;
             }
 
-            return IncludeEntities(formEntity);
+            return IncludeEntities(formEntity.DeepCopy());
         }
 
         public Guid Insert(FormEntity form)
         {
-            _forms.Add(form);
-            return form.Id;
+            var formCopy = form.DeepCopy();
+            _forms.Add(formCopy);
+            return formCopy.Id;
         }
 
         public Guid? Update(FormEntity form)
         {
             var existingForm = _forms.SingleOrDefault(f => f.Id == form.Id);
-
             if (existingForm == null)
             {
-                return null; // Null if not found
+                return null;
             }
 
-            _mapper.Map(form, existingForm); // Update properties to existing entity
-            return existingForm.Id;
+            // Update properties of existing form
+            existingForm.Name = form.Name;
+            existingForm.OpenSince = form.OpenSince;
+            existingForm.OpenUntil = form.OpenUntil;
+            existingForm.CreatorId = form.CreatorId;
+            
+            // Update the Questions collection if necessary
+            // Assuming you want to replace the entire Questions collection
+            existingForm.Questions = form.Questions.Select(q => q.DeepCopy()).ToList();
+            
+            // Optionally update Creator if needed, depending on your requirements
+            existingForm.Creator = form.Creator?.DeepCopy();
+                return existingForm.Id;
         }
 
         public void Remove(Guid id)
@@ -152,7 +163,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var forms = new List<FormEntity>();
             foreach (var form in filtered)
             {
-                forms.Add(IncludeEntities(form));
+                forms.Add(IncludeEntities(form.DeepCopy())); // DeepCopy here before including entities
             }
 
             return forms;

@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -19,5 +19,15 @@ namespace SharpForms.Api.DAL.Common.Entities
         public ICollection<SelectOptionEntity> Options { get; set; } = new List<SelectOptionEntity>();
 
         public ICollection<AnswerEntity> Answers { get; set; } = new List<AnswerEntity>();
+
+        public QuestionEntity DeepCopy()
+        {
+            return this with
+            {
+                Form = null,
+                Options = [],
+                Answers = []
+            };
+        }
     }
 }

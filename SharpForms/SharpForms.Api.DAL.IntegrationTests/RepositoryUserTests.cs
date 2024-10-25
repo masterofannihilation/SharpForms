@@ -3,6 +3,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.BL.MapperProfiles;
 using AutoMapper;
 using SharpForms.Api.DAL.Memory.Repositories;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -30,17 +31,19 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var userId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"); // Seed data
             var createdForm =
                 _storage.Forms.SingleOrDefault(form => form.Id == new Guid("8e1c3878-d661-4a57-86b4-d30ed1592558"));
+            createdForm.Questions = [];
             var completedForm =
                 _storage.CompletedForms.SingleOrDefault(form =>
                     form.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
+            completedForm.Answers = [];
             Assert.NotNull(createdForm);
             Assert.NotNull(completedForm);
 
             var user = _userRepository.GetById(userId);
 
             Assert.NotNull(user);
-            Assert.Contains(createdForm, user.CreatedForms);
-            Assert.Contains(completedForm, user.CompletedForms);
+            user.CreatedForms.Should().ContainEquivalentOf(createdForm);
+            user.CompletedForms.Should().ContainEquivalentOf(completedForm);
         }
 
         [Fact]
@@ -62,10 +65,14 @@ namespace SharpForms.Api.DAL.IntegrationTests
             };
 
             var userId = _userRepository.Insert(newUser);
-
+            var allUsers = _userRepository.GetAll();
             var insertedUser = _userRepository.GetById(userId);
+
+            Assert.NotNull(allUsers);
             Assert.NotNull(insertedUser);
-            Assert.Equal("Josh", insertedUser.Name);
+
+            allUsers.Should().ContainEquivalentOf(newUser);
+            insertedUser.Should().BeEquivalentTo(newUser);
         }
 
         [Fact]
