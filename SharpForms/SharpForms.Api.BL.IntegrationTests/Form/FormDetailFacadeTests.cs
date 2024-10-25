@@ -87,7 +87,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Form
             };
 
             var createdId = _formDetailFacade.CreateOrUpdate(newFormModel);
-            var createdModel = _formDetailFacade.GetById(createdId);
+            var createdModel = _formDetailFacade.GetById(createdId.Value);
 
             Assert.NotNull(createdModel);
             Assert.Equal("New Test Form", createdModel.Name); // Verify the created form's name

@@ -1,5 +1,7 @@
+using System.Net;
 using System.Net.Http.Json;
 using SharpForms.Common.Models.Answer;
+
 using Xunit;
 
 namespace SharpForms.Api.App.EndToEndTests
@@ -29,6 +31,119 @@ namespace SharpForms.Api.App.EndToEndTests
             };
 
             Assert.Equal(expected, answer);
+        }
+
+        [Fact]
+        public async Task GetAnswersFromCompletedForm()
+        {
+            var completedFormId = new Guid("07b2be2c-6fab-4303-b554-e1e742f526e0"); // Seed data form 2
+            var response = await Client.Value.GetAsync($"/api/answer/?formId={completedFormId}");
+
+            response.EnsureSuccessStatusCode();
+
+            var answers = await response.Content.ReadFromJsonAsync<ICollection<AnswerListModel>>();
+            Assert.NotNull(answers);
+            Assert.NotEmpty(answers);
+
+            var answer = answers.FirstOrDefault(a => a.Id == new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"));
+            Assert.NotNull(answer);
+        }
+
+        [Fact]
+        public async Task GetAnswersByUser()
+        {
+            var userId = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"); // Seed data form 2
+
+            var response = await Client.Value.GetAsync($"/api/answer/?userId={userId}");
+
+            response.EnsureSuccessStatusCode();
+
+            var answers = await response.Content.ReadFromJsonAsync<ICollection<AnswerListModel>>();
+            Assert.NotNull(answers);
+            Assert.NotEmpty(answers);
+
+            var answer = answers.FirstOrDefault(a => a.Id == new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"));
+            Assert.NotNull(answer);
+        }
+
+        [Fact]
+        public async Task GetAnswerDetail()
+        {
+            var answerId = new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"); // Seed data answer 3
+
+            var response = await Client.Value.GetAsync($"/api/answer/{answerId}");
+
+            response.EnsureSuccessStatusCode();
+
+            var answer = await response.Content.ReadFromJsonAsync<AnswerDetailModel>();
+            
+            Assert.NotNull(answer);
+            Assert.Equal(answerId, answer.Id);
+            Assert.Equal("Software Engineer", answer.Answer);
+            Assert.Equal("What position are you applying for?", answer.Question.Text);
+        }
+
+        [Fact]
+        public async Task DeleteAnswer()
+        {
+            var answerId = new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"); // Seed data answer 3
+
+            var response = await Client.Value.DeleteAsync($"/api/answer/{answerId}");
+            response.EnsureSuccessStatusCode();
+
+            // Verify the answer no longer exists
+            response = await Client.Value.GetAsync($"/api/answer/{answerId}");
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+        [Fact]
+        public async Task CreateAnswer()
+        {
+            var newAnswer = new AnswerSubmitModel
+            {
+                Text = "What's updog?",
+                Id = new Guid(),
+                QuestionId = new Guid("a09b47c0-71cb-4294-93e8-92941fb8f1fd"), // Seed question
+                FilledFormId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), // Seed form
+                AnswerType = Common.Enums.AnswerType.Integer,
+                NumberAnswer = 10
+            };
+
+            var response = await Client.Value.PostAsJsonAsync("/api/answer", newAnswer);
+            var answerId = await response.Content.ReadFromJsonAsync<Guid?>();
+            response.EnsureSuccessStatusCode();
+
+            var createdAnswerResponse = await Client.Value.GetAsync($"/api/answer/{answerId}");
+            createdAnswerResponse.EnsureSuccessStatusCode();
+            var createdAnswer = await createdAnswerResponse.Content.ReadFromJsonAsync<AnswerDetailModel>();
+
+            Assert.NotNull(createdAnswer);
+            Assert.Equal("10", createdAnswer.Answer);
+        }
+
+        [Fact]
+        public async Task UpdateAnswer()
+        {
+            var existingAnswerId = new Guid("bb48d07c-b010-412c-91cd-9b68c9742791"); // Seed data Answer 4
+
+            var updateAnswer = new AnswerSubmitModel
+            {
+                Text = "How many years of experience do you have in this field?",
+                Id = existingAnswerId,
+                QuestionId = new Guid("a09b47c0-71cb-4294-93e8-92941fb8f1fd"), // Seed question
+                FilledFormId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), // Seed form
+                AnswerType = Common.Enums.AnswerType.Integer,
+                NumberAnswer = 5
+            };
+
+            var response = await Client.Value.PostAsJsonAsync($"/api/answer", updateAnswer);
+            response.EnsureSuccessStatusCode();
+
+            var updatedAnswerResponse = await Client.Value.GetAsync($"/api/answer/{existingAnswerId}");
+            updatedAnswerResponse.EnsureSuccessStatusCode();
+            var updatedAnswer = await updatedAnswerResponse.Content.ReadFromJsonAsync<AnswerDetailModel>();
+
+            Assert.NotNull(updatedAnswer);
+            Assert.Equal("5", updatedAnswer.Answer);
         }
     }
 }

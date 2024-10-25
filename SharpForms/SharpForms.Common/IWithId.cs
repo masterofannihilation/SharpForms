@@ -1,7 +1,7 @@
-﻿namespace SharpForms.Common
+namespace SharpForms.Common
 {
     public interface IWithId
     {
-        Guid Id { get; init; }
+        Guid Id { get; set; }
     }
 }

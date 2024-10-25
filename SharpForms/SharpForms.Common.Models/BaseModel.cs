@@ -4,6 +4,6 @@ namespace SharpForms.Common.Models
 {
     public abstract record BaseModel : IModel
     {
-        public required Guid Id { get; init; }
+        public required Guid Id { get; set; }
     }
 }

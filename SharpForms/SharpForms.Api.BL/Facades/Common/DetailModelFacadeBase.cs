@@ -19,15 +19,24 @@ public abstract class DetailModelFacadeBase<TEntity, TDetailModel>(
         return mapper.Map<TDetailModel>(entity);
     }
 
-    public Guid CreateOrUpdate(TDetailModel model)
+    public virtual Guid? CreateOrUpdate(TDetailModel model)
     {
-        return entityRepository.Exists(model.Id)
-            ? Update(model)!.Value
-            : Create(model);
+        if(entityRepository.Exists(model.Id))
+            return Update(model)!.Value;
+        else
+        {
+            if (model!.Id == new Guid())
+                model.Id = Guid.NewGuid();
+
+            return Create(model);
+        }
     }
 
     public virtual Guid Create(TDetailModel model)
     {
+        if (model.Id == new Guid())
+            model.Id = Guid.NewGuid();
+
         var entity = mapper.Map<TEntity>(model);
         return entityRepository.Insert(entity);
     }
