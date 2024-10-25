@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -13,17 +13,10 @@ namespace SharpForms.Api.DAL.Common.Entities
         
         public UserEntity DeepCopy()
         {
-            var clonedCompletedForms = CompletedForms.Select(form => form.DeepCopy()).ToList();
-            var clonedCreatedForms = CreatedForms.Select(form => form.DeepCopy()).ToList();
-
-            return new UserEntity
+            return this with
             {
-                Id = this.Id,
-                Name = this.Name,
-                PhotoUrl = this.PhotoUrl,
-                Role = this.Role,
-                CompletedForms = clonedCompletedForms,
-                CreatedForms = clonedCreatedForms
+                CompletedForms = [],
+                CreatedForms = []
             };
         }
     }

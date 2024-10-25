@@ -23,19 +23,11 @@ namespace SharpForms.Api.DAL.Common.Entities
         
         public CompletedFormEntity DeepCopy()
         {
-            var clonedAnswers = Answers.Select(answer => answer.DeepCopy()).ToList();
-            FormEntity? clonedForm = Form?.DeepCopy();
-            UserEntity? clonedUser = User?.DeepCopy();
-
-            return new CompletedFormEntity
+            return this with
             {
-                Id = this.Id,
-                FormId = this.FormId,
-                UserId = this.UserId,
-                CompletedDate = this.CompletedDate,
-                Answers = clonedAnswers,
-                Form = clonedForm,
-                User = clonedUser
+                Form = null,
+                User = null,
+                Answers = []
             };
         }
     }

@@ -1,4 +1,4 @@
-﻿using SharpForms.Api.DAL.Common.Entities.Interfaces;
+using SharpForms.Api.DAL.Common.Entities.Interfaces;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -10,12 +10,9 @@ namespace SharpForms.Api.DAL.Common.Entities
         
         public SelectOptionEntity DeepCopy()
         {
-            return new SelectOptionEntity
+            return this with
             {
-                Id = this.Id,
-                QuestionId = this.QuestionId,
-                Option = this.Option,
-                Question = Question?.DeepCopy()
+                Question = null
             };
         }
     }

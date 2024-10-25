@@ -5,7 +5,7 @@ using SharpForms.Api.BL.IntegrationTests.Fixtures;
 using SharpForms.Common.Models.Answer;
 using SharpForms.Common.Models.CompletedForm;
 using Xunit;
-namespace SharpForms.Api.BL.IntegrationTests.User
+namespace SharpForms.Api.BL.IntegrationTests.CompletedForm
 {
     public class CompletedFormDetailFacadeTests : FacadeTestFixture
     {

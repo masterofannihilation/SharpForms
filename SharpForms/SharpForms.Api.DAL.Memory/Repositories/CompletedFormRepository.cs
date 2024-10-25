@@ -69,18 +69,18 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var existingForm = completedForms.SingleOrDefault(form => form.Id == completedForm.Id);
             if (existingForm != null)
             {
-                // Manually updating each property
                 existingForm.FormId = completedForm.FormId;
                 existingForm.Form = completedForm.Form;
                 existingForm.UserId = completedForm.UserId;
                 existingForm.User = completedForm.User;
                 existingForm.CompletedDate = completedForm.CompletedDate;
 
-                // If Answers is a collection, you might want to clear and re-add or update them
-                existingForm.Answers.Clear();
-                foreach (var answer in completedForm.Answers)
+                if(existingForm.Answers != null)
                 {
-                    existingForm.Answers.Add(answer); // Or use a deep copy if needed
+                    existingForm.Answers.Clear();
+                    if (completedForm.Answers != null)
+                        foreach (var answer in completedForm.Answers)
+                            existingForm.Answers.Add(answer);
                 }
 
                 return existingForm.Id;

@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -17,17 +17,11 @@ namespace SharpForms.Api.DAL.Common.Entities
         
         public FormEntity DeepCopy()
         {
-            var clonedQuestions = Questions.Select(question => question.DeepCopy()).ToList();
-
-            return new FormEntity
+            return this with
             {
-                Id = this.Id,
-                Name = this.Name,
-                OpenSince = this.OpenSince,
-                OpenUntil = this.OpenUntil,
-                CreatorId = this.CreatorId,
-                Creator = Creator?.DeepCopy(),
-                Questions = clonedQuestions,
+                Creator = null,
+                Questions = [],
+                Completions = [],
             };
         }
 

@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -22,21 +22,11 @@ namespace SharpForms.Api.DAL.Common.Entities
 
         public QuestionEntity DeepCopy()
         {
-            var clonedOptions = Options.Select(option => option.DeepCopy()).ToList();
-            var clonedAnswers = Answers.Select(answer => answer.DeepCopy()).ToList();
-
-            return new QuestionEntity
+            return this with
             {
-                Id = this.Id,
-                FormId = this.FormId,
-                Order = this.Order,
-                Text = this.Text,
-                Description = this.Description,
-                AnswerType = this.AnswerType,
-                MinNumber = this.MinNumber,
-                MaxNumber = this.MaxNumber,
-                Options = clonedOptions,
-                Answers = clonedAnswers
+                Form = null,
+                Options = [],
+                Answers = []
             };
         }
     }
