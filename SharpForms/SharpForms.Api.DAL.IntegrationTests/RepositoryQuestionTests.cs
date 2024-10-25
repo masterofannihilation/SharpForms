@@ -4,6 +4,7 @@ using AutoMapper;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Common.Enums;
 using SharpForms.Api.BL.MapperProfiles;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -20,9 +21,18 @@ namespace SharpForms.Api.DAL.IntegrationTests
                 Id = Guid.NewGuid(), Text = "Sample question", Order = 1, AnswerType = AnswerType.Text
             };
             var result = _questionRepository.Insert(question);
-
             Assert.Equal(question.Id, result);
-            Assert.Contains(question, _questionRepository.GetAll());
+
+            var questions = _questionRepository.GetAll();
+            var newQuestion = _questionRepository.GetById(question.Id);
+
+            Assert.NotNull(questions);
+            Assert.NotNull(newQuestion);
+
+            questions.Should().ContainEquivalentOf(question);
+            newQuestion.Should().BeEquivalentTo(question);
+
+            
         }
 
         [Fact]

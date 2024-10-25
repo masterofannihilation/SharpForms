@@ -3,6 +3,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using AutoMapper;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Api.BL.MapperProfiles;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -10,19 +11,25 @@ namespace SharpForms.Api.DAL.IntegrationTests
     {
 
         public RepositoryFormTests() { }
-        
 
         [Fact]
         public void Insert_Form()
         {
             var form = new FormEntity
             {
-                Id = Guid.NewGuid(), Name = "Sample form", OpenUntil = DateTime.Now.AddDays(10)
+                Id = Guid.NewGuid(), Name = "Sample form", OpenSince = DateTime.Now, OpenUntil = DateTime.Now.AddDays(10), CreatorId = Guid.NewGuid()
             };
             var result = _formRepository.Insert(form);
-
             Assert.Equal(form.Id, result);
-            Assert.Contains(form, _formRepository.GetAll());
+
+            var forms = _formRepository.GetAll();
+            var newForm = _formRepository.GetById(form.Id);
+
+            Assert.NotNull(forms);
+            Assert.NotNull(newForm);
+
+            forms.Should().ContainEquivalentOf(form);
+            newForm.Should().BeEquivalentTo(form);
         }
 
         [Fact]

@@ -3,6 +3,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.BL.MapperProfiles;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -18,17 +19,15 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var result = _completedFormRepository.Insert(completedForm);
 
             Assert.Equal(completedForm.Id, result);
-            Assert.Contains(completedForm, _completedFormRepository.GetAll());
+            var forms = _completedFormRepository.GetAll();
             
-            // Compare properties explicitly
-            var retrievedForm = _completedFormRepository.GetAll().FirstOrDefault(f => f.Id == completedForm.Id);
+            var newForm = _completedFormRepository.GetById(completedForm.Id);
 
-            Assert.NotNull(retrievedForm);
-            Assert.Equal(completedForm.Id, retrievedForm.Id);
-            Assert.Equal(completedForm.CompletedDate, retrievedForm.CompletedDate);  // Compare the DateTime
-            Assert.Equal(completedForm.FormId, retrievedForm.FormId);  // Compare FormId
-            Assert.Equal(completedForm.UserId, retrievedForm.UserId);  // Compare UserId
-            Assert.Equal(completedForm.Answers.Count, retrievedForm.Answers.Count);  // Compare Answer counts
+            Assert.NotNull(forms);
+            Assert.NotNull(newForm);
+
+            forms.Should().ContainEquivalentOf(completedForm);
+            newForm.Should().BeEquivalentTo(completedForm);
         }
         
         [Fact]

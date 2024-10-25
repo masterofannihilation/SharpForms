@@ -3,6 +3,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.BL.MapperProfiles;
 using AutoMapper;
 using SharpForms.Api.DAL.Memory.Repositories;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -39,8 +40,8 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var user = _userRepository.GetById(userId);
 
             Assert.NotNull(user);
-            Assert.Contains(createdForm, user.CreatedForms);
-            Assert.Contains(completedForm, user.CompletedForms);
+            user.CreatedForms.Should().ContainEquivalentOf(createdForm);
+            user.CompletedForms.Should().ContainEquivalentOf(completedForm);
         }
 
         [Fact]
@@ -62,10 +63,14 @@ namespace SharpForms.Api.DAL.IntegrationTests
             };
 
             var userId = _userRepository.Insert(newUser);
-
+            var allUsers = _userRepository.GetAll();
             var insertedUser = _userRepository.GetById(userId);
+
+            Assert.NotNull(allUsers);
             Assert.NotNull(insertedUser);
-            Assert.Equal("Josh", insertedUser.Name);
+
+            allUsers.Should().ContainEquivalentOf(newUser);
+            insertedUser.Should().BeEquivalentTo(newUser);
         }
 
         [Fact]

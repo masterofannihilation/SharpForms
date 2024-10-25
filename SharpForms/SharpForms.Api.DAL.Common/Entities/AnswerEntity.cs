@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
@@ -19,12 +19,12 @@ namespace SharpForms.Api.DAL.Common.Entities
         {
             return this with
             {
-                // Id = this.Id,
-                // QuestionId = this.QuestionId,
-                // CompletedFormId = this.CompletedFormId,
-                // TextAnswer = this.TextAnswer,
-                // NumberAnswer = this.NumberAnswer,
-                // SelectOptionId = this.SelectOptionId,
+                Id = this.Id,
+                QuestionId = this.QuestionId,
+                CompletedFormId = this.CompletedFormId,
+                TextAnswer = this.TextAnswer,
+                NumberAnswer = this.NumberAnswer,
+                SelectOptionId = this.SelectOptionId,
                 Question = Question?.DeepCopy(),
                 CompletedForm = CompletedForm?.DeepCopy(),
                 SelectOption = SelectOption?.DeepCopy()

@@ -64,7 +64,6 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
         public Guid Insert(AnswerEntity answer)
         {
-            // insert a deep copy of the original as the original might be modified
             var answerCopy = answer.DeepCopy();
             _answers.Add(answerCopy);
             return answerCopy.Id;

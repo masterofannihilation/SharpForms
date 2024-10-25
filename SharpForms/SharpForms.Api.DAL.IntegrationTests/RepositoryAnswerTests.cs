@@ -6,6 +6,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.BL.MapperProfiles;
+using FluentAssertions;
 
 namespace SharpForms.Api.DAL.IntegrationTests
 {
@@ -20,11 +21,14 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var answer = new AnswerEntity { Id = Guid.NewGuid(), TextAnswer = "Sample answer" };
             var result = _answerRepository.Insert(answer);
-            var insertedAnswer = _answerRepository.GetById(answer.Id);
+            var answers = _answerRepository.GetAll();
+            var newAnswer = _answerRepository.GetById(answer.Id);
 
-            Assert.Equal(answer.Id, result);
-            Assert.Contains(answer, _answerRepository.GetAll());
-            Assert.NotNull(insertedAnswer);
+            Assert.NotNull(answers);
+            Assert.NotNull(newAnswer);
+
+            answers.Should().ContainEquivalentOf(answer);
+            newAnswer.Should().BeEquivalentTo(answer);
         }
 
         [Fact]

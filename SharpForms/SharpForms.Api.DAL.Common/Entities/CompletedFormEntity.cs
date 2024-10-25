@@ -1,4 +1,4 @@
-﻿using SharpForms.Common.Enums;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Common.Entities
 {
