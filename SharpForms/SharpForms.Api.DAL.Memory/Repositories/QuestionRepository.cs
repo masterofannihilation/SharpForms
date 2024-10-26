@@ -57,33 +57,9 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var existingQuestion = _questions.SingleOrDefault(q => q.Id == question.Id);
 
             if (existingQuestion == null)
-            {
-                return null; // Return null if the question is not found
-            }
+                return null;
 
-            // Manually update each property of the existingQuestion
-            existingQuestion.FormId = question.FormId;
-            existingQuestion.Form = question.Form;
-            existingQuestion.Order = question.Order;
-            existingQuestion.Text = question.Text;
-            existingQuestion.Description = question.Description;
-            existingQuestion.AnswerType = question.AnswerType;
-            existingQuestion.MinNumber = question.MinNumber;
-            existingQuestion.MaxNumber = question.MaxNumber;
-
-            // Manually update the Options collection
-            existingQuestion.Options.Clear();
-            foreach (var option in question.Options)
-            {
-                existingQuestion.Options.Add(option); // Or deep copy if needed
-            }
-
-            // Manually update the Answers collection
-            existingQuestion.Answers.Clear();
-            foreach (var answer in question.Answers)
-            {
-                existingQuestion.Answers.Add(answer); // Or deep copy if needed
-            }
+            _mapper.Map(question, existingQuestion);
 
             return existingQuestion.Id;
         }
@@ -92,24 +68,17 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public void Remove(Guid id)
         {
             var questionToRemove = _questions.SingleOrDefault(q => q.Id == id);
-            if (questionToRemove == null)
-            {
-                return;
-            }
+            if (questionToRemove == null) return;
 
-            //remove all answers associated with this question
+            // remove all answers associated with this question
             var answersToRemove = _answers.Where(a => a.QuestionId == id).ToList();
             foreach (var answer in answersToRemove)
-            {
                 _answers.Remove(answer);
-            }
 
-            //remove all select options associated with this question
+            // remove all select options associated with this question
             var optionsToRemove = _options.Where(o => o.QuestionId == id).ToList();
             foreach (var option in optionsToRemove)
-            {
                 _options.Remove(option);
-            }
 
             //remove the question itself
             _questions.Remove(questionToRemove);
@@ -124,14 +93,10 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             var filtered = _questions.AsQueryable();
             if (formId != null)
-            {
                 filtered = filtered.Where(a => a.FormId == formId);
-            }
 
             if (filterText != null)
-            {
                 filtered = filtered.Where(a => a.Text.ToLower().Contains(filterText.ToLower()));
-            }
 
             if (filterDescription != null)
             {

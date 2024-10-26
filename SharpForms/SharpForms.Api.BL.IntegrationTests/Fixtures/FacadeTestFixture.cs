@@ -32,7 +32,7 @@ public class FacadeTestFixture
         });
         _mapper = new Mapper(mapperConfiguration);
 
-        _answerRepository = new AnswerRepository(storage);
+        _answerRepository = new AnswerRepository(storage, _mapper);
         _completedFormRepository = new CompletedFormRepository(storage, _mapper);
         _formRepository = new FormRepository(storage, _mapper);
         _questionRepository = new QuestionRepository(storage, _mapper);

@@ -9,27 +9,25 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 {
     public class CompletedFormRepository : ICompletedFormRepository
     {
-        private readonly IList<CompletedFormEntity> completedForms;
-        private readonly IList<AnswerEntity> answers;
-        private readonly IList<UserEntity> users;
-        private readonly IList<FormEntity> forms;
-        private readonly IMapper mapper;
+        private readonly IList<CompletedFormEntity> _completedForms;
+        private readonly IList<AnswerEntity> _answers;
+        private readonly IList<UserEntity> _users;
+        private readonly IList<FormEntity> _forms;
+        private readonly IMapper _mapper;
 
-        public CompletedFormRepository(
-            Storage storage,
-            IMapper mapper)
+        public CompletedFormRepository(Storage storage, IMapper mapper)
         {
-            this.completedForms = storage.CompletedForms;
-            this.answers = storage.Answers;
-            this.users = storage.Users;
-            this.forms = storage.Forms;
-            this.mapper = mapper;
+            _completedForms = storage.CompletedForms;
+            _answers = storage.Answers;
+            _users = storage.Users;
+            _forms = storage.Forms;
+            _mapper = mapper;
         }
 
         public IList<CompletedFormEntity> GetAll()
         {
             var cfs = new List<CompletedFormEntity>();
-            foreach (var f in completedForms)
+            foreach (var f in _completedForms)
             {
                 cfs.Add(IncludeEntities(f.DeepCopy()));
             }
@@ -40,19 +38,17 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         private CompletedFormEntity IncludeEntities(CompletedFormEntity completedForm)
         {
             completedForm.Answers = GetAnswersByCompletedFormId(completedForm.Id);
-            completedForm.Form = forms.SingleOrDefault(form => form.Id == completedForm.FormId);
-            completedForm.User = users.SingleOrDefault(user => user.Id == completedForm.UserId);
+            completedForm.Form = _forms.SingleOrDefault(form => form.Id == completedForm.FormId);
+            completedForm.User = _users.SingleOrDefault(user => user.Id == completedForm.UserId);
 
             return completedForm;
         }
 
         public CompletedFormEntity? GetById(Guid id)
         {
-            var completedForm = completedForms.SingleOrDefault(form => form.Id == id);
+            var completedForm = _completedForms.SingleOrDefault(form => form.Id == id);
             if (completedForm == null)
-            {
                 return null;
-            }
 
             return IncludeEntities(completedForm.DeepCopy());
         }
@@ -60,82 +56,58 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public Guid Insert(CompletedFormEntity completedForm)
         {
             var completedFormCopy = completedForm.DeepCopy();
-            completedForms.Add(completedFormCopy);
+            _completedForms.Add(completedFormCopy);
             return completedFormCopy.Id;
         }
 
         public Guid? Update(CompletedFormEntity completedForm)
         {
-            var existingForm = completedForms.SingleOrDefault(form => form.Id == completedForm.Id);
-            if (existingForm != null)
-            {
-                existingForm.FormId = completedForm.FormId;
-                existingForm.Form = completedForm.Form;
-                existingForm.UserId = completedForm.UserId;
-                existingForm.User = completedForm.User;
-                existingForm.CompletedDate = completedForm.CompletedDate;
+            var existingForm = _completedForms.SingleOrDefault(form => form.Id == completedForm.Id);
+            if (existingForm == null) return null;
 
-                if(existingForm.Answers != null)
-                {
-                    existingForm.Answers.Clear();
-                    if (completedForm.Answers != null)
-                        foreach (var answer in completedForm.Answers)
-                            existingForm.Answers.Add(answer);
-                }
-
-                return existingForm.Id;
-            }
-            return null;
+            _mapper.Map(completedForm, existingForm);
+            
+            return existingForm.Id;
         }
 
         public void Remove(Guid id)
         {
-            var formToRemove = completedForms.SingleOrDefault(form => form.Id == id);
+            var formToRemove = _completedForms.SingleOrDefault(form => form.Id == id);
             if (formToRemove == null)
-            {
                 return;
-            }
 
             // Remove all answers associated with this completed form
-            var answersToRemove = answers.Where(answer => answer.CompletedFormId == id).ToList();
+            var answersToRemove = _answers.Where(answer => answer.CompletedFormId == id).ToList();
             foreach (var answer in answersToRemove)
-            {
-                answers.Remove(answer);
-            }
+                _answers.Remove(answer);
 
-            completedForms.Remove(formToRemove);
+            _completedForms.Remove(formToRemove);
         }
 
         public bool Exists(Guid id)
         {
-            return completedForms.Any(form => form.Id == id);
+            return _completedForms.Any(form => form.Id == id);
         }
 
         public IList<CompletedFormEntity> GetAllFiltered(Guid? formId, Guid? userId)
         {
-            var filtered = completedForms.AsQueryable();
+            var filtered = _completedForms.AsQueryable();
             if (formId != null)
-            {
                 filtered = filtered.Where(cf => cf.FormId == formId);
-            }
 
             if (userId != null)
-            {
                 filtered = filtered.Where(cf => cf.UserId == userId);
-            }
 
             var cfs = new List<CompletedFormEntity>();
             foreach (var cf in filtered)
-            {
                 cfs.Add(IncludeEntities(cf.DeepCopy()));
-            }
 
             return cfs;
         }
 
         private IList<AnswerEntity> GetAnswersByCompletedFormId(Guid completedFormId)
         {
-            return answers.Where(answer => answer.CompletedFormId == completedFormId).ToList();
+            return _answers.Where(answer => answer.CompletedFormId == completedFormId).ToList();
         }
     }
 }

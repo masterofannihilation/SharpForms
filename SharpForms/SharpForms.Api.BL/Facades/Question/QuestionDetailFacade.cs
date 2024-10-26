@@ -16,20 +16,6 @@ namespace SharpForms.Api.BL.Facades.Question
         ISelectOptionFacade selectOptionFacade) 
         : DetailModelFacadeBase<QuestionEntity, QuestionDetailModel>(questionRepository, mapper), IQuestionDetailFacade
     {
-        public override QuestionDetailModel? GetById(Guid id)
-        {
-            var entity = questionRepository.GetById(id);
-            if (entity == null) return null;
-            
-            var model = mapper.Map<QuestionDetailModel>(entity);
-            if (model == null) return null;
-        
-            model.Answers = answerListFacade.GetAll(null, entity.Id);
-            model.Options = selectOptionFacade.GetByQuestionId(entity.Id);
-            
-            return model;
-        }
-
         public override Guid? Update(QuestionDetailModel model)
         {
             var entity = questionRepository.GetById(model.Id);

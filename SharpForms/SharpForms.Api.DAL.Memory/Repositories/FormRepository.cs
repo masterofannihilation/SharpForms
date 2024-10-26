@@ -72,73 +72,49 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public Guid? Update(FormEntity form)
         {
             var existingForm = _forms.SingleOrDefault(f => f.Id == form.Id);
-            if (existingForm == null)
-            {
-                return null;
-            }
+            if (existingForm == null) return null;
 
-            // Update properties of existing form
-            existingForm.Name = form.Name;
-            existingForm.OpenSince = form.OpenSince;
-            existingForm.OpenUntil = form.OpenUntil;
-            existingForm.CreatorId = form.CreatorId;
-            
-            // Update the Questions collection if necessary
-            // Assuming you want to replace the entire Questions collection
-            existingForm.Questions = form.Questions.Select(q => q.DeepCopy()).ToList();
-            
-            // Optionally update Creator if needed, depending on your requirements
-            existingForm.Creator = form.Creator?.DeepCopy();
-                return existingForm.Id;
+            _mapper.Map(form, existingForm);
+
+            return existingForm.Id;
         }
 
         public void Remove(Guid id)
         {
             var formToRemove = _forms.SingleOrDefault(f => f.Id == id);
             if (formToRemove == null)
-            {
                 return;
-            }
 
             // Remove related CompletedFormEntity instances
             var relatedCompletions = _completedForms.Where(cf => cf.FormId == id).ToList();
             foreach (var completion in relatedCompletions)
             {
                 // Remove answers from the completed form
-                var answerIdsToRemove = completion.Answers.Select(a => a.Id).ToList();
-                foreach (var answerId in answerIdsToRemove)
+                var answersToRemove = _answers.Where(answer => answer.CompletedFormId == completion.Id).ToList();
+                foreach (var answer in answersToRemove)
                 {
-                    var answerToRemove = _answers.SingleOrDefault(a => a.Id == answerId);
+                    var answerToRemove = _answers.SingleOrDefault(a => a.Id == answer.Id);
                     if (answerToRemove != null)
-                    {
                         _answers.Remove(answerToRemove);
-                    }
                 }
 
-                _completedForms.Remove(completion); // Remove the completed form itself
+                _completedForms.Remove(completion);
             }
 
             // Remove related questions to the form
             var relatedQuestions = _questions.Where(q => q.FormId == formToRemove.Id).ToList();
             foreach (var question in relatedQuestions)
             {
-                // Remove answers for each question
                 foreach (var answer in question.Answers.ToList())
-                {
                     _answers.Remove(answer);
-                }
 
-                // Step 6: Remove related select options if applicable
                 var relatedSelectOptions = _selectOptions.Where(so => so.QuestionId == question.Id).ToList();
                 foreach (var selectOption in relatedSelectOptions)
-                {
-                    _selectOptions.Remove(selectOption); // Remove select options
-                }
+                    _selectOptions.Remove(selectOption);
 
-                _questions.Remove(question); // Remove the question itself
+                _questions.Remove(question);
             }
 
-            // Remove the form itself
             _forms.Remove(formToRemove);
         }
 
@@ -151,20 +127,14 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             var filtered = _forms.AsQueryable();
             if (name != null)
-            {
                 filtered = filtered.Where(f => f.Name.ToLower().Contains(name.ToLower()));
-            }
 
             if (creatorId != null)
-            {
                 filtered = filtered.Where(f => f.CreatorId == creatorId);
-            }
 
             var forms = new List<FormEntity>();
             foreach (var form in filtered)
-            {
-                forms.Add(IncludeEntities(form.DeepCopy())); // DeepCopy here before including entities
-            }
+                forms.Add(IncludeEntities(form.DeepCopy())); // DeepCopy before including entities
 
             return forms;
         }

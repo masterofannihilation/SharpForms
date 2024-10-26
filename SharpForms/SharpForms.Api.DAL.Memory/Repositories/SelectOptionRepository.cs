@@ -50,7 +50,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (existingOption == null) return null;
 
-            _mapper.Map(selectOption, existingOption); // Update option with new values
+            _mapper.Map(selectOption, existingOption);
             return existingOption.Id;
         }
 
@@ -58,9 +58,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             var optionToRemove = _selectOptions.SingleOrDefault(option => option.Id == id);
             if (optionToRemove != null)
-            {
                 _selectOptions.Remove(optionToRemove);
-            }
         }
 
         public bool Exists(Guid id)

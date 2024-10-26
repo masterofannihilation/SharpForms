@@ -25,10 +25,6 @@ public class CompletedFormDetailFacade(
         var entity = completedFormRepository.GetById(id);
         if (entity == null) return null;
         var model = _mapper.Map<CompletedFormDetailModel>(entity);
-        if (model == null) return null;
-
-        if(entity.Form == null) return null;
-        model.FormName = entity.Form.Name;
 
         if(entity.User != null)
             model.User = userListFacade.GetById(entity.User.Id);

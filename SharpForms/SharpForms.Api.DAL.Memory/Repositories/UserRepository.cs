@@ -33,7 +33,6 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (userEntity == null) return null;
 
-            // Clone the user and populate related data
             var clonedUser = userEntity.DeepCopy();
 
             // Load related completed forms
@@ -64,16 +63,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             if (existingUser == null) return null;
 
-            // Manually update properties of the existing user
-            existingUser.Name = user.Name;
-            existingUser.PhotoUrl = user.PhotoUrl;
-            existingUser.Role = user.Role;
-
-            // Update the CompletedForms collection (deep copy to ensure no references are kept)
-            existingUser.CompletedForms = user.CompletedForms.Select(form => form.DeepCopy()).ToList();
-
-            // Update the CreatedForms collection (deep copy to ensure no references are kept)
-            existingUser.CreatedForms = user.CreatedForms.Select(form => form.DeepCopy()).ToList();
+            _mapper.Map(user, existingUser);
 
             return existingUser.Id;
         }
@@ -82,24 +72,17 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public void Remove(Guid id)
         {
             var userToRemove = _users.SingleOrDefault(user => user.Id == id);
-            if (userToRemove == null)
-            {
-                return;
-            }
+            if (userToRemove == null) return;
 
             // Set all created forms' CreatorId to null
             var createdFormsToNullify = _createdForms.Where(form => form.CreatorId == userToRemove.Id).ToList();
             foreach (var form in createdFormsToNullify)
-            {
-                form.CreatorId = null; // Set the CreatorId to null for forms created by this user
-            }
+                form.CreatorId = null;
 
             // set all completed forms' UserId to null
             var completedFormsToNullify = _completedForms.Where(form => form.UserId == userToRemove.Id).ToList();
             foreach (var completedForm in completedFormsToNullify)
-            {
                 completedForm.UserId = null;
-            }
 
             _users.Remove(userToRemove);
         }

@@ -29,7 +29,7 @@ namespace SharpForms.Api.BL.IntegrationTests.CompletedForm
             var formModel = _completedFormDetailFacade.GetById(formId);
             var user = _userListFacade.GetById(new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783")); // Seed data Jane Doe
             var answer1 = _answerListFacade.GetById(new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
-            var answer2 = _answerListFacade.GetById(new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
+            var answer2 = _answerListFacade.GetById(new Guid("1e392b3a-5fbd-4998-92f2-c5d3b8f4e9bc"));
 
             Assert.NotNull(formModel);
             Assert.Equal("Customer Feedback", formModel.FormName);

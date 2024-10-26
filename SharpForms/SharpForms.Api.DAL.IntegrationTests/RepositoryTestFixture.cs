@@ -32,7 +32,7 @@ public class RepositoryTestFixture
         });
         _mapper = new Mapper(mapperConfiguration);
 
-        _answerRepository = new AnswerRepository(_storage);
+        _answerRepository = new AnswerRepository(_storage, _mapper);
         _completedFormRepository = new CompletedFormRepository(_storage, _mapper);
         _formRepository = new FormRepository(_storage, _mapper);
         _questionRepository = new QuestionRepository(_storage, _mapper);

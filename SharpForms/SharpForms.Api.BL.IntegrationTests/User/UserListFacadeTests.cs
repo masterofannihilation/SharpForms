@@ -26,7 +26,7 @@ public class UserListFacadeTests : FacadeTestFixture
     {
         var models = _facade.GetAll();
 
-        Assert.Equal(2, models.Count);
+        Assert.Equal(5, models.Count);
     }
 
     [Fact]

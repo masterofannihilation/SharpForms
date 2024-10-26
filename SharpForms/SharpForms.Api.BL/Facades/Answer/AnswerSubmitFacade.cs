@@ -2,7 +2,6 @@ using AutoMapper;
 using SharpForms.Api.BL.Facades.Common;
 using SharpForms.Api.BL.Facades.CompletedForm;
 using SharpForms.Api.BL.Facades.Question;
-using SharpForms.Api.BL.Facades.User;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Common.Repositories;
 using SharpForms.Common.Enums;
@@ -18,7 +17,6 @@ public class AnswerSubmitFacade(
     IQuestionListFacade questionListFacade)
     : DetailModelFacadeBase<AnswerEntity, AnswerSubmitModel>(answerRepository, mapper), IAnswerSubmitFacade
 {
-    private readonly IMapper _mapper = mapper;
 
     public override Guid? CreateOrUpdate(AnswerSubmitModel model)
     {
@@ -37,11 +35,11 @@ public class AnswerSubmitFacade(
 
         switch (model.AnswerType)
         {
-            case SharpForms.Common.Enums.AnswerType.Text:
+            case AnswerType.Text:
                 newAnswer.TextAnswer = model.TextAnswer;
                 break;
 
-            case SharpForms.Common.Enums.AnswerType.Selection:
+            case AnswerType.Selection:
                 if (model.SelectOptionId != null)
                 {
                     newAnswer.SelectOptionId = model.SelectOptionId;
@@ -50,8 +48,8 @@ public class AnswerSubmitFacade(
                 }
                 break;
 
-            case SharpForms.Common.Enums.AnswerType.Integer:
-            case SharpForms.Common.Enums.AnswerType.Decimal:
+            case AnswerType.Integer:
+            case AnswerType.Decimal:
                 newAnswer.NumberAnswer = model.NumberAnswer;
                 break;
         }

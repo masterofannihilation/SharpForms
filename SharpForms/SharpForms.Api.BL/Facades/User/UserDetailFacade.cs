@@ -24,9 +24,8 @@ public class UserDetailFacade(
     {
         var entity = userRepository.GetById(id);
         if (entity == null) return null;
-        var model = _mapper.Map<UserDetailModel>(entity);
-        if (model == null) return null;
 
+        var model = _mapper.Map<UserDetailModel>(entity);
         model.CompletedForms = completedFormListFacade.GetAllCompletionsMadeByUser(model.Id);
         model.CreatedForms = formListFacade.GetAllCreatedBy(model.Id);
 
@@ -38,10 +37,6 @@ public class UserDetailFacade(
         var entity = userRepository.GetById(model.Id);
         if (entity == null) return null;
 
-        entity.Name = model.Name;
-        entity.Role = model.Role;
-        entity.PhotoUrl = model.PhotoUrl;
-
-        return userRepository.Update(entity);
+        return userRepository.Update(_mapper.Map<UserEntity>(model));
     }
 }

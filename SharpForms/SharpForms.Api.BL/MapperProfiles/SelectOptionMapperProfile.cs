@@ -8,11 +8,15 @@ namespace SharpForms.Api.BL.MapperProfiles
     {
         public SelectOptionMapperProfile()
         {
-            CreateMap<SelectOptionEntity, SelectOptionEntity>()
-                .ForMember(dest => dest.Question, opt => opt.Ignore())
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            // Map from SelectOptionEntity to SelectOptionModel
+            CreateMap<SelectOptionEntity, SelectOptionModel>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Option));
 
-            CreateMap<SelectOptionModel, SelectOptionEntity>();
+            CreateMap<SelectOptionModel, SelectOptionEntity>()
+                .ForMember(dest => dest.Question, opt => opt.Ignore())
+                .ForMember(dest => dest.Option, opt => opt.MapFrom(src => src.Value));
+
+            CreateMap<SelectOptionEntity, SelectOptionEntity>();
         }
     }
 }

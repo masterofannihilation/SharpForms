@@ -16,6 +16,7 @@ public abstract class DetailModelFacadeBase<TEntity, TDetailModel>(
     public virtual TDetailModel? GetById(Guid id)
     {
         var entity = entityRepository.GetById(id);
+        if (entity == null) return default;
         return mapper.Map<TDetailModel>(entity);
     }
 

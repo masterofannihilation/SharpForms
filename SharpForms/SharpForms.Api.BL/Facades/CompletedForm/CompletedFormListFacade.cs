@@ -11,18 +11,6 @@ public class CompletedFormListFacade(ICompletedFormRepository compFormRepository
     : ListModelFacadeBase<CompletedFormEntity, CompletedFormListModel>(compFormRepository, mapper),
         ICompletedFormListFacade
 {
-    protected override CompletedFormListModel GetEntityToModel(CompletedFormEntity entity)
-    {
-        var model = base.GetEntityToModel(entity);
-
-        if (entity.User != null)
-        {
-            model.UserName = entity.User.Name;
-        }
-
-        return model;
-    }
-
     public List<CompletedFormListModel> GetAllCopletionsOfForm(Guid formId)
     {
         return compFormRepository.GetAllFiltered(formId, null).AsEnumerable().Select(this.GetEntityToModel).ToList();

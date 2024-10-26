@@ -17,7 +17,7 @@ namespace SharpForms.Api.App.EndToEndTests
             var questions = await response.Content.ReadFromJsonAsync<ICollection<QuestionListModel>>();
             Assert.NotNull(questions);
             Assert.NotEmpty(questions);
-            Assert.Equal(4, questions.Count);
+            Assert.Equal(20, questions.Count);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace SharpForms.Api.App.EndToEndTests
 
             var questions = await response.Content.ReadFromJsonAsync<ICollection<QuestionListModel>>();
             Assert.NotNull(questions);
-            Assert.Equal(2, questions.Count);
+            Assert.Equal(6, questions.Count);
             Assert.NotNull(questions.FirstOrDefault(q => q.Text == "What position are you applying for?"));
             Assert.NotNull(questions.FirstOrDefault(q =>
                 q.Text == "How many years of experience do you have in this field?"));
@@ -44,7 +44,7 @@ namespace SharpForms.Api.App.EndToEndTests
 
             var questions = await response.Content.ReadFromJsonAsync<ICollection<QuestionListModel>>();
             Assert.NotNull(questions);
-            Assert.NotNull(questions.FirstOrDefault(q => q.Text == "Please provide additional feedback."));
+            Assert.NotNull(questions.FirstOrDefault(q => q.Text == "Please provide any additional feedback."));
         }
 
         [Fact]

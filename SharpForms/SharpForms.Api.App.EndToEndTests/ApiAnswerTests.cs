@@ -45,14 +45,14 @@ namespace SharpForms.Api.App.EndToEndTests
             Assert.NotNull(answers);
             Assert.NotEmpty(answers);
 
-            var answer = answers.FirstOrDefault(a => a.Id == new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"));
+            var answer = answers.FirstOrDefault(a => a.Id == new Guid("d1395798-8d8c-4379-b918-9077f3a2b896"));
             Assert.NotNull(answer);
         }
 
         [Fact]
         public async Task GetAnswersByUser()
         {
-            var userId = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"); // Seed data form 2
+            var userId = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"); // Seed data user 1
 
             var response = await Client.Value.GetAsync($"/api/answer/?userId={userId}");
 
@@ -62,14 +62,14 @@ namespace SharpForms.Api.App.EndToEndTests
             Assert.NotNull(answers);
             Assert.NotEmpty(answers);
 
-            var answer = answers.FirstOrDefault(a => a.Id == new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"));
+            var answer = answers.FirstOrDefault(a => a.Id == new Guid("d1395798-8d8c-4379-b918-9077f3a2b896")); // Seed data answer 212
             Assert.NotNull(answer);
         }
 
         [Fact]
         public async Task GetAnswerDetail()
         {
-            var answerId = new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425"); // Seed data answer 3
+            var answerId = new Guid("41d5e284-449a-4acf-bd7a-4defe94e5a26"); // Seed data answer 125
 
             var response = await Client.Value.GetAsync($"/api/answer/{answerId}");
 
@@ -79,8 +79,8 @@ namespace SharpForms.Api.App.EndToEndTests
             
             Assert.NotNull(answer);
             Assert.Equal(answerId, answer.Id);
-            Assert.Equal("Software Engineer", answer.Answer);
-            Assert.Equal("What position are you applying for?", answer.Question.Text);
+            Assert.Equal("Your services not being terrible", answer.Answer);
+            Assert.Equal("What could we improve?", answer.Question.Text);
         }
 
         [Fact]

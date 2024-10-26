@@ -21,7 +21,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Answer
         {
             _userListFacade = new UserListFacade(_userRepository, _mapper);
             _questionListFacade = new QuestionListFacade(_questionRepository, _mapper);
-            _answerDetailFacade = new AnswerDetailFacade(_answerRepository, _mapper, _userListFacade, _questionListFacade);
+            _answerDetailFacade = new AnswerDetailFacade(_answerRepository, _mapper);
             _completedFormListFacade = new CompletedFormListFacade(_completedFormRepository, _mapper);
             _answerSubmitFacade = new AnswerSubmitFacade(_answerRepository, _selectOptionRepository, _mapper, _completedFormListFacade, _questionListFacade);
         }

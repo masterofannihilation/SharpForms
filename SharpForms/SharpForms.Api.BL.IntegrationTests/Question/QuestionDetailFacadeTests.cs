@@ -20,10 +20,10 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
 
         public QuestionDetailFacadeTests()
         {
-            _selectOptionFacade = new SelectOptionFacade(_questionRepository, _selectOptionRepository, _mapper);
+            _selectOptionFacade = new SelectOptionFacade(_selectOptionRepository, _mapper);
             _questionListFacade = new QuestionListFacade(_questionRepository, _mapper);
             _userListFacade = new UserListFacade(_userRepository, _mapper);
-            _answerDetailFacade = new AnswerDetailFacade(_answerRepository, _mapper, _userListFacade, _questionListFacade);
+            _answerDetailFacade = new AnswerDetailFacade(_answerRepository, _mapper);
             _answerListFacade = new AnswerListFacade(_answerRepository, _mapper);
             _questionDetailFacade = new QuestionDetailFacade(_questionRepository,  _mapper, _answerListFacade, _answerDetailFacade, _selectOptionFacade);
         }

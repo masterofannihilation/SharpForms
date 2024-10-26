@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using AutoMapper;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Common.Repositories;
 
@@ -15,14 +16,16 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         private readonly IList<CompletedFormEntity> _completedForms;
         private readonly IList<SelectOptionEntity> _selectOptions;
         private readonly IList<UserEntity> _users;
+        private readonly IMapper _mapper;
 
-        public AnswerRepository(Storage storage)
+        public AnswerRepository(Storage storage, IMapper mapper)
         {
             _answers = storage.Answers;
             _questions = storage.Questions;
             _completedForms = storage.CompletedForms;
             _selectOptions = storage.SelectOptions;
             _users = storage.Users;
+            _mapper = mapper;
         }
 
         public IList<AnswerEntity> GetAll()
@@ -39,14 +42,10 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             // If SelectOptionId is not null, load SelectOption
             if (answerCopy.SelectOptionId != null)
-            {
                 answerCopy.SelectOption = _selectOptions.SingleOrDefault(so => so.Id == answerCopy.SelectOptionId);
-            }
 
             if (answerCopy.CompletedForm != null)
-            {
                 answerCopy.CompletedForm.User = _users.SingleOrDefault(u => u.Id == answerCopy.CompletedForm.UserId);
-            }
 
             return answerCopy;
         }
@@ -54,10 +53,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public AnswerEntity? GetById(Guid id)
         {
             var answer = _answers.SingleOrDefault(answer => answer.Id == id);
-            if (answer == null)
-            {
-                return null;
-            }
+            if (answer == null) return null;
 
             return IncludeEntities(answer);
         }
@@ -72,10 +68,9 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         public Guid? Update(AnswerEntity answer)
         {
             var existingAnswer = _answers.SingleOrDefault(a => a.Id == answer.Id);
-            if (existingAnswer == null)
-            {
-                return null;
-            }
+            if (existingAnswer == null) return null;
+
+            _mapper.Map(answer, existingAnswer);
 
             existingAnswer.QuestionId = answer.QuestionId;
             existingAnswer.CompletedFormId = answer.CompletedFormId;
@@ -90,9 +85,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             var answerToRemove = _answers.SingleOrDefault(a => a.Id == id);
             if (answerToRemove != null)
-            {
                 _answers.Remove(answerToRemove);
-            }
         }
 
         public bool Exists(Guid id)
@@ -104,20 +97,14 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         {
             var filtered = _answers.AsQueryable();
             if (completedFormId != null)
-            {
                 filtered = filtered.Where(a => a.CompletedFormId == completedFormId);
-            }
 
             if (questionId != null)
-            {
                 filtered = filtered.Where(a => a.QuestionId == questionId);
-            }
 
             var answers = new List<AnswerEntity>();
             foreach (var answer in filtered)
-            {
                 answers.Add(IncludeEntities(answer));
-            }
 
             return answers;
         }

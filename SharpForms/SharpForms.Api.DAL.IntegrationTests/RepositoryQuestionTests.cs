@@ -43,7 +43,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var fetchedQuestion = _questionRepository.GetById(questionId);
 
             Assert.NotNull(fetchedQuestion);
-            Assert.Equal("Please provide additional feedback.", fetchedQuestion.Text);
+            Assert.Equal("Please provide any additional feedback.", fetchedQuestion.Text);
         }
 
         [Fact]

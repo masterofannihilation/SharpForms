@@ -22,8 +22,8 @@ public class FormListFacadeTests : FacadeTestFixture
         Assert.NotNull(model!.OpenSince);
         Assert.NotNull(model!.OpenUntil);
         Assert.Equal("Jane Doe", model!.CreatorName);
-        Assert.Equal(2, model!.QuestionCount);
-        Assert.Equal(1, model!.TimesCompleted);
+        Assert.Equal(6, model!.QuestionCount);
+        Assert.Equal(2, model!.TimesCompleted);
     }
 
     [Fact]

@@ -48,10 +48,12 @@ namespace SharpForms.Api.DAL.IntegrationTests
             // Seed data
             var completedFormId = new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8");
             var User = _storage.Users.SingleOrDefault(o => o.Id == new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"));
-            var Answer1 =
-                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
-            var Answer2 =
-                _storage.Answers.SingleOrDefault(o => o.Id == new Guid("cbe36665-4fe4-4b9e-ae57-0b2e288c4d74"));
+            var Answer1 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18"));
+            var Answer2 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("1e392b3a-5fbd-4998-92f2-c5d3b8f4e9bc"));
+            var Answer3 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("e3b43a75-5d41-4472-9b25-f2ff097b8f23"));
+            var Answer4 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("7dbb8f17-d0d8-4a25-9bd8-927cda91f6e2"));
+            var Answer5 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("bf92d6de-4eb1-4e89-b438-bfbfd61e1b36"));
+            var Answer6 = _storage.Answers.SingleOrDefault(o => o.Id == new Guid("03cbb637-96c8-4c12-9b1f-84c9b2c3f1ab"));
             var Form = _storage.Forms.SingleOrDefault(o => o.Id == new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"));
 
             var fetchedForm = _completedFormRepository.GetById(completedFormId);
@@ -60,6 +62,10 @@ namespace SharpForms.Api.DAL.IntegrationTests
             Assert.Equal(User, fetchedForm.User);
             Assert.Contains(Answer1, fetchedForm.Answers);
             Assert.Contains(Answer2, fetchedForm.Answers);
+            Assert.Contains(Answer3, fetchedForm.Answers);
+            Assert.Contains(Answer4, fetchedForm.Answers);
+            Assert.Contains(Answer5, fetchedForm.Answers);
+            Assert.Contains(Answer6, fetchedForm.Answers);
             Assert.Equal(Form, fetchedForm.Form);
         }
 

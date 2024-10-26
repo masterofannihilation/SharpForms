@@ -34,10 +34,10 @@ namespace SharpForms.Api.DAL.IntegrationTests
         [Fact]
         public void Get_Answer_By_Id()
         {
-            var fetchedAnswer = _answerRepository.GetById(new Guid("f42f95fb-d11e-49c5-88c0-4592d6131425")); // Seed data
+            var fetchedAnswer = _answerRepository.GetById(new Guid("62f94798-1c4d-491e-8a4e-b344c1de6ef1")); // Seed data
 
             Assert.NotNull(fetchedAnswer);
-            Assert.Equal("Software Engineer", fetchedAnswer.TextAnswer);
+            Assert.Equal("Software Developer", fetchedAnswer.TextAnswer);
         }
 
         [Fact]
