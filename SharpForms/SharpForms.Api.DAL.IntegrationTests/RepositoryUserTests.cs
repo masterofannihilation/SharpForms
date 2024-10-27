@@ -31,11 +31,11 @@ namespace SharpForms.Api.DAL.IntegrationTests
             var userId = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"); // Seed data
             var createdForm =
                 _storage.Forms.SingleOrDefault(form => form.Id == new Guid("8e1c3878-d661-4a57-86b4-d30ed1592558"));
-            createdForm.Questions = [];
+            createdForm!.Questions = [];
             var completedForm =
                 _storage.CompletedForms.SingleOrDefault(form =>
                     form.Id == new Guid("2feb50ff-d066-416e-b3bf-10bc84fab6d8"));
-            completedForm.Answers = [];
+            completedForm!.Answers = [];
             Assert.NotNull(createdForm);
             Assert.NotNull(completedForm);
 

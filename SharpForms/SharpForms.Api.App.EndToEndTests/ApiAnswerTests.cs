@@ -50,19 +50,22 @@ namespace SharpForms.Api.App.EndToEndTests
         }
 
         [Fact]
-        public async Task GetAnswersByUser()
+        public async Task GetAnswersForQuestion()
         {
-            var userId = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"); // Seed data user 1
+            var questionId = new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"); // Seed data question 11
 
-            var response = await Client.Value.GetAsync($"/api/answer/?userId={userId}");
+            var response = await Client.Value.GetAsync($"/api/answer/?questionId={questionId}");
 
             response.EnsureSuccessStatusCode();
 
             var answers = await response.Content.ReadFromJsonAsync<ICollection<AnswerListModel>>();
             Assert.NotNull(answers);
             Assert.NotEmpty(answers);
+            Assert.Equal(2, answers.Count);
 
-            var answer = answers.FirstOrDefault(a => a.Id == new Guid("d1395798-8d8c-4379-b918-9077f3a2b896")); // Seed data answer 212
+            var answer = answers.FirstOrDefault(a => a.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18")); // Seed data answer 111
+            Assert.NotNull(answer);
+            answer = answers.FirstOrDefault(a => a.Id == new Guid("f1085f56-0899-4da0-ae53-f26c92981fda")); // Seed data answer 121
             Assert.NotNull(answer);
         }
 

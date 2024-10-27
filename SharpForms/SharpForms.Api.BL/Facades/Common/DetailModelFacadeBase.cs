@@ -12,10 +12,14 @@ public abstract class DetailModelFacadeBase<TEntity, TDetailModel>(
     where TEntity : IEntity
     where TDetailModel : IModel
 {
+    protected virtual TEntity? FetchEntity(Guid id)
+    {
+        return entityRepository.GetById(id);
+    }
     
     public virtual TDetailModel? GetById(Guid id)
     {
-        var entity = entityRepository.GetById(id);
+        var entity = FetchEntity(id);
         if (entity == null) return default;
         return mapper.Map<TDetailModel>(entity);
     }

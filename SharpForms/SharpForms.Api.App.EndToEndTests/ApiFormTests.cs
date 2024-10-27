@@ -50,6 +50,9 @@ namespace SharpForms.Api.App.EndToEndTests
             Assert.NotEmpty(formDetail.Questions);
             Assert.NotNull(formDetail.Creator);
             Assert.Equal("John Doe", formDetail.Creator!.Name);
+            
+            Assert.NotEmpty(formDetail.Completions);
+            Assert.All(formDetail.Completions, c => Assert.NotNull(c.UserName));
         }
 
         [Fact]

@@ -14,6 +14,8 @@ namespace SharpForms.Api.DAL.Memory.Repositories
         private readonly IList<FormEntity> _forms;
         private readonly IList<SelectOptionEntity> _options;
         private readonly IList<AnswerEntity> _answers;
+        private readonly IList<UserEntity> _users;
+        private readonly IList<CompletedFormEntity> _completedForms;
         private readonly IMapper _mapper;
 
         public QuestionRepository(Storage storage, IMapper mapper)
@@ -22,6 +24,8 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             _forms = storage.Forms;
             _options = storage.SelectOptions;
             _answers = storage.Answers;
+            _users = storage.Users;
+            _completedForms = storage.CompletedForms;
             _mapper = mapper;
         }
 
@@ -41,6 +45,22 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             clonedQuestion.Form = _forms.SingleOrDefault(form => form.Id == clonedQuestion.FormId);
             clonedQuestion.Options = _options.Where(so => so.QuestionId == id).Select(option => option.DeepCopy()).ToList();
             clonedQuestion.Answers = _answers.Where(a => a.QuestionId == id).Select(answer => answer.DeepCopy()).ToList();
+            foreach (var answer in clonedQuestion.Answers)
+            {
+                answer.Question = clonedQuestion;
+                
+                if (answer.SelectOptionId != null)
+                {
+                    answer.SelectOption = clonedQuestion.Options.SingleOrDefault(o => o.Id == answer.SelectOptionId);
+                }
+
+                answer.CompletedForm = _completedForms.SingleOrDefault(f => f.Id == answer.CompletedFormId);
+
+                if (answer.CompletedForm?.UserId != null)
+                {
+                    answer.CompletedForm.User = _users.SingleOrDefault(u => u.Id == answer.CompletedForm.UserId); 
+                }
+            }
 
             return clonedQuestion;
         }

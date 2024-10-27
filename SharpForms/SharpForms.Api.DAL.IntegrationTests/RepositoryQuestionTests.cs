@@ -51,18 +51,18 @@ namespace SharpForms.Api.DAL.IntegrationTests
         {
             var fetchedQuestion = _questionRepository.GetById(new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1")); // Seed data
 
-            var Answer =
+            var answer =
                 _storage.Answers.SingleOrDefault(o =>
                     o.Id == new Guid("b4505f75-f177-4076-832d-8fd1677c9a18")); // Seed data
-            var Form = _storage.Forms.SingleOrDefault(o =>
+            var form = _storage.Forms.SingleOrDefault(o =>
                 o.Id == new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8")); // Seed data
             var selectOption =
                 _storage.SelectOptions.SingleOrDefault(o =>
                     o.Id == new Guid("b8189619-b77f-4038-9441-f6785db3e25b")); // Seed data
 
             Assert.NotNull(fetchedQuestion);
-            Assert.Contains(Answer, fetchedQuestion.Answers);
-            Assert.Equal(fetchedQuestion.Form, Form);
+            Assert.Contains(fetchedQuestion.Answers, a => a.Id == answer!.Id);
+            Assert.Equal(fetchedQuestion.Form, form);
             Assert.Contains(selectOption, fetchedQuestion.Options);
         }
 

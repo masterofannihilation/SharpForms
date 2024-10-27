@@ -38,6 +38,8 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
             Assert.NotNull(model.Answers);
             Assert.Equal(1, model.Order);
             Assert.Equal(AnswerType.Selection, model.AnswerType);
+            
+            Assert.All(model.Answers, a => Assert.True(a.Answer != "" && a.UserName != null));
         }
 
         [Fact]

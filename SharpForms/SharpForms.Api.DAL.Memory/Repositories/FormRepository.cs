@@ -46,6 +46,10 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             formEntity.Questions = _questions.Where(q => q.FormId == formEntity.Id).ToList();
             formEntity.Creator = _users.SingleOrDefault(user => user.Id == formEntity.CreatorId);
             formEntity.Completions = _completedForms.Where(cf => cf.FormId == formEntity.Id).ToList();
+            foreach (var completion in formEntity.Completions)
+            {
+                completion.User = _users.SingleOrDefault(user => user.Id == completion.UserId);
+            }
 
             return formEntity;
         }

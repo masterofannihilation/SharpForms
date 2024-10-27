@@ -6,16 +6,10 @@ using SharpForms.Common.Models.Form;
 
 namespace SharpForms.Api.BL.Facades.Form
 {
-    public class FormDetailFacade : DetailModelFacadeBase<FormEntity, FormDetailModel>, IFormDetailFacade
+    public class FormDetailFacade(IFormRepository formRepository, IMapper mapper)
+        : DetailModelFacadeBase<FormEntity, FormDetailModel>(formRepository, mapper), IFormDetailFacade
     {
-        private readonly IFormRepository _formRepository;
-        private readonly IMapper _mapper;
-
-        public FormDetailFacade(IFormRepository formRepository, IMapper mapper)
-            : base(formRepository, mapper)
-        {
-            _formRepository = formRepository;
-            _mapper = mapper;
-        }
+        private readonly IFormRepository _formRepository = formRepository;
+        private readonly IMapper _mapper = mapper;
     }
 }
