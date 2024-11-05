@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SharpForms.Api.DAL.Common\SharpForms.Api.DAL.Common.csproj" />
+        <ProjectReference Include="..\SharpForms.Api.DAL.Memory\SharpForms.Api.DAL.Memory.csproj" />
+        <ProjectReference Include="..\SharpForms.Common.BL\SharpForms.Common.BL.csproj" />
+        <ProjectReference Include="..\SharpForms.Common.Models\SharpForms.Common.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="4.2.2" />
+    </ItemGroup>
+
+</Project>
