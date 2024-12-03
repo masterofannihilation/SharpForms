@@ -4,7 +4,7 @@
 <div>
     <InputText @bind-Value="SearchQuery" class="search-bar" placeholder="Search users..."/>
     <button class="btn-search" @onclick="SearchUsers">Search</button>
-    <NavLink class="btn btn-success">+ Add User</NavLink>
+    <NavLink class="btn btn-success" href="/users/create">Create User</NavLink>
 </div>
 
 <div class="d-flex flex-wrap">
@@ -20,8 +20,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">@user.Name</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">display_role</h6>
-
+                            <span class="badge bg-secondary ms-3">@user.Role</span>
                             <NavLink href='@($"/users/{user.Id}")'>Detail</NavLink>
                         </div>
                     </div>

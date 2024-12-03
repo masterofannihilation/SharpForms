@@ -18,7 +18,7 @@ public partial class UserListPage : ComponentBase
         await base.OnInitializedAsync();
     }
 
-    public async Task SearchUsers()
+    private async Task SearchUsers()
     {
         Users = await UserApiClient.UserGetAsync(SearchQuery, "en");
     }
