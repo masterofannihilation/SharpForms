@@ -1,0 +1,72 @@
+@page "/users/{id:guid}"
+
+@if (User is null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <div class="container mt-4">
+        <div class="d-flex align-items-center mb-4">
+            <img src="@User.PhotoUrl" alt="@User.Name's photo" class="rounded-circle me-3"
+                 style="width: 80px; height: 80px;"/>
+            <h2>@User.Name</h2>
+            <span class="badge bg-secondary ms-3">@User.Role</span>
+        </div>
+
+        <h4>Created Forms</h4>
+        @if (User.CreatedForms.Any())
+        {
+            <table class="table table-striped table-bordered">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Open Since</th>
+                    <th>Open Until</th>
+                    <th>Questions</th>
+                    <th>Times Completed</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var form in User.CreatedForms)
+                {
+                    <tr>
+                        <td>@form.Name</td>
+                        <td>
+                            @if (form.OpenSince is null)
+                            {
+                                <span>"N/A"</span>
+                            }
+                            else
+                            {
+                                @form.OpenSince?.ToString("yyyy-MM-dd hh:mm")
+                            }
+                        </td>
+                        <td>
+                            @if (form.OpenUntil is null)
+                            {
+                                <span>"N/A"</span>
+                            }
+                            else
+                            {
+                                @form.OpenUntil?.ToString("yyyy-MM-dd hh:mm")
+                            }
+                        </td>
+                        <td>@form.QuestionCount</td>
+                        <td>@form.TimesCompleted</td>
+                        <td>
+                            <NavLink>View</NavLink>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No forms created yet.</p>
+        }
+    </div>
+}
+
