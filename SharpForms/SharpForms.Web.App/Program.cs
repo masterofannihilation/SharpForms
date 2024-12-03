@@ -7,6 +7,7 @@ using SharpForms.Web.BL.Extensions;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.Services.AddBlazorBootstrap();
 
 builder.Configuration.AddJsonFile("appsettings.json");
 
