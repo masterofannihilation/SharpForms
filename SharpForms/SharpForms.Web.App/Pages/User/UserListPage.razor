@@ -1,26 +1,35 @@
 @page "/users"
 <h3>UserListPage</h3>
 
-<div class="d-flex flex-wrap">
-    @foreach (var user in Users)
-    {
-        <div class="card m-1" style="width: 16rem;">
-            <img class="card-img-top" src="@user.PhotoUrl" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">
-                    @{
-                        if (user.Id == Guid.Empty)
-                        {
-                            <span>@user.Name</span>
-                        }
-                        else
-                        {
-                            <NavLink href="@($"/user/{user.Id}")">@user.Name</NavLink>
-                        }
-                    }
-                </h5>
+<div>
+    <InputText @bind-Value="SearchQuery" class="search-bar" placeholder="Search users..."/>
+    <button class="btn-search" @onclick="SearchUsers">Search</button>
+    <NavLink class="btn btn-success" href="/users/create">Create User</NavLink>
+</div>
 
+<div class="d-flex flex-wrap">
+    @if (Users.Any())
+    {
+        @foreach (var user in Users)
+        {
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img class="card-img-top" src="@user.PhotoUrl" alt="No image">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@user.Name</h5>
+                            <span class="badge bg-secondary ms-3">@user.Role</span>
+                            <NavLink href='@($"/users/{user.Id}")'>Detail</NavLink>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>Loading</p>
     }
 </div>

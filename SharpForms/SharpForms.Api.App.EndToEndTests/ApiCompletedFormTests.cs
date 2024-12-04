@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using SharpForms.Api.DAL.Common.Entities;
+using SharpForms.Common.Enums;
 using SharpForms.Common.Models.Answer;
 using SharpForms.Common.Models.CompletedForm;
 using SharpForms.Common.Models.Form;
@@ -54,7 +55,8 @@ namespace SharpForms.Api.App.EndToEndTests
                 User = new UserListModel
                 {
                     Id = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), // User2
-                    Name = "Jane Doe"
+                    Name = "Jane Doe",
+                    Role = UserRole.General
                 },
                 Answers = []
             };

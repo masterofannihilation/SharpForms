@@ -1,0 +1,49 @@
+@page "/users/create"
+@page "/users/{id:guid}/edit"
+@using SharpForms.Common.Enums
+
+<h3>UserEditPage</h3>
+
+<EditForm Model="Data" OnValidSubmit="Save">
+    <DataAnnotationsValidator/>
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="Data.Name"/>
+        <small class="form-text text-danger">
+            <ValidationMessage For="@(() => Data.Name)"/>
+        </small>
+    </div>
+
+    <div class="mb-3">
+        <label for="photoUrl" class="form-label">Photo URL</label>
+        <InputText id="photoUrl" class="form-control" @bind-Value="Data.PhotoUrl"/>
+        <img src="@Data.PhotoUrl" height="100px" alt="Image not found"/>
+        <small class="form-text text-danger">
+            <ValidationMessage For="@(() => Data.PhotoUrl)"/>
+        </small>
+    </div>
+
+    <div class="mb-3">
+        <label for="role" class="form-label">Role</label>
+        <InputSelect id="role" class="form-select" @bind-Value="Data.Role">
+            @foreach (var role in Enum.GetValues<UserRole>())
+            {
+                <option value="@role">@role</option>
+            }
+        </InputSelect>
+        <small class="form-text text-danger">
+            <ValidationMessage For="@(() => Data.Role)"/>
+        </small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    @if (Id == Guid.Empty)
+    {
+        <NavLink class="btn btn-secondary ms-2" href="/users">Cancel</NavLink>
+    }
+    else
+    {
+        <NavLink class="btn btn-secondary ms-2" href='@($"/users/{Id}")'>Cancel</NavLink>
+    }
+</EditForm>

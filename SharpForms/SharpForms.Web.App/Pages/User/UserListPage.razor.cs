@@ -8,12 +8,18 @@ public partial class UserListPage : ComponentBase
 {
     [Inject] private IUserApiClient UserApiClient { get; set; } = null!;
 
+    private string SearchQuery { get; set; } = string.Empty;
     private ICollection<UserListModel> Users { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
-        Users = await UserApiClient.UserGetAsync("", "en");
+        Users = await UserApiClient.UserGetAsync(SearchQuery, "en");
 
         await base.OnInitializedAsync();
+    }
+
+    private async Task SearchUsers()
+    {
+        Users = await UserApiClient.UserGetAsync(SearchQuery, "en");
     }
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using SharpForms.Common.Enums;
 using SharpForms.Common.Models.Form;
 using SharpForms.Common.Models.User;
 using Xunit;
@@ -67,7 +68,8 @@ namespace SharpForms.Api.App.EndToEndTests
                 Creator = new UserListModel
                 {
                     Id = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), // User2
-                    Name = "Jane Doe"
+                    Name = "Jane Doe",
+                    Role = UserRole.General
                 },
                 Questions = []
             };
@@ -100,7 +102,8 @@ namespace SharpForms.Api.App.EndToEndTests
                 Creator = new UserListModel
                 {
                     Id = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), // User2
-                    Name = "Jane Doe"
+                    Name = "Jane Doe",
+                    Role = UserRole.General
                 },
                 Questions = []
             };
