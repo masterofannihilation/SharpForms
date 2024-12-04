@@ -39,8 +39,5 @@ public partial class UserEditPage : ComponentBase
     }
 
     private static UserDetailModel GetNewUserModel()
-        => new()
-        {
-            Id = Guid.NewGuid(), Name = string.Empty, PhotoUrl = string.Empty, Role = UserRole.General
-        };
+        => new() { Id = Guid.NewGuid(), Name = string.Empty, PhotoUrl = string.Empty, Role = UserRole.General };
 }

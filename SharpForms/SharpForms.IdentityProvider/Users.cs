@@ -14,14 +14,14 @@ public class Users
             new TestUser
             {
                 SubjectId = "1",
-                Username = "adminUser",
+                Username = "admin",
                 Password = DefaultPassword,
                 Claims = new List<Claim> { new Claim("role", "admin") }
             },
             new TestUser
             {
                 SubjectId = "2",
-                Username = "generalUser",
+                Username = "user",
                 Password = DefaultPassword,
                 Claims = new List<Claim> { new Claim("role", "general") }
             }

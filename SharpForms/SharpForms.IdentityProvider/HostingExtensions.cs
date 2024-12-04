@@ -18,6 +18,7 @@ internal static class HostingExtensions
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
+            .AddProfileService<UserProfileService>()
             .AddTestUsers(Users.GetUsers());
 
         return builder.Build();
@@ -26,6 +27,20 @@ internal static class HostingExtensions
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
         app.UseSerilogRequestLogging();
+
+        app.UseCors(policy =>
+        {
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+            policy.AllowAnyOrigin();
+        });
+
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["Content-Security-Policy"] =
+                "frame-ancestors 'self' https://localhost:7143;";
+            await next();
+        });
 
         if (app.Environment.IsDevelopment())
         {
