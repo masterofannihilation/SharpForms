@@ -5,6 +5,7 @@ using SharpForms.Api.DAL.Memory;
 using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Common.Extensions;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SharpForms.Api.BL.Facades.User;
 using SharpForms.Api.BL.Facades.Form;
 using SharpForms.Api.BL.Facades.CompletedForm;
@@ -25,9 +26,13 @@ var builder = WebApplication.CreateBuilder();
 ConfigureCors(builder.Services);
 ConfigureLocalization(builder.Services);
 
+var identityUrl = builder.Configuration.GetSection("IdentityServer")["Url"];
+ConfigureAuthentication(builder.Services, identityUrl!);
+
 ConfigureOpenApiDocuments(builder.Services);
 ConfigureDependencies(builder.Services, builder.Configuration);
 ConfigureAutoMapper(builder.Services);
+
 
 var app = builder.Build();
 
@@ -35,6 +40,7 @@ UseDevelopmentSettings(app);
 UseSecurityFeatures(app);
 UseLocalization(app);
 UseRouting(app);
+UseAuthorization(app);
 UseEndpoints(app);
 UseOpenApi(app);
 
@@ -81,6 +87,18 @@ void ValidateAutoMapperConfiguration(IServiceProvider serviceProvider)
     mapper.ConfigurationProvider.AssertConfigurationIsValid();
 }
 
+void ConfigureAuthentication(IServiceCollection services, string identityServerUrl)
+{
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.Authority = identityServerUrl;
+        options.TokenValidationParameters.ValidateAudience = false;
+    });
+
+    services.AddAuthorization();
+    services.AddHttpContextAccessor();
+}
+
 void UseEndpoints(WebApplication application)
 {
     var endpointsBase = application.MapGroup("api")
@@ -103,10 +121,11 @@ void UseUserEndpoints(RouteGroupBuilder routeGroupBuilder)
         (string? name, IUserListFacade facade) => name != null ? facade.SearchAllByName(name) : facade.GetAll());
 
     // Get user detail
-    userEndpoints.MapGet("{id:guid}", Results<Ok<UserDetailModel>, NotFound<string>> (Guid id, IUserDetailFacade userFacade)
-        => userFacade.GetById(id) is { } user
-            ? TypedResults.Ok(user)
-            : TypedResults.NotFound($"User with ID {id} not found."));
+    userEndpoints.MapGet("{id:guid}",
+        Results<Ok<UserDetailModel>, NotFound<string>> (Guid id, IUserDetailFacade userFacade)
+            => userFacade.GetById(id) is { } user
+                ? TypedResults.Ok(user)
+                : TypedResults.NotFound($"User with ID {id} not found."));
 
     // Create new user
     userEndpoints.MapPost("", (UserDetailModel user, IUserDetailFacade userFacade) =>
@@ -132,10 +151,11 @@ void UseFormEndpoints(RouteGroupBuilder routeGroupBuilder)
         (string? name, IFormListFacade facade) => name != null ? facade.SearchAllByName(name) : facade.GetAll());
 
     // Get form detail
-    formEndpoints.MapGet("{id:guid}", Results<Ok<FormDetailModel>, NotFound<string>> (Guid id, IFormDetailFacade formFacade)
-        => formFacade.GetById(id) is { } form
-            ? TypedResults.Ok(form)
-            : TypedResults.NotFound($"Form with ID {id} not found."));
+    formEndpoints.MapGet("{id:guid}",
+        Results<Ok<FormDetailModel>, NotFound<string>> (Guid id, IFormDetailFacade formFacade)
+            => formFacade.GetById(id) is { } form
+                ? TypedResults.Ok(form)
+                : TypedResults.NotFound($"Form with ID {id} not found."));
 
     // Create new Form
     formEndpoints.MapPost("", (FormDetailModel form, IFormDetailFacade formFacade) =>
@@ -169,10 +189,11 @@ void UseCompletedFormEndpoints(RouteGroupBuilder routeGroupBuilder)
     });
 
     // Get form detail
-    compFormEndpoints.MapGet("{id:guid}", Results<Ok<CompletedFormDetailModel>, NotFound<string>> (Guid id, ICompletedFormDetailFacade formFacade)
-        => formFacade.GetById(id) is { } form
-            ? TypedResults.Ok(form)
-            : TypedResults.NotFound($"Form with ID {id} not found."));
+    compFormEndpoints.MapGet("{id:guid}",
+        Results<Ok<CompletedFormDetailModel>, NotFound<string>> (Guid id, ICompletedFormDetailFacade formFacade)
+            => formFacade.GetById(id) is { } form
+                ? TypedResults.Ok(form)
+                : TypedResults.NotFound($"Form with ID {id} not found."));
 
     // Create new completedForm
     compFormEndpoints.MapPost("", (CompletedFormDetailModel form, ICompletedFormDetailFacade formFacade) =>
@@ -198,10 +219,11 @@ void UseQuestionEndpoints(RouteGroupBuilder routeGroupBuilder)
     });
 
     // Get question detail
-    questionEndpoints.MapGet("{id:guid}", Results<Ok<QuestionDetailModel>, NotFound<string>> (Guid id, IQuestionDetailFacade questionFacade)
-        => questionFacade.GetById(id) is { } question
-            ? TypedResults.Ok(question)
-            : TypedResults.NotFound($"Question with ID {id} not found."));
+    questionEndpoints.MapGet("{id:guid}",
+        Results<Ok<QuestionDetailModel>, NotFound<string>> (Guid id, IQuestionDetailFacade questionFacade)
+            => questionFacade.GetById(id) is { } question
+                ? TypedResults.Ok(question)
+                : TypedResults.NotFound($"Question with ID {id} not found."));
 
     // Create new question
     questionEndpoints.MapPost("", (QuestionDetailModel question, IQuestionDetailFacade questionFacade) =>
@@ -211,10 +233,12 @@ void UseQuestionEndpoints(RouteGroupBuilder routeGroupBuilder)
     });
 
     // Update question details
-    questionEndpoints.MapPut("", (QuestionDetailModel question, IQuestionDetailFacade questionFacade) => questionFacade.Update(question));
+    questionEndpoints.MapPut("",
+        (QuestionDetailModel question, IQuestionDetailFacade questionFacade) => questionFacade.Update(question));
 
     // Delete question
-    questionEndpoints.MapDelete("{id:guid}", (Guid id, IQuestionDetailFacade questionFacade) => questionFacade.Delete(id));
+    questionEndpoints.MapDelete("{id:guid}",
+        (Guid id, IQuestionDetailFacade questionFacade) => questionFacade.Delete(id));
 }
 
 void UseAnswerEndpoints(RouteGroupBuilder routeGroupBuilder)
@@ -230,12 +254,13 @@ void UseAnswerEndpoints(RouteGroupBuilder routeGroupBuilder)
 
         return facade.GetAll(formGuid, questionGuid);
     });
-    
+
     // Get answer detail
-    answerEndpoints.MapGet("{id:guid}", Results<Ok<AnswerDetailModel>, NotFound<string>> (Guid id, IAnswerDetailFacade answerFacade)
-        => answerFacade.GetById(id) is { } answer
-            ? TypedResults.Ok(answer)
-            : TypedResults.NotFound($"Answer with ID {id} not found."));
+    answerEndpoints.MapGet("{id:guid}",
+        Results<Ok<AnswerDetailModel>, NotFound<string>> (Guid id, IAnswerDetailFacade answerFacade)
+            => answerFacade.GetById(id) is { } answer
+                ? TypedResults.Ok(answer)
+                : TypedResults.NotFound($"Answer with ID {id} not found."));
 
     // Create a new answer or update existing
     answerEndpoints.MapPost("", (AnswerSubmitModel answer, IAnswerSubmitFacade answerFacade) =>
@@ -246,7 +271,6 @@ void UseAnswerEndpoints(RouteGroupBuilder routeGroupBuilder)
 
     // Delete answer
     answerEndpoints.MapDelete("{id:guid}", (Guid id, IAnswerDetailFacade answerFacade) => answerFacade.Delete(id));
-
 }
 
 void UseDevelopmentSettings(WebApplication application)
@@ -281,10 +305,23 @@ void UseRouting(IApplicationBuilder application)
     application.UseRouting();
 }
 
+void UseAuthorization(WebApplication application)
+{
+    application.UseAuthentication();
+    application.UseAuthorization();
+}
+
 void UseOpenApi(IApplicationBuilder application)
 {
     application.UseOpenApi();
-    application.UseSwaggerUi();
+    // application.UseSwaggerUi();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        c.OAuthClientId("your-client-id");
+        c.OAuthClientSecret("your-client-secret");
+        c.OAuthUsePkce();
+    });
 }
 
 
