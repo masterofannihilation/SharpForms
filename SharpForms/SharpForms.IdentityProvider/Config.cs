@@ -1,5 +1,6 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
+using SharpForms.Common.Enums;
 
 namespace SharpForms.IdentityProvider;
 
@@ -9,8 +10,16 @@ public static class Config
     [
         new IdentityResources.OpenId(),
         new IdentityResources.Profile(),
+        new("roles", ["role"])
     ];
-
+    public static IEnumerable<ApiResource> ApiResources =>
+    [
+        new ApiResource("sharpforms_api", "SharpForms API")
+        {
+            Scopes = { "sharpforms_api" },
+            UserClaims = { "role" } 
+        }
+    ];
     public static IEnumerable<ApiScope> ApiScopes =>
     [
         new("sharpforms_api", ["role"]),
@@ -24,8 +33,6 @@ public static class Config
             ClientName = "SharpForms API Client",
             AllowedGrantTypes =
             [
-                // GrantType.ClientCredentials,
-                // GrantType.ResourceOwnerPassword,
                 GrantType.AuthorizationCode
             ],
             ClientSecrets = { new Secret("secret".Sha256()) },
@@ -34,21 +41,10 @@ public static class Config
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
                 "sharpforms_api",
+                "roles",
             },
             RedirectUris = { "https://localhost:7143/authentication/login-callback" },
             RequireClientSecret = false,
         },
-        // new Client
-        // {
-        //     ClientId = "blazor-client",
-        //     ClientName = "Blazor WebAssembly App",
-        //     AllowedGrantTypes = GrantTypes.Code,
-        //     RequireClientSecret = false, // For Blazor WebAssembly
-        //     RedirectUris = { "https://localhost:7143/authentication/login-callback" },
-        //     PostLogoutRedirectUris = { "https://localhost:7143/authentication/logout-callback" },
-        //     AllowedCorsOrigins = { "https://localhost:7143" },
-        //     AllowedScopes = { "openid", "profile", "sharpforms_api" }, // Ensure scopes match API
-        //     EnableLocalLogin = true
-        // }
     ];
 }

@@ -16,9 +16,10 @@ internal static class HostingExtensions
             })
             .AddDeveloperSigningCredential()
             .AddInMemoryIdentityResources(Config.IdentityResources)
+            .AddInMemoryApiResources(Config.ApiResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
-            .AddProfileService<UserProfileService>()
+            // .AddProfileService<UserProfileService>()
             .AddTestUsers(Users.GetUsers());
 
         return builder.Build();

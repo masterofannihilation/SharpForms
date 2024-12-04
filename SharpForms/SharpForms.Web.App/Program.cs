@@ -31,6 +31,7 @@ builder.Services.AddOidcAuthentication(options =>
     var authority = configurationSection["Authority"];
 
     options.ProviderOptions.DefaultScopes.Add("sharpforms_api");
+    options.ProviderOptions.DefaultScopes.Add("roles");
 });
 
 builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);

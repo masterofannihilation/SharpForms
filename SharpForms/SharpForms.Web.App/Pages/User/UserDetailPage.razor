@@ -1,5 +1,5 @@
 @page "/users/{id:guid}"
-
+@attribute [Authorize(Roles = "admin")]
 @if (User is null)
 {
     <p>Loading</p>
