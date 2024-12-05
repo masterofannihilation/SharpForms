@@ -20,7 +20,7 @@ builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(api
         => serviceProvider?.GetService<AuthorizationMessageHandler>()
             ?.ConfigureHandler(
                 authorizedUrls: new[] { apiBaseUrl },
-                scopes: new[] { "sharpforms_api" }));
+                scopes: new[] { "sharpforms_api", }));
 builder.Services.AddScoped<HttpClient>(serviceProvider =>
     serviceProvider.GetService<IHttpClientFactory>().CreateClient("api"));
 
@@ -31,7 +31,6 @@ builder.Services.AddOidcAuthentication(options =>
     var authority = configurationSection["Authority"];
 
     options.ProviderOptions.DefaultScopes.Add("sharpforms_api");
-    options.ProviderOptions.DefaultScopes.Add("roles");
 });
 
 builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);

@@ -7,23 +7,17 @@ namespace SharpForms.IdentityProvider;
 public static class Config
 {
     public static IEnumerable<IdentityResource> IdentityResources =>
-    [
-        new IdentityResources.OpenId(),
-        new IdentityResources.Profile(),
-        new("roles", ["role"])
-    ];
-    public static IEnumerable<ApiResource> ApiResources =>
-    [
-        new ApiResource("sharpforms_api", "SharpForms API")
+        new IdentityResource[]
         {
-            Scopes = { "sharpforms_api" },
-            UserClaims = { "role" } 
-        }
-    ];
+            new IdentityResources.OpenId(), new IdentityResources.Profile(),
+            new("sharpforms_api", ["role", "email", "custom_claim"]),
+        };
+
+    public static IEnumerable<ApiResource> ApiResources =>
+        new ApiResource[] { };
+
     public static IEnumerable<ApiScope> ApiScopes =>
-    [
-        new("sharpforms_api", ["role"]),
-    ];
+        new ApiScope[] { };
 
     public static IEnumerable<Client> Clients =>
     [
@@ -41,7 +35,6 @@ public static class Config
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
                 "sharpforms_api",
-                "roles",
             },
             RedirectUris = { "https://localhost:7143/authentication/login-callback" },
             RequireClientSecret = false,

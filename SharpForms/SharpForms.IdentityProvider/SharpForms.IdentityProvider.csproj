@@ -13,6 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj" />
+        <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj"/>
     </ItemGroup>
 </Project>

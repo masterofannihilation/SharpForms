@@ -7,8 +7,7 @@ namespace SharpForms.Web.App.Pages.User;
 
 public partial class UserListPage : ComponentBase
 {
-    [CascadingParameter] 
-    public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [Inject] private IUserApiClient UserApiClient { get; set; } = null!;
 
     private string SearchQuery { get; set; } = string.Empty;

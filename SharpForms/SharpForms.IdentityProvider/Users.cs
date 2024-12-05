@@ -16,7 +16,12 @@ public class Users
                 SubjectId = "1",
                 Username = "admin",
                 Password = DefaultPassword,
-                Claims = new List<Claim> { new Claim("role", "admin") }
+                Claims = new List<Claim>
+                {
+                    new Claim("role", "admin"),
+                    new Claim("email", "user@example.com"),
+                    new Claim("custom_claim", "another_value")
+                }
             },
             new TestUser
             {
