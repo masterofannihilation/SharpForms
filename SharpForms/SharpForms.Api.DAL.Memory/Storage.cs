@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using SharpForms.Api.DAL.Common.Entities;
+using SharpForms.Api.DAL.Seeds;
 using SharpForms.Common.Enums;
 
 namespace SharpForms.Api.DAL.Memory
@@ -23,36 +24,11 @@ namespace SharpForms.Api.DAL.Memory
             /***************************************************************************************
             * Users
             */
-            var user1 = new UserEntity
-            {
-                Id = new Guid("26744e13-77c9-49bf-90cd-0310e379e46d"), 
-                Name = "John Doe", 
-                Role = UserRole.General,
-            };
-            var user2 = new UserEntity
-            {
-                Id = new Guid("eebf7395-5e10-4cc5-8c10-a05a0c0f8783"), 
-                Name = "Jane Doe", 
-                Role = UserRole.General,
-            };
-            var user3 = new UserEntity
-            {
-                Id = new Guid("602344a1-3fa0-4c33-befe-00c984cd27db"),
-                Name = "Brock Samson",
-                Role = UserRole.General,
-            };
-            var user4 = new UserEntity
-            {
-                Id = new Guid("c6640bc2-87f0-46ac-ac76-1268be75c970"),
-                Name = "Jeremy Osborne",
-                Role = UserRole.General,
-            };
-            var user5 = new UserEntity
-            {
-                Id = new Guid("3b9387a5-491c-413c-a093-67be1cd3d4fd"),
-                Name = "The Administrator",
-                Role = UserRole.Admin,
-            };
+            var user1 = UserSeeds.User1;
+            var user2 = UserSeeds.User2;
+            var user3 = UserSeeds.User3;
+            var user4 = UserSeeds.User4;
+            var user5 = UserSeeds.User5;
             Users.Add(user1);
             Users.Add(user2);
             Users.Add(user3);

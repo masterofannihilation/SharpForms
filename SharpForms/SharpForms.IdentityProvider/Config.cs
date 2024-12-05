@@ -10,7 +10,7 @@ public static class Config
         new IdentityResource[]
         {
             new IdentityResources.OpenId(), new IdentityResources.Profile(),
-            new("sharpforms_api", ["role", "email", "custom_claim"]),
+            new("sharpforms_api", ["role", "email", "custom_claim", "heyhey"]),
         };
 
     public static IEnumerable<ApiResource> ApiResources =>
@@ -37,6 +37,7 @@ public static class Config
                 "sharpforms_api",
             },
             RedirectUris = { "https://localhost:7143/authentication/login-callback" },
+            PostLogoutRedirectUris = { "https://localhost:7143/" },
             RequireClientSecret = false,
         },
     ];

@@ -13,8 +13,12 @@ else
             <span class="badge bg-secondary ms-3">@User.Role</span>
         </div>
 
-        <NavLink class="btn btn-primary" href='@($"/users/{Id}/edit")'>Edit</NavLink>
-        <button class="btn btn-danger" @onclick="DeleteAsync">Delete</button>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <NavLink class="btn btn-primary" href='@($"/users/{Id}/edit")'>Edit</NavLink>
+                <button class="btn btn-danger" @onclick="DeleteAsync">Delete</button>
+            </Authorized>
+        </AuthorizeView>
 
         <h4>Created Forms</h4>
         @if (User.CreatedForms.Any())

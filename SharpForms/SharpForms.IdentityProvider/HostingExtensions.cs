@@ -1,3 +1,4 @@
+using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Test;
 using Serilog;
 
@@ -19,7 +20,6 @@ internal static class HostingExtensions
             .AddInMemoryApiResources(Config.ApiResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
-            // .AddProfileService<UserProfileService>()
             .AddTestUsers(Users.GetUsers());
 
         return builder.Build();

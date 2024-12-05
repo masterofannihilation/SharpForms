@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\SharpForms.Api.DAL.Seeds\SharpForms.Api.DAL.Seeds.csproj"/>
         <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj"/>
     </ItemGroup>
 </Project>

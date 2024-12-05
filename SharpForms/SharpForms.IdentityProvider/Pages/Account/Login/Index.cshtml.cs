@@ -1,6 +1,7 @@
 // Copyright (c) Duende Software. All rights reserved.
 // See LICENSE in the project root for license information.
 
+using System.Security.Claims;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
@@ -96,9 +97,12 @@ public class Index : PageModel
         if (ModelState.IsValid)
         {
             // validate username/password against in-memory store
-            if (_users.ValidateCredentials(Input.Username, Input.Password))
+            // if (_users.ValidateCredentials(Input.Username, Input.Password))
+            if (Users.ValidateUser(Input.Username!,
+                    Input.Password!)) // Passwords are not saved for the simplicity of this project. 
             {
-                var user = _users.FindByUsername(Input.Username);
+                // var user = _users.FindByUsername(Input.Username);
+                var user = Users.GetUsers().FirstOrDefault(u => u.Username == Input.Username!)!;
                 await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username,
                     clientId: context?.Client.ClientId));
                 Telemetry.Metrics.UserLogin(context?.Client.ClientId, IdentityServerConstants.LocalIdentityProvider);
@@ -115,7 +119,7 @@ public class Index : PageModel
                 ;
 
                 // issue authentication cookie with subject ID and username
-                var isuser = new IdentityServerUser(user.SubjectId) { DisplayName = user.Username };
+                var isuser = new IdentityServerUser(user.SubjectId) { DisplayName = user.Username, };
 
                 await HttpContext.SignInAsync(isuser, props);
 
