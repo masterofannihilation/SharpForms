@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Duende.IdentityServer" Version="7.0.8"/>
+
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SharpForms.Api.DAL.Seeds\SharpForms.Api.DAL.Seeds.csproj"/>
+        <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj"/>
+    </ItemGroup>
+</Project>

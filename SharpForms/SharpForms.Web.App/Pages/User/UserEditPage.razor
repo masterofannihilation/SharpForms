@@ -1,6 +1,7 @@
 @page "/users/create"
 @page "/users/{id:guid}/edit"
 @using SharpForms.Common.Enums
+@attribute [Authorize(Roles = nameof(UserRole.Admin))]
 
 <h3>UserEditPage</h3>
 

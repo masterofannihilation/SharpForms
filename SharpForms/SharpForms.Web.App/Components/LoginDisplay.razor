@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<AuthorizeView>
+    <Authorized>
+        <div class="nav-link font-weight-bold">
+            @DisplayName
+        </div>
+
+        <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
+    </Authorized>
+    <NotAuthorized>
+        <a href="authentication/login" class="nav-link font-weight-bold">Log in</a>
+    </NotAuthorized>
+</AuthorizeView> 

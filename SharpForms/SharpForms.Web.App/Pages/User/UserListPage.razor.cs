@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using SharpForms.Common.Models.User;
 using SharpForms.Web.BL.ApiClients;
 
