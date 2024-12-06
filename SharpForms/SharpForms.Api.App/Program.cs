@@ -101,7 +101,7 @@ void ConfigureAuthentication(IServiceCollection services, string identityServerU
     {
         options.AddPolicy(UserRole.Admin.ToString(), policy =>
         {
-            policy.RequireClaim("role", UserRole.Admin.ToString());
+            policy.RequireRole(UserRole.Admin.ToString());
         });
     });
     services.AddHttpContextAccessor();
@@ -140,7 +140,7 @@ void UseUserEndpoints(RouteGroupBuilder routeGroupBuilder)
             }
             
             return name != null ? facade.SearchAllByName(name) : facade.GetAll();
-        }).RequireAuthorization();
+        });
 
     // Get user detail
     userEndpoints.MapGet("{id:guid}",
@@ -154,13 +154,13 @@ void UseUserEndpoints(RouteGroupBuilder routeGroupBuilder)
     {
         var createdUserId = userFacade.Create(user);
         return TypedResults.Ok(createdUserId);
-    }).RequireAuthorization();
+    }).RequireAuthorization(UserRole.Admin.ToString());
 
     // Update user details
-    userEndpoints.MapPut("", (UserDetailModel user, IUserDetailFacade userFacade) => userFacade.Update(user));
+    userEndpoints.MapPut("", (UserDetailModel user, IUserDetailFacade userFacade) => userFacade.Update(user)).RequireAuthorization(UserRole.Admin.ToString());
 
     // Delete user
-    userEndpoints.MapDelete("{id:guid}", (Guid id, IUserDetailFacade userFacade) => userFacade.Delete(id));
+    userEndpoints.MapDelete("{id:guid}", (Guid id, IUserDetailFacade userFacade) => userFacade.Delete(id)).RequireAuthorization(UserRole.Admin.ToString());
 }
 
 void UseFormEndpoints(RouteGroupBuilder routeGroupBuilder)

@@ -15,10 +15,11 @@ builder.Configuration.AddJsonFile("appsettings.json");
 
 var apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
 builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);
+builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
 builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(apiBaseUrl))
     .AddHttpMessageHandler(serviceProvider
-        => serviceProvider?.GetService<AuthorizationMessageHandler>()
+        => serviceProvider?.GetService<CustomAuthorizationMessageHandler>()
             ?.ConfigureHandler(
                 authorizedUrls: new[] { apiBaseUrl },
                 scopes: new[] { "sharpforms_api", }));

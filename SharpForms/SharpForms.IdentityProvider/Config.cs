@@ -6,18 +6,40 @@ namespace SharpForms.IdentityProvider;
 
 public static class Config
 {
-    public static IEnumerable<IdentityResource> IdentityResources =>
-        new IdentityResource[]
-        {
-            new IdentityResources.OpenId(), new IdentityResources.Profile(),
-            new("sharpforms_api", ["role", "email", "custom_claim", "heyhey"]),
-        };
+    public static IEnumerable<IdentityResource> IdentityResources
+    {
+get
+    {
+        var profileIdentityResources = new IdentityResources.Profile();
+        profileIdentityResources.UserClaims.Add("username");
+        profileIdentityResources.UserClaims.Add("role");
+
+        return
+        [
+            new IdentityResources.OpenId(),
+            profileIdentityResources
+        ];
+    }
+}
 
     public static IEnumerable<ApiResource> ApiResources =>
-        new ApiResource[] { };
+        new ApiResource[]
+        {
+            new ApiResource("sharpforms_api", "SharpForms API")
+            {
+                Scopes = { "sharpforms_api" },
+                UserClaims = { "name", "role" }
+            }
+        };
 
     public static IEnumerable<ApiScope> ApiScopes =>
-        new ApiScope[] { };
+        new ApiScope[]
+        {
+            new ApiScope("sharpforms_api", "Access to SharpForms API")
+            {
+                UserClaims = { "name", "role" }
+            }
+        };
 
     public static IEnumerable<Client> Clients =>
     [
