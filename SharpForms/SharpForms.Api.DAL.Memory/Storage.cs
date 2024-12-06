@@ -99,7 +99,7 @@ namespace SharpForms.Api.DAL.Memory
             {
                 Id = new Guid("b4387eeb-6f6d-4b83-97db-5408a9f92c91"),
                 FormId = form1.Id,
-                Order = 3,
+                Order = 2,
                 Text = "What product or service did you use?",
                 AnswerType = AnswerType.Selection
             };
@@ -107,7 +107,7 @@ namespace SharpForms.Api.DAL.Memory
             {
                 Id = new Guid("43e50a0d-2f95-45b1-9884-ea5d5987b4f3"),
                 FormId = form1.Id,
-                Order = 4,
+                Order =3,
                 Text = "Would you recommend us to others?",
                 AnswerType = AnswerType.Selection
             };
@@ -115,7 +115,7 @@ namespace SharpForms.Api.DAL.Memory
             {
                 Id = new Guid("4b04120f-63b5-4f95-b5b2-3ec0f1bff0d6"),
                 FormId = form1.Id,
-                Order = 5,
+                Order = 4,
                 Text = "How often do you use our services?",
                 AnswerType = AnswerType.Selection
             };
@@ -123,7 +123,7 @@ namespace SharpForms.Api.DAL.Memory
             {
                 Id = new Guid("62e13887-0f55-4d1c-95d8-89f55de3f73a"),
                 FormId = form1.Id,
-                Order = 7,
+                Order = 5,
                 Text = "What could we improve?",
                 AnswerType = AnswerType.Text
             };
@@ -131,7 +131,7 @@ namespace SharpForms.Api.DAL.Memory
             {
                 Id = new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"),
                 FormId = form1.Id,
-                Order = 2,
+                Order = 6,
                 Text = "Please provide any additional feedback.",
                 AnswerType = AnswerType.Text
             };

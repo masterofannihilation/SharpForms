@@ -18,7 +18,7 @@ public class QuestionListFacadeTests : FacadeTestFixture
     {
         var model = _facade.GetById(new Guid("1a43843d-450b-43a9-b2da-ccfe18fcfc52"));
 
-        Assert.Equal(2, model!.Order);
+        Assert.Equal(6, model!.Order);
         Assert.Equal("Please provide any additional feedback.", model!.Text);
         Assert.Null(model!.Description);
     }

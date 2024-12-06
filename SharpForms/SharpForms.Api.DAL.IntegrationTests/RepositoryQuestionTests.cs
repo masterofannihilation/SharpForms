@@ -62,6 +62,7 @@ namespace SharpForms.Api.DAL.IntegrationTests
 
             Assert.NotNull(fetchedQuestion);
             Assert.Contains(fetchedQuestion.Answers, a => a.Id == answer!.Id);
+            Assert.NotEmpty(fetchedQuestion.Options);
             Assert.Equal(fetchedQuestion.Form, form);
             Assert.Contains(selectOption, fetchedQuestion.Options);
         }

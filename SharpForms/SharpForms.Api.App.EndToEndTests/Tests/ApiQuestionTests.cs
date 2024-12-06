@@ -66,6 +66,27 @@ namespace SharpForms.Api.App.EndToEndTests
         }
 
         [Fact]
+        public async Task GetQuestionDetailCheckIncludedEntities()
+        {
+            var questionId = new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"); // Seed data question
+
+            var response = await Client.Value.GetAsync($"/api/question/{questionId}");
+
+            response.EnsureSuccessStatusCode();
+
+            var question = await response.Content.ReadFromJsonAsync<QuestionDetailModel>();
+
+            Assert.NotNull(question);
+            Assert.NotEmpty(question.Options);
+            Assert.Equal(5, question.Options.Count);
+            Assert.Equal("Very Satisfied", question.Options[0].Value);
+            Assert.NotEmpty(question.Answers);
+            Assert.Equal(questionId, question.Id);
+            Assert.Equal("How satisfied are you with our service?", question.Text);
+            Assert.Equal(1, question.Order);
+        }
+
+        [Fact]
         public async Task CreateQuestion()
         {
             var newQuestion = new QuestionDetailModel
@@ -128,7 +149,7 @@ namespace SharpForms.Api.App.EndToEndTests
         }
 
         [Fact]
-        public async Task UpdateQuestion()
+        public async Task UpdateQuestionAddSelectOptions()
         {
             var existingQuestionId = new Guid("fb9b6ba3-fedc-4c23-b055-386fbbf73ec1"); // Seed data question
 
@@ -142,6 +163,12 @@ namespace SharpForms.Api.App.EndToEndTests
                 FormName = "Customer Feedback"
             };
 
+            var sOpt1 = new SelectOptionModel { Id = Guid.NewGuid(), QuestionId = updatedQuestion.Id, Value = "Moze byt" };
+            var sOpt2 = new SelectOptionModel { Id = Guid.NewGuid(), QuestionId = updatedQuestion.Id, Value = "Nic moc" };
+
+            updatedQuestion.Options.Add(sOpt1);
+            updatedQuestion.Options.Add(sOpt2);
+
             var response = await Client.Value.PutAsJsonAsync($"/api/question", updatedQuestion);
             response.EnsureSuccessStatusCode();
 
@@ -151,7 +178,11 @@ namespace SharpForms.Api.App.EndToEndTests
             var updatedQuestionResult = await updatedQuestionResponse.Content.ReadFromJsonAsync<QuestionDetailModel>();
 
             Assert.NotNull(updatedQuestionResult);
+            Assert.NotEmpty(updatedQuestionResult.Options);
+            Assert.Equal(2, updatedQuestionResult.Options.Count);
             Assert.Equal("Updated question text", updatedQuestionResult.Text);
+            Assert.Contains(sOpt1, updatedQuestionResult.Options);
+            Assert.Contains(sOpt2, updatedQuestionResult.Options);
         }
 
         [Fact]

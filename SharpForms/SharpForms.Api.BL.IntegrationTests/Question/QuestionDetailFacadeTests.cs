@@ -44,6 +44,15 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
         }
 
         [Fact]
+        public void Get_QuestionDetailModel_By_Id_Check_Included_Entities()
+        {
+            var model = _questionDetailFacade.GetById(new Guid("4b04120f-63b5-4f95-b5b2-3ec0f1bff0d6"));
+
+            Assert.NotNull(model);
+            Assert.NotEmpty(model.Options);
+        }
+
+        [Fact]
         public void Get_Nonexisting_QuestionDetailModel()
         {
             var questionId = Guid.NewGuid();
@@ -146,6 +155,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
             var updatedModel = _questionDetailFacade.GetById(updatedId.Value);
             Assert.NotNull(updatedModel);
             Assert.NotEmpty(updatedModel.Answers);
+            Assert.NotEmpty(updatedModel.Options);
             Assert.Contains(sOpt1, updatedModel.Options);
             Assert.Contains(sOpt2, updatedModel.Options);
             Assert.Contains(sOpt3, updatedModel.Options);
