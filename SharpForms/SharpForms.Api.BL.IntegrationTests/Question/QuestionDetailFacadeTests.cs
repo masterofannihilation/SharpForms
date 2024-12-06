@@ -6,6 +6,7 @@ using SharpForms.Common.Models.SelectOption;
 using SharpForms.Common.Enums;
 using Xunit;
 using SharpForms.Api.DAL.Common.Entities;
+using SharpForms.Common.Models.Question;
 
 namespace SharpForms.Api.BL.IntegrationTests.Question
 {
@@ -51,7 +52,40 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
 
             Assert.Null(model);
         }
-        
+
+        [Fact]
+        public void Add_New_Question_With_Options()
+        {
+            var newQuestion = new QuestionDetailModel
+            {
+                Id = Guid.NewGuid(),
+                FormId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"), // Seed form
+                Order = 3,
+                Text = "What is your favorite feature?",
+                AnswerType = Common.Enums.AnswerType.Selection,
+                FormName = "Customer Feedback"
+            };
+
+            var sOpt1 = new SelectOptionModel { Id = Guid.NewGuid(), QuestionId = newQuestion.Id, Value = "That the program works" };
+            var sOpt2 = new SelectOptionModel { Id = Guid.NewGuid(), QuestionId = newQuestion.Id, Value = "Nothing" };
+
+
+            newQuestion.Options.Add(sOpt1);
+            newQuestion.Options.Add(sOpt2);
+
+            var createdId = _questionDetailFacade.Create(newQuestion);
+            var createdQuestion = _questionDetailFacade.GetById(createdId);
+            Assert.NotNull(createdQuestion);
+
+            Assert.NotNull(createdQuestion);
+            Assert.Equal(newQuestion.Text, createdQuestion.Text);
+            Assert.NotEmpty(createdQuestion.Options);
+            Assert.Contains(sOpt1, createdQuestion.Options);
+            Assert.Contains(sOpt2, createdQuestion.Options);
+        }
+
+
+
         [Fact]
         public void Update_QuestionDetailModel_Keep_Answers()
         {

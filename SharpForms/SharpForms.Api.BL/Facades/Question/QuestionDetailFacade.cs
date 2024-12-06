@@ -5,6 +5,7 @@ using SharpForms.Api.DAL.Common.Entities;
 using SharpForms.Api.DAL.Common.Repositories;
 using SharpForms.Common.Models.Question;
 using SharpForms.Common.Models.SelectOption;
+using SharpForms.Api.DAL.Common.Entities.Interfaces;
 
 namespace SharpForms.Api.BL.Facades.Question
 {
@@ -13,7 +14,7 @@ namespace SharpForms.Api.BL.Facades.Question
         IMapper mapper,
         IAnswerListFacade answerListFacade,
         IAnswerDetailFacade answerDetailFacade,
-        ISelectOptionFacade selectOptionFacade) 
+        ISelectOptionFacade selectOptionFacade)
         : DetailModelFacadeBase<QuestionEntity, QuestionDetailModel>(questionRepository, mapper), IQuestionDetailFacade
     {
         public override Guid? Update(QuestionDetailModel model)
@@ -25,7 +26,8 @@ namespace SharpForms.Api.BL.Facades.Question
             entity.Order = model.Order;
 
             // If answerType is not Selection, update entity and return
-            if (model.AnswerType != entity.AnswerType) {
+            if (model.AnswerType != entity.AnswerType)
+            {
                 entity.AnswerType = model.AnswerType;
                 if (model.AnswerType != SharpForms.Common.Enums.AnswerType.Selection)
                 {
@@ -91,6 +93,18 @@ namespace SharpForms.Api.BL.Facades.Question
                     selectOptionFacade.Create(newOption);
 
             return questionRepository.Update(entity);
+        }
+
+        public override Guid Create(QuestionDetailModel model)
+        {
+            if (model.Id == new Guid())
+                model.Id = Guid.NewGuid();
+
+            foreach (var newOption in model.Options)
+                selectOptionFacade.Create(newOption);
+
+            var entity = mapper.Map<QuestionEntity>(model);
+            return questionRepository.Insert(entity);
         }
     }
 }

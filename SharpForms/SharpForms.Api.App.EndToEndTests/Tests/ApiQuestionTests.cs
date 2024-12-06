@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using SharpForms.Common.Models.Question;
+using SharpForms.Common.Models.SelectOption;
 using Xunit;
 
 namespace SharpForms.Api.App.EndToEndTests
@@ -88,6 +89,42 @@ namespace SharpForms.Api.App.EndToEndTests
 
             Assert.NotNull(createdQuestion);
             Assert.Equal(newQuestion.Text, createdQuestion.Text);
+        }
+
+        [Fact]
+        public async Task CreateQuestionWithSelection()
+        {
+            var newQuestion = new QuestionDetailModel
+            {
+                Id = Guid.NewGuid(),
+                FormId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"), // Seed form
+                Order = 3,
+                Text = "What is your favorite feature?",
+                AnswerType = Common.Enums.AnswerType.Selection,
+                FormName = "Customer Feedback"
+            };
+
+            var sOpt1 = new SelectOptionModel { Id = Guid.NewGuid(), QuestionId = newQuestion.Id, Value = "That the program works" };
+            var sOpt2 = new SelectOptionModel { Id = Guid.NewGuid(), QuestionId = newQuestion.Id, Value = "Nothing" };
+
+
+            newQuestion.Options.Add(sOpt1);
+            newQuestion.Options.Add(sOpt2);
+
+            var response = await Client.Value.PostAsJsonAsync("/api/question", newQuestion);
+            var questionId = await response.Content.ReadFromJsonAsync<Guid>();
+            response.EnsureSuccessStatusCode();
+
+            // Retrieve the newly created question to verify
+            var createdQuestionResponse = await Client.Value.GetAsync($"/api/question/{questionId}");
+            createdQuestionResponse.EnsureSuccessStatusCode();
+            var createdQuestion = await createdQuestionResponse.Content.ReadFromJsonAsync<QuestionDetailModel>();
+
+            Assert.NotNull(createdQuestion);
+            Assert.Equal(newQuestion.Text, createdQuestion.Text);
+            Assert.NotEmpty(createdQuestion.Options);
+            Assert.Contains(sOpt1, createdQuestion.Options);
+            Assert.Contains(sOpt2, createdQuestion.Options);
         }
 
         [Fact]
