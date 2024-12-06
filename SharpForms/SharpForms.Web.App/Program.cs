@@ -14,10 +14,12 @@ builder.Services.AddBlazorBootstrap();
 builder.Configuration.AddJsonFile("appsettings.json");
 
 var apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
+builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);
+builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
 builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(apiBaseUrl))
     .AddHttpMessageHandler(serviceProvider
-        => serviceProvider?.GetService<AuthorizationMessageHandler>()
+        => serviceProvider?.GetService<CustomAuthorizationMessageHandler>()
             ?.ConfigureHandler(
                 authorizedUrls: new[] { apiBaseUrl },
                 scopes: new[] { "sharpforms_api", }));
@@ -34,8 +36,9 @@ builder.Services.AddOidcAuthentication(options =>
     options.UserOptions.RoleClaim = "role";
 });
 
-builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);
+var app = builder.Build();
+    
+await app.RunAsync();
 
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-await builder.Build().RunAsync();
+
