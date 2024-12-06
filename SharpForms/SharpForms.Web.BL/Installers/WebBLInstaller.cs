@@ -10,6 +10,23 @@ namespace SharpForms.Web.BL.Installers
     {
         public void Install(IServiceCollection serviceCollection, string apiBaseUrl)
         {
+            serviceCollection.AddTransient<IUserApiClient, UserApiClient>(provider =>
+            {
+                var client = CreateApiHttpClient(provider, apiBaseUrl);
+                return new UserApiClient(client, apiBaseUrl);
+            });
+            
+            serviceCollection.AddTransient<IFormApiClient, FormApiClient>(provider =>
+            {
+                var client = CreateApiHttpClient(provider, apiBaseUrl);
+                return new FormApiClient(client, apiBaseUrl);
+            });
+            
+            serviceCollection.AddTransient<IQuestionApiClient, QuestionApiClient>(provider =>
+            {
+                var client = CreateApiHttpClient(provider, apiBaseUrl);
+                return new QuestionApiClient(client, apiBaseUrl);
+            });
             serviceCollection.AddScoped<IUserApiClient, UserApiClient>();
         }
 

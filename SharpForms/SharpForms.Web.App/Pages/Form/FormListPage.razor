@@ -1,0 +1,33 @@
+@page "/forms"
+
+<PageTitle>Forms</PageTitle>
+
+<h3>Forms List</h3>
+
+<div class="d-flex flex-column align-items-start">
+    <!-- Search Bar -->
+    <InputText @bind-Value="SearchQuery" class="form-control mb-3 w-auto" placeholder="Search forms..." />
+
+    <!-- Buttons -->
+    <div class="d-flex justify-content-start gap-3">
+        <NavLink class="btn btn-success" href="/forms/create">Create Form</NavLink>
+        <button class="btn btn-primary" @onclick="SearchForms">Search</button>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap mt-4">
+    @foreach (var form in Forms)
+    {
+        <div class="card mb-3 me-3" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@form.Name</h5>
+                <p class="card-text">
+                    Open Since: @(form.OpenSince?.ToString("yyyy-MM-dd") ?? "N/A") <br />
+                    Open Until: @(form.OpenUntil?.ToString("yyyy-MM-dd") ?? "N/A") <br />
+                </p>
+                <NavLink class="btn btn-primary" href="@($"/forms/{form.Id}/detail")">Detail</NavLink>
+                <NavLink class="btn btn-primary" href="@($"/forms/{form.Id}/edit")">Edit</NavLink>
+            </div>
+        </div>
+    }
+</div>

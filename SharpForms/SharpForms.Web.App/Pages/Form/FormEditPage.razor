@@ -1,0 +1,104 @@
+@page "/forms/{id:guid}/edit"
+
+<PageTitle>Edit Form </PageTitle>
+<h3>@Form?.Name</h3>
+
+@if (Form == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="mt-4 mb-5"> <!-- Added mb-5 for bottom margin -->
+        <h4>Add New Question</h4>
+        <EditForm Model="NewQuestion" OnValidSubmit="AddQuestion">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="mb-3">
+                <label class="form-label">Question</label>
+                <InputText class="form-control" @bind-Value="NewQuestion.Text" placeholder="Question" />
+                <ValidationMessage For="@(() => NewQuestion.Text)" class="text-danger" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <InputText class="form-control" @bind-Value="NewQuestion.Description" placeholder="Description" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Answer Type</label>
+                <InputSelect class="form-select" @bind-Value="NewQuestion.AnswerType">
+                    <option value="Text">Text</option>
+                    <option value="Integer">Integer</option>
+                    <option value="Decimal">Decimal</option>
+                    <option value="Selection">Selection</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => NewQuestion.AnswerType)" class="text-danger" />
+            </div>
+
+            @if (NewQuestion.AnswerType == Common.Enums.AnswerType.Selection)
+            {
+                <div class="mb-3">
+                    <h5>Options</h5>
+                    @foreach (var option in NewQuestion.Options)
+                    {
+                        <div class="input-group mb-2">
+                            <InputText class="form-control" @bind-Value="option.Value" placeholder="Option value" />
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveOption(option)">Remove</button>
+                        </div>
+                    }
+                    <button type="button" class="btn btn-primary btn-sm" @onclick="AddOption">Add Option</button>
+                </div>
+            }
+
+            <button type="submit" class="btn btn-success">Add Question</button>
+        </EditForm>
+
+        @if (ValidationResults.Any())
+        {
+            <div class="alert alert-danger mt-3">
+                <ul>
+                    @foreach (var validationResult in ValidationResults)
+                    {
+                        <li>@validationResult.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+    
+    <div>
+        <h4>Current Questions</h4>
+        <ul class="list-group">
+            @foreach (var question in QuestionsAll)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>@question.Text - @question.AnswerType</span>
+                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveQuestion(question.Id)">Remove</button>
+                    </div>
+                    @if (question.AnswerType == Common.Enums.AnswerType.Selection)
+                    {
+                        <ul class="list-group mt-2">
+                            @foreach (var option in question.Options)
+                            {
+                                <li class="list-group-item">@option.Value</li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+<style>
+    .list-group-item {
+        margin-bottom: 10px;
+    }
+
+    .input-group .form-control {
+        margin-right: 10px;
+    }
+</style>
