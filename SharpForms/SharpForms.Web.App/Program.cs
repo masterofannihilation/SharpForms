@@ -14,6 +14,7 @@ builder.Services.AddBlazorBootstrap();
 builder.Configuration.AddJsonFile("appsettings.json");
 
 var apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
+builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);
 
 builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(apiBaseUrl))
     .AddHttpMessageHandler(serviceProvider
@@ -34,8 +35,9 @@ builder.Services.AddOidcAuthentication(options =>
     options.UserOptions.RoleClaim = "role";
 });
 
-builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);
+var app = builder.Build();
+    
+await app.RunAsync();
 
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-await builder.Build().RunAsync();
+

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Localization;
 using SharpForms.Api.BL;
 using SharpForms.Api.DAL.Memory;
@@ -20,6 +21,7 @@ using SharpForms.Api.App.Extensions;
 using SharpForms.Api.App.Processors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Localization;
+using SharpForms.Common.Enums;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -95,7 +97,13 @@ void ConfigureAuthentication(IServiceCollection services, string identityServerU
         options.TokenValidationParameters.ValidateAudience = false;
     });
 
-    services.AddAuthorization();
+    services.AddAuthorization(options =>
+    {
+        options.AddPolicy(UserRole.Admin.ToString(), policy =>
+        {
+            policy.RequireClaim("role", UserRole.Admin.ToString());
+        });
+    });
     services.AddHttpContextAccessor();
 }
 
@@ -118,7 +126,21 @@ void UseUserEndpoints(RouteGroupBuilder routeGroupBuilder)
 
     // List users, search by name
     userEndpoints.MapGet("",
-        (string? name, IUserListFacade facade) => name != null ? facade.SearchAllByName(name) : facade.GetAll());
+        (string? name, IUserListFacade facade, ClaimsPrincipal userClaims) =>
+        {
+            if (userClaims.Identity != null)
+            {
+                var userName = userClaims.Identity.Name;
+                var role = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+                Console.WriteLine($"User Name: {userName}, Role: {role}");
+            }
+            if (userClaims.HasClaim(c=> c.Type == ClaimTypes.Role))
+            {
+                
+            }
+            
+            return name != null ? facade.SearchAllByName(name) : facade.GetAll();
+        }).RequireAuthorization();
 
     // Get user detail
     userEndpoints.MapGet("{id:guid}",
@@ -132,7 +154,7 @@ void UseUserEndpoints(RouteGroupBuilder routeGroupBuilder)
     {
         var createdUserId = userFacade.Create(user);
         return TypedResults.Ok(createdUserId);
-    });
+    }).RequireAuthorization();
 
     // Update user details
     userEndpoints.MapPut("", (UserDetailModel user, IUserDetailFacade userFacade) => userFacade.Update(user));

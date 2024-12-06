@@ -39,6 +39,7 @@ public static class Config
             RedirectUris = { "https://localhost:7143/authentication/login-callback" },
             PostLogoutRedirectUris = { "https://localhost:7143/" },
             RequireClientSecret = false,
+            RequirePkce = true,
         },
     ];
 }
