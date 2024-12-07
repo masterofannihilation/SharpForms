@@ -8,4 +8,5 @@ public interface IFormListFacade : IListModelFacade<FormEntity, FormListModel>
 {
     List<FormListModel> SearchAllByName(string name);
     List<FormListModel> GetAllCreatedBy(Guid creatorId);
+    List<FormListModel> SearchAllByNameAndCreatedBy(string name, Guid creatorId);
 }

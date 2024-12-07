@@ -19,4 +19,9 @@ public class FormListFacade(IFormRepository formRepository, IMapper mapper)
     {
         return formRepository.GetAllFiltered(null, creatorId).AsEnumerable().Select(this.GetEntityToModel).ToList();
     }
+
+    public List<FormListModel> SearchAllByNameAndCreatedBy(string name, Guid creatorId)
+    {
+        return formRepository.GetAllFiltered(name, creatorId).AsEnumerable().Select(this.GetEntityToModel).ToList();
+    }
 }
