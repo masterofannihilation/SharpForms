@@ -54,6 +54,6 @@ stages:
         ConnectionType: 'AzureRM'
         azureSubscription: '$(AzureSubscriptionId)'
         appType: 'webApp'
-        WebAppName: '$app-iw5-2024-team-xkruli03-api'
+        WebAppName: 'app-iw5-2024-team-xkruli03-api'
         ResourceGroupName: '$(ResourceGroup)'
         Package: '$(Pipeline.Workspace)/artifact.$(ProjectAPI)'
