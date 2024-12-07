@@ -21,10 +21,10 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          Connect-AzAccount -SubscriptionId $(AzureSubscriptionId)
+          Connect-AzAccount -SubscriptionId "$(AzureSubscriptionId)"
 
           $AppServiceName = 'app-iw5-2024-team-xkruli03-api'
           $PackagePath = "$(Pipeline.Workspace)/SharpForms.Api.App"
 
-          Publish-AzWebApp -ResourceGroupName "$ResourceGroup" -Name $AppServiceName -ArchivePath $PackagePath
+          Publish-AzWebApp -ResourceGroupName "$ResourceGroup" -Name "$AppServiceName" -ArchivePath "$PackagePath"
 
