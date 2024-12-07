@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using SharpForms.Common.Enums;
 using SharpForms.Common.Models.Answer;
 using SharpForms.Common.Models.SelectOption;
@@ -10,6 +11,8 @@ namespace SharpForms.Common.Models.Question
         public required string FormName { get; set; }
 
         public int Order { get; set; }
+        
+        [Required(ErrorMessage = "Question text is required")]
         public required string Text { get; set; }
         public string? Description { get; set; }
         public AnswerType AnswerType { get; set; }

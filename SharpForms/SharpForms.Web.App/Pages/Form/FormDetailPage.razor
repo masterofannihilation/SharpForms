@@ -1,0 +1,34 @@
+@page "/forms/{id:guid}/detail"
+
+<PageTitle>Form Detail</PageTitle>
+
+@if (Form == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <h4>@Form.Name</h4>
+        <p><strong>Open Since:</strong> @Form.OpenSince?.ToString("MM/dd/yyyy")</p>
+        <p><strong>Open Until:</strong> @Form.OpenUntil?.ToString("MM/dd/yyyy")</p>
+        <p><strong>Created By:</strong> @Form.Creator?.Name</p>
+
+        <h5>Questions</h5>
+        @if (Form.Questions.Any())
+        {
+            <ul>
+                @foreach (var question in Form.Questions)
+                {
+                    <li>@question.Text</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No questions available for this form.</p>
+        }
+
+        <button class="btn btn-danger" @onclick="DeleteAsync">Delete Form</button>
+    </div>
+}
