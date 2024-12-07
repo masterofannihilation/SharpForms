@@ -13,6 +13,9 @@ variables:
   ResourceGroup: 'rg-iw5-2024-project'
   buildConfiguration: 'Release'
   solution: '**/*.sln'
+  outputDir: '$(Pipeline.Workspace)/publish'
+  SolutionName: 'SharpForms'
+  ProjectAPI: 'SharpForms.Api.App'
 
 stages:
 - stage: Build
@@ -27,17 +30,25 @@ stages:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
-
+    
     - task: DotNetCoreCLI@2
       inputs:
-        command: 'build'
-        projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration)'
+        command: 'publish'
+        projects: '$(SolutionName)/$(ProjectAPI)/$(ProjectAPI).csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(outputDir)/$(ProjectAPI)'
+      displayName: 'Publish $(ProjectAPI)'
+
+    - publish: '$(outputDir)/$(ProjectAPI)'
+      artifact: 'artifact.$(ProjectAPI)'
+
 
 - stage: Deploy
   jobs:
   - job: DeployApp
     steps:
+    - download: current
+      artifact: 'artifact.$(ProjectAPI)'
+
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
@@ -45,4 +56,4 @@ stages:
         appType: 'webApp'
         WebAppName: '$app-iw5-2024-team-xkruli03-api'
         ResourceGroupName: '$(ResourceGroup)'
-        Package: '$(Pipeline.Workspace)/SharpForms/SharpForms.Api.App'
+        Package: '$(Pipeline.Workspace)/artifact.$(ProjectAPI)'
