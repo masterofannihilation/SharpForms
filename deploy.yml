@@ -11,6 +11,8 @@ pool:
 variables:
   AzureSubscriptionId: 'Azure for Students(c6f940ca-9b9f-41e0-8194-16017f517c32)'
   ResourceGroup: 'rg-iw5-2024-project'
+  buildConfiguration: 'Release'
+  solution: '**/*.sln'
 
 stages:
 - stage: Build
