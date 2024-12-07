@@ -68,7 +68,6 @@ namespace SharpForms.Web.App.Pages.Form
             }
             catch (Exception ex)
             {
-                // Optionally handle other errors here
                 Console.WriteLine(ex.Message);
             }
         }

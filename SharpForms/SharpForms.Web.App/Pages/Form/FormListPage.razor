@@ -16,18 +16,25 @@
 </div>
 
 <div class="d-flex flex-wrap mt-4">
-    @foreach (var form in Forms)
+    @if (Forms.Any())
     {
-        <div class="card mb-3 me-3" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">@form.Name</h5>
-                <p class="card-text">
-                    Open Since: @(form.OpenSince?.ToString("yyyy-MM-dd") ?? "N/A") <br />
-                    Open Until: @(form.OpenUntil?.ToString("yyyy-MM-dd") ?? "N/A") <br />
-                </p>
-                <NavLink class="btn btn-primary" href="@($"/forms/{form.Id}/detail")">Detail</NavLink>
-                <NavLink class="btn btn-primary" href="@($"/forms/{form.Id}/edit")">Edit</NavLink>
+        @foreach (var form in Forms)
+        {
+            <div class="card mb-3 me-3" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@form.Name</h5>
+                    <p class="card-text">
+                        Open Since: @(form.OpenSince?.ToString("yyyy-MM-dd") ?? "N/A") <br/>
+                        Open Until: @(form.OpenUntil?.ToString("yyyy-MM-dd") ?? "N/A") <br/>
+                    </p>
+                    <NavLink class="btn btn-primary" href="@($"/forms/{form.Id}/detail")">Detail</NavLink>
+                    <NavLink class="btn btn-primary" href="@($"/forms/{form.Id}/edit")">Edit</NavLink>
+                </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>Loading...</p>
     }
 </div>

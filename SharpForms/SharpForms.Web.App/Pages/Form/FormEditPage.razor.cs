@@ -15,7 +15,7 @@ public partial class FormEditPage : ComponentBase
     private FormDetailModel? Form { get; set; }
     private List<QuestionDetailModel> QuestionsAll { get; set; } = new();
 
-    private QuestionDetailModel NewQuestion { get; set; } = new()
+    private QuestionDetailModel EditingQuestion { get; set; } = new()
     {
         Id = Guid.NewGuid(),
         FormName = string.Empty,
@@ -24,14 +24,13 @@ public partial class FormEditPage : ComponentBase
     };
 
     private List<ValidationResult> ValidationResults { get; set; } = new();
+    private bool IsEditing { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
         Form = await FormApiClient.FormGetAsync(Id, "en");
         await LoadQuestions();
-        NewQuestion.FormId = Id;
-        NewQuestion.FormName = Form?.Name ?? string.Empty;
-        NewQuestion.Order = QuestionsAll.Count + 1;
+        ResetEditingQuestion();
         await base.OnInitializedAsync();
     }
 
@@ -49,56 +48,52 @@ public partial class FormEditPage : ComponentBase
 
     private void AddOption()
     {
-        NewQuestion.Options.Add(new SelectOptionModel
+        EditingQuestion.Options.Add(new SelectOptionModel
         {
-            QuestionId = NewQuestion.Id,
+            QuestionId = EditingQuestion.Id,
             Id = Guid.NewGuid(),
             Value = string.Empty
         });
     }
 
-    private async Task AddQuestion()
+    private async Task SaveQuestion()
     {
-        if (!ValidateNewQuestion())
+        if (!ValidateQuestion())
         {
             return;
         }
 
         try
         {
-            await QuestionApiClient.QuestionPostAsync("en", NewQuestion);
-            await LoadQuestions();
-
-            // Reset NewQuestion after posting
-            NewQuestion = new QuestionDetailModel
+            if (IsEditing)
             {
-                Id = Guid.NewGuid(),
-                FormId = Id,
-                FormName = Form?.Name ?? string.Empty,
-                Text = string.Empty,
-                Order = QuestionsAll.Count + 1,
-                AnswerType = Common.Enums.AnswerType.Text,
-                Options = new List<SelectOptionModel>()
-            };
+                await QuestionApiClient.QuestionPutAsync("en", EditingQuestion);
+            }
+            else
+            {
+                await QuestionApiClient.QuestionPostAsync("en", EditingQuestion);
+            }
+            await LoadQuestions();
+            ResetEditingQuestion();
         }
-        catch (ValidationException ex)
+        catch (ApiException ex)
         {
             Console.WriteLine(ex.Message);
         }
     }
 
-    private bool ValidateNewQuestion()
+    private bool ValidateQuestion()
     {
-        var context = new ValidationContext(NewQuestion);
+        var context = new ValidationContext(EditingQuestion);
         ValidationResults = new List<ValidationResult>();
-        bool isValid = Validator.TryValidateObject(NewQuestion, context, ValidationResults, true);
+        bool isValid = Validator.TryValidateObject(EditingQuestion, context, ValidationResults, true);
 
-        foreach (var option in NewQuestion.Options)
+        foreach (var option in EditingQuestion.Options)
         {
             var optionContext = new ValidationContext(option);
             isValid &= Validator.TryValidateObject(option, optionContext, ValidationResults, true);
         }
-        if (NewQuestion.Options.Count < 2 && NewQuestion.AnswerType == Common.Enums.AnswerType.Selection)
+        if (EditingQuestion.Options.Count < 2 && EditingQuestion.AnswerType == Common.Enums.AnswerType.Selection)
         {
             ValidationResults.Add(new ValidationResult("You must have at least 2 options.", new List<string> { "Options" }));
         }
@@ -108,12 +103,53 @@ public partial class FormEditPage : ComponentBase
 
     private void RemoveOption(SelectOptionModel option)
     {
-        NewQuestion.Options.Remove(option);
+        EditingQuestion.Options.Remove(option);
     }
 
     private async Task RemoveQuestion(Guid questionId)
     {
         await QuestionApiClient.QuestionDeleteAsync(questionId, "en");
         await LoadQuestions();
+    }
+
+    private void EditQuestion(QuestionDetailModel question)
+    {
+        EditingQuestion = new QuestionDetailModel
+        {
+            Id = question.Id,
+            FormId = question.FormId,
+            FormName = question.FormName,
+            Text = question.Text,
+            Description = question.Description,
+            AnswerType = question.AnswerType,
+            Order = question.Order,
+            Options = new List<SelectOptionModel>(question.Options.Select(o => new SelectOptionModel
+            {
+                Id = o.Id,
+                QuestionId = o.QuestionId,
+                Value = o.Value
+            }))
+        };
+        IsEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        ResetEditingQuestion();
+    }
+
+    private void ResetEditingQuestion()
+    {
+        EditingQuestion = new QuestionDetailModel
+        {
+            Id = Guid.NewGuid(),
+            FormId = Id,
+            FormName = Form?.Name ?? string.Empty,
+            Text = string.Empty,
+            Order = QuestionsAll.Count + 1,
+            AnswerType = Common.Enums.AnswerType.Text,
+            Options = new List<SelectOptionModel>()
+        };
+        IsEditing = false;
     }
 }
