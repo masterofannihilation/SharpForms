@@ -13,18 +13,34 @@ variables:
   ResourceGroup: 'rg-iw5-2024-project'
 
 stages:
-- stage: DeployAPI
+- stage: Build
   jobs:
-  - job: DeployAPI
+  - job: BuildApp
     steps:
-    - task: PowerShell@2
+    - task: UseDotNet@2
       inputs:
-        targetType: 'inline'
-        script: |
-          Connect-AzAccount -SubscriptionId "$(AzureSubscriptionId)"
+        packageType: 'sdk'
+        version: '8.x'
 
-          $AppServiceName = 'app-iw5-2024-team-xkruli03-api'
-          $PackagePath = "$(Pipeline.Workspace)/SharpForms.Api.App"
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
 
-          Publish-AzWebApp -ResourceGroupName "$ResourceGroup" -Name "$AppServiceName" -ArchivePath "$PackagePath"
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration)'
 
+- stage: Deploy
+  jobs:
+  - job: DeployApp
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: '$(AzureSubscriptionId)'
+        appType: 'webApp'
+        WebAppName: '$app-iw5-2024-team-xkruli03-api'
+        ResourceGroupName: '$(ResourceGroup)'
+        Package: '$(Pipeline.Workspace)/SharpForms/SharpForms.Api.App'
