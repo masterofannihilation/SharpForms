@@ -67,7 +67,7 @@ stages:
         azureSubscription: '$(AzureSubscriptionId)'
         appType: 'webApp'
         appName: 'app-iw5-2024-team-xkruli03-api'
-        package: '$(System.DefaultWorkingDirectory)/**/.zip'
+        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
         resourceGroupName: '$(ResourceGroup)'
         deploymentMethod: 'auto'
       displayName: 'Deploy $(ProjectAPI)'
