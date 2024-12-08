@@ -17,6 +17,7 @@ variables:
   SolutionName: 'SharpForms'
   ProjectAPI: 'SharpForms.Api.App'
   ProjectWeb: 'SharpForms.Web.App'
+  ProjectIdentity: 'SharpForms.IdentityProvider'
 
 stages:
 - stage: Build
@@ -55,6 +56,17 @@ stages:
     - publish: '$(outputDir)/$(ProjectWeb)'
       artifact: 'artifact.$(ProjectWeb)'
 
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        projects: '**/$(ProjectIdentity).csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(outputDir)/$(ProjectIdentity)'
+        publishWebProjects: false
+      displayName: 'Publish $(ProjectIdentity)'
+
+
+    - publish: '$(outputDir)/$(ProjectIdentity)'
+      artifact: 'artifact.$(ProjectIdentity)'
 
 - stage: Deploy
   jobs:
@@ -89,3 +101,16 @@ stages:
         deploymentMethod: 'auto'
       displayName: 'Deploy $(ProjectWeb)'
 
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifact: 'artifact.$(ProjectIdentity)'
+        path: '$(Pipeline.Workspace)'
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: '$(AzureSubscriptionId)'
+        appType: 'webApp'
+        appName: 'app-iw5-2024-team-xkruli03-identity'
+        package: '$(Pipeline.Workspace)/**/$(ProjectIdentity).zip'
+        resourceGroupName: '$(ResourceGroup)'
+        deploymentMethod: 'auto'
+      displayName: 'Deploy $(ProjectIdentity)'
