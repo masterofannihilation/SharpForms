@@ -105,12 +105,13 @@ stages:
       inputs:
         artifact: 'artifact.$(ProjectIdentity)'
         path: '$(Pipeline.Workspace)'
-    - task: AzureWebApp@1
+    - task: AzureRmWebAppDeployment@4
       inputs:
-        azureSubscription: '$(AzureSubscriptionId)'
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Azure for Students(c6f940ca-9b9f-41e0-8194-16017f517c32)'
         appType: 'webApp'
-        appName: 'app-iw5-2024-team-xkruli03-identity'
-        package: '$(Pipeline.Workspace)/**/$(ProjectIdentity).zip'
-        resourceGroupName: '$(ResourceGroup)'
-        deploymentMethod: 'auto'
-      displayName: 'Deploy $(ProjectIdentity)'
+        WebAppName: 'app-iw5-2024-team-xkruli03-identity'
+        packageForLinux: '$(Pipeline.Workspace)/**/$(ProjectIdentity).zip'
+        enableCustomDeployment: true
+        DeploymentType: 'webDeploy'
+        ExcludeFilesFromAppDataFlag: false
