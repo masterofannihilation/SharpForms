@@ -35,8 +35,9 @@ stages:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'publish'
-        projects: '$(SolutionName)/$(ProjectAPI)/$(ProjectAPI).csproj'
+        projects: '**/$(ProjectAPI).csproj'
         arguments: '--configuration $(buildConfiguration) --output $(outputDir)/$(ProjectAPI)'
+        publishWebProjects: false
       displayName: 'Publish $(ProjectAPI)'
 
     - publish: '$(outputDir)/$(ProjectAPI)'
@@ -45,7 +46,7 @@ stages:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'publish'
-        projects: '$(SolutionName)/$(ProjectWeb)/$(ProjectWeb).csproj'
+        projects: '**/$(ProjectWeb).csproj'
         arguments: '--configuration $(buildConfiguration) --output $(outputDir)/$(ProjectWeb)'
       displayName: 'Publish $(ProjectWeb)'
 
