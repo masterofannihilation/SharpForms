@@ -28,7 +28,7 @@ public class Users
             SubjectId = su.Id.ToString(),
             Username = su.Name.ToLower().Replace(" ", ""),
             Password = DefaultPassword,
-            Claims = new List<Claim> { new Claim("role", su.Role.ToString()), new Claim("name", su.Name), }
+            Claims = new List<Claim> { new Claim("role", su.Role.ToString()), new Claim("name", su.Name), new Claim("userid", su.Id.ToString()) }
         }).ToList();
     }
 
