@@ -20,4 +20,9 @@ public class CompletedFormListFacade(ICompletedFormRepository compFormRepository
     {
         return compFormRepository.GetAllFiltered(null, userId).AsEnumerable().Select(this.GetEntityToModel).ToList();
     }
+
+    public List<CompletedFormListModel> GetAllCompletionsOfFormMadeByUser(Guid formId, Guid userId)
+    {
+        return compFormRepository.GetAllFiltered(formId, userId).AsEnumerable().Select(this.GetEntityToModel).ToList();
+    }
 }

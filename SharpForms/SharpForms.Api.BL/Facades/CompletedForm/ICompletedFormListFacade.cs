@@ -8,4 +8,5 @@ public interface ICompletedFormListFacade : IListModelFacade<CompletedFormEntity
 {
     List<CompletedFormListModel> GetAllCopletionsOfForm(Guid formId);
     List<CompletedFormListModel> GetAllCompletionsMadeByUser(Guid userId);
+    List<CompletedFormListModel> GetAllCompletionsOfFormMadeByUser(Guid formId, Guid userId);
 }
