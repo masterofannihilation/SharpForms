@@ -13,6 +13,7 @@ get
         var profileIdentityResources = new IdentityResources.Profile();
         profileIdentityResources.UserClaims.Add("username");
         profileIdentityResources.UserClaims.Add("role");
+        profileIdentityResources.UserClaims.Add("userid");
 
         return
         [
@@ -28,7 +29,7 @@ get
             new ApiResource("sharpforms_api", "SharpForms API")
             {
                 Scopes = { "sharpforms_api" },
-                UserClaims = { "name", "role" }
+                UserClaims = { "name", "role", "userid" }
             }
         };
 
@@ -37,7 +38,7 @@ get
         {
             new ApiScope("sharpforms_api", "Access to SharpForms API")
             {
-                UserClaims = { "name", "role" }
+                UserClaims = { "name", "role", "userid" }
             }
         };
 
