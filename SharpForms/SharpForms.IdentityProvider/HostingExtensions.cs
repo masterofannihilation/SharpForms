@@ -10,6 +10,8 @@ internal static class HostingExtensions
     {
         builder.Services.AddRazorPages();
 
+        var redirectUri = builder.Configuration.GetValue<string>("RedirectUri");
+        
         builder.Services.AddIdentityServer(options =>
             {
                 // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
@@ -19,7 +21,7 @@ internal static class HostingExtensions
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiResources(Config.ApiResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
+            .AddInMemoryClients(Config.Clients(redirectUri!))
             .AddTestUsers(Users.GetUsers());
 
         return builder.Build();

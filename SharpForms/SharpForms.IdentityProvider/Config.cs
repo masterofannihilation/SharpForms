@@ -42,7 +42,7 @@ get
             }
         };
 
-    public static IEnumerable<Client> Clients =>
+    public static IEnumerable<Client> Clients(string redirectUri) =>
     [
         new Client
         {
@@ -59,8 +59,8 @@ get
                 IdentityServerConstants.StandardScopes.Profile,
                 "sharpforms_api",
             },
-            RedirectUris = { "https://localhost:7143/authentication/login-callback" },
-            PostLogoutRedirectUris = { "https://localhost:7143/" },
+            RedirectUris = { redirectUri + "/authentication/login-callback" },
+            PostLogoutRedirectUris = { redirectUri + "/" },
             RequireClientSecret = false,
             RequirePkce = true,
         },
