@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -11,17 +11,19 @@ public class SharpFormsApiApplicationFactory : WebApplicationFactory<Program>
 {
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        
-        builder.ConfigureServices(collection =>
+        builder.ConfigureServices(services =>
         {
-            collection.AddSingleton<IAuthorizationHandler, BypassAuthorizationHandler>();
-            
-            var controllerAssemblyName = typeof(Program).Assembly.FullName;
-            collection.AddMvc().AddApplicationPart(Assembly.Load(controllerAssemblyName!));
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = TestAuthHandler.Scheme;
+                options.DefaultChallengeScheme = TestAuthHandler.Scheme;
+            }).AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.Scheme, options => { });
+
+            services.AddSingleton<IAuthorizationHandler, BypassAuthorizationHandler>();
         });
-        
-        
+
         return base.CreateHost(builder);
     }
+
 }
 

@@ -22,6 +22,8 @@ using SharpForms.Api.App.Processors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Localization;
 using SharpForms.Common.Enums;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -99,6 +101,11 @@ void ConfigureAuthentication(IServiceCollection services, string identityServerU
 
     services.AddAuthorization(options =>
     {
+        options.AddPolicy(UserRole.General.ToString(), policy =>
+        {
+            policy.RequireRole(UserRole.General.ToString());
+        });
+
         options.AddPolicy(UserRole.Admin.ToString(), policy =>
         {
             policy.RequireRole(UserRole.Admin.ToString());
@@ -128,26 +135,15 @@ void UseUserEndpoints(RouteGroupBuilder routeGroupBuilder)
     userEndpoints.MapGet("",
         (string? name, IUserListFacade facade, ClaimsPrincipal userClaims) =>
         {
-            if (userClaims.Identity != null)
-            {
-                var userName = userClaims.Identity.Name;
-                var role = userClaims.FindFirst(ClaimTypes.Role)?.Value;
-                Console.WriteLine($"User Name: {userName}, Role: {role}");
-            }
-            if (userClaims.HasClaim(c=> c.Type == ClaimTypes.Role))
-            {
-                
-            }
-            
             return name != null ? facade.SearchAllByName(name) : facade.GetAll();
-        });
+        }).RequireAuthorization();
 
     // Get user detail
     userEndpoints.MapGet("{id:guid}",
         Results<Ok<UserDetailModel>, NotFound<string>> (Guid id, IUserDetailFacade userFacade)
             => userFacade.GetById(id) is { } user
                 ? TypedResults.Ok(user)
-                : TypedResults.NotFound($"User with ID {id} not found."));
+                : TypedResults.NotFound($"User with ID {id} not found.")).RequireAuthorization();
 
     // Create new user
     userEndpoints.MapPost("", (UserDetailModel user, IUserDetailFacade userFacade) =>
@@ -170,7 +166,18 @@ void UseFormEndpoints(RouteGroupBuilder routeGroupBuilder)
 
     // Get list of forms
     formEndpoints.MapGet("",
-        (string? name, IFormListFacade facade) => name != null ? facade.SearchAllByName(name) : facade.GetAll());
+     (string? name, IFormListFacade facade, ClaimsPrincipal userClaims) =>
+     {
+         var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+         if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var userId))
+             return new List<FormListModel>();
+
+         if (userRole == UserRole.Admin.ToString())
+             return name == null ? facade.GetAll() : facade.SearchAllByName(name);
+
+         return name == null ? facade.GetAllCreatedBy(userId) : facade.SearchAllByNameAndCreatedBy(name, userId);
+     }).RequireAuthorization();
+
 
     // Get form detail
     formEndpoints.MapGet("{id:guid}",
@@ -180,17 +187,48 @@ void UseFormEndpoints(RouteGroupBuilder routeGroupBuilder)
                 : TypedResults.NotFound($"Form with ID {id} not found."));
 
     // Create new Form
-    formEndpoints.MapPost("", (FormDetailModel form, IFormDetailFacade formFacade) =>
+    formEndpoints.MapPost("", (FormDetailModel form, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
     {
         var createdFormId = formFacade.Create(form);
         return TypedResults.Ok(createdFormId);
-    });
+    }).RequireAuthorization();
 
     // Update form details
-    formEndpoints.MapPut("", (FormDetailModel form, IFormDetailFacade formFacade) => formFacade.Update(form));
+    formEndpoints.MapPut("", (FormDetailModel form, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
+    {
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var userId))
+            return Results.Forbid();
+
+        var existingForm = formFacade.GetById(form.Id);
+        if (existingForm == null) return Results.NotFound($"Form with ID {form.Id} not found.");
+
+        if (userRole == UserRole.Admin.ToString() || (existingForm.Creator != null && existingForm.Creator.Id == userId))
+        {
+            formFacade.Update(form);
+            return Results.Ok();
+        }
+
+        return Results.Forbid();
+    }).RequireAuthorization();
 
     // Delete form
-    formEndpoints.MapDelete("{id:guid}", (Guid id, IFormDetailFacade formFacade) => formFacade.Delete(id));
+    formEndpoints.MapDelete("{id:guid}", (Guid id, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
+    {
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var userId))
+            return Results.Forbid();
+
+        var existingForm = formFacade.GetById(id);
+        if (existingForm == null) return Results.NotFound($"Form with ID {id} not found.");
+
+        if (userRole == UserRole.Admin.ToString() || (existingForm.Creator != null && existingForm.Creator.Id == userId))
+        {
+            formFacade.Delete(id);
+            return Results.Ok();
+        }
+        return Results.Forbid();
+    }).RequireAuthorization();
 }
 
 void UseCompletedFormEndpoints(RouteGroupBuilder routeGroupBuilder)
@@ -199,23 +237,61 @@ void UseCompletedFormEndpoints(RouteGroupBuilder routeGroupBuilder)
         .WithTags("completedForm");
 
     // Get list of completed forms, by form Id or all forms completed by a user
-    compFormEndpoints.MapGet("", (string? formId, string? userId, ICompletedFormListFacade facade) =>
-    {
-        if (formId != null)
-            return facade.GetAllCopletionsOfForm(new Guid(formId));
+    compFormEndpoints.MapGet("",
+     (string? formId, string? userId, ICompletedFormListFacade facade, ClaimsPrincipal userClaims) =>
+     {
+         var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+         if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+             return new List<CompletedFormListModel>();
 
-        if (userId != null)
-            return facade.GetAllCompletionsMadeByUser(new Guid(userId));
 
-        return facade.GetAll();
-    });
+         if (formId != null)
+         {
+             if (userId != null)
+             {
+                 if (userRole == UserRole.Admin.ToString()) return facade.GetAllCompletionsOfFormMadeByUser(Guid.Parse(formId), Guid.Parse(userId));
+                 return new List<CompletedFormListModel>();
+             }
+             else
+             {
+                 if (userRole == UserRole.Admin.ToString()) return facade.GetAllCopletionsOfForm(Guid.Parse(formId));    
+                 return facade.GetAllCompletionsOfFormMadeByUser(Guid.Parse(formId), currentUserId);
+             }
+
+         }
+         else if (userId != null)
+         {
+             if (userRole == UserRole.Admin.ToString()) return facade.GetAllCompletionsMadeByUser(Guid.Parse(userId));
+             return new List<CompletedFormListModel>();
+         }
+         else
+         {
+             if (userRole == UserRole.Admin.ToString()) return facade.GetAll();
+             return facade.GetAllCompletionsMadeByUser(currentUserId);
+         }
+    }).RequireAuthorization();
 
     // Get form detail
     compFormEndpoints.MapGet("{id:guid}",
-        Results<Ok<CompletedFormDetailModel>, NotFound<string>> (Guid id, ICompletedFormDetailFacade formFacade)
-            => formFacade.GetById(id) is { } form
-                ? TypedResults.Ok(form)
-                : TypedResults.NotFound($"Form with ID {id} not found."));
+    Results<Ok<CompletedFormDetailModel>, NotFound<string>, StatusCodeHttpResult> (Guid id, ICompletedFormDetailFacade compFormFacade, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
+    {
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+            return TypedResults.StatusCode(403); // Forbidden
+
+        // Get the completed form by ID
+        var form = compFormFacade.GetById(id);
+        if (form == null) return TypedResults.NotFound($"Form with ID {id} not found.");
+
+        var originalForm = formFacade.GetById(form.FormId);
+
+        if (userRole == UserRole.Admin.ToString() || 
+        (form.User != null && form.User.Id == currentUserId) || 
+        (originalForm != null && originalForm.Creator != null && originalForm.Creator.Id == currentUserId))
+            return TypedResults.Ok(form);
+
+        return TypedResults.StatusCode(403); // Forbidden
+    }).RequireAuthorization();
 
     // Create new completedForm
     compFormEndpoints.MapPost("", (CompletedFormDetailModel form, ICompletedFormDetailFacade formFacade) =>
@@ -225,7 +301,24 @@ void UseCompletedFormEndpoints(RouteGroupBuilder routeGroupBuilder)
     });
 
     // Delete form
-    compFormEndpoints.MapDelete("{id:guid}", (Guid id, ICompletedFormDetailFacade formFacade) => formFacade.Delete(id));
+    compFormEndpoints.MapDelete("{id:guid}", (Guid id, ICompletedFormDetailFacade formFacade, ClaimsPrincipal userClaims) => 
+    {
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+            return Results.Forbid();
+
+        var form = formFacade.GetById(id);
+        if (form == null) return Results.NotFound($"Form with ID {id} not found.");
+
+        if(userRole == UserRole.Admin.ToString() || (form.User != null && form.User.Id == currentUserId))
+        {
+            formFacade.Delete(id);
+            return Results.Ok();
+        }
+
+        return Results.Forbid();
+    
+    }).RequireAuthorization();
 }
 
 void UseQuestionEndpoints(RouteGroupBuilder routeGroupBuilder)
@@ -248,19 +341,63 @@ void UseQuestionEndpoints(RouteGroupBuilder routeGroupBuilder)
                 : TypedResults.NotFound($"Question with ID {id} not found."));
 
     // Create new question
-    questionEndpoints.MapPost("", (QuestionDetailModel question, IQuestionDetailFacade questionFacade) =>
+    questionEndpoints.MapPost("", 
+        (QuestionDetailModel question, IQuestionDetailFacade questionFacade, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
     {
-        var createdQuestionId = questionFacade.Create(question);
-        return TypedResults.Ok(createdQuestionId);
-    });
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+            return Results.Forbid();
+
+        var form = formFacade.GetById(question.FormId);
+
+        if(userRole == UserRole.Admin.ToString() || (form != null && form.Creator != null && form.Creator.Id == currentUserId))
+        {
+            var createdQuestionId = questionFacade.Create(question);
+            return TypedResults.Ok(createdQuestionId);
+        }
+        return Results.Forbid();
+
+    }).RequireAuthorization();
 
     // Update question details
     questionEndpoints.MapPut("",
-        (QuestionDetailModel question, IQuestionDetailFacade questionFacade) => questionFacade.Update(question));
+        (QuestionDetailModel question, IQuestionDetailFacade questionFacade, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
+    {
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+            return Results.Forbid();
+
+        var form = formFacade.GetById(question.FormId);
+
+        if (userRole == UserRole.Admin.ToString() || (form != null && form.Creator != null && form.Creator.Id == currentUserId))
+        {
+            var createdQuestionId = questionFacade.Update(question);
+            return TypedResults.Ok(createdQuestionId);
+        }
+        return Results.Forbid();
+
+    }).RequireAuthorization();
 
     // Delete question
     questionEndpoints.MapDelete("{id:guid}",
-        (Guid id, IQuestionDetailFacade questionFacade) => questionFacade.Delete(id));
+        (Guid id, IQuestionDetailFacade questionFacade, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) =>
+        {
+            var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+            if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+                return Results.Forbid();
+
+            var question = questionFacade.GetById(id);
+            if (question == null) return Results.NotFound($"Question with ID {id} not found.");
+            var form = formFacade.GetById(question.FormId);
+
+            if (userRole == UserRole.Admin.ToString() || (form != null && form.Creator != null && form.Creator.Id == currentUserId))
+            {
+                questionFacade.Delete(id);
+                return Results.Ok();
+            }
+            return Results.Forbid();
+
+        }).RequireAuthorization();
 }
 
 void UseAnswerEndpoints(RouteGroupBuilder routeGroupBuilder)
@@ -269,20 +406,67 @@ void UseAnswerEndpoints(RouteGroupBuilder routeGroupBuilder)
         .WithTags("answer");
 
     // Get list of answers, all, from form or from question
-    answerEndpoints.MapGet("", (string? formId, string? questionId, IAnswerListFacade facade) =>
+    answerEndpoints.MapGet("", 
+        (string? formId, string? questionId, IAnswerListFacade answerFacade, IFormDetailFacade formFacade, IQuestionDetailFacade questionFacade, ClaimsPrincipal userClaims) =>
     {
-        Guid? formGuid = formId != null ? new Guid(formId) : null;
-        Guid? questionGuid = questionId != null ? new Guid(questionId) : null;
+        var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+        if (! Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+            return new List<AnswerListModel>();
+        
+        FormDetailModel? form = null;
+        QuestionDetailModel? question = null;
+        Guid? form_Id = formId != null ? Guid.Parse(formId) : null;
+        Guid? question_Id = questionId != null ? Guid.Parse(questionId) : null;
 
-        return facade.GetAll(formGuid, questionGuid);
-    });
+        if (formId != null) form = formFacade.GetById(Guid.Parse(formId));
+        
+        else if(questionId != null)
+        {
+            question = questionFacade.GetById(Guid.Parse(questionId));
+            if (question != null) form = formFacade.GetById(question.FormId);
+        }
+        
+        if(userRole == UserRole.Admin.ToString() || 
+        (form != null && form.Creator != null && form.Creator.Id == currentUserId))
+        {
+            return answerFacade.GetAll(form_Id, question_Id);
+        }
+        
+        return new List<AnswerListModel>();
+
+    }).RequireAuthorization();
 
     // Get answer detail
     answerEndpoints.MapGet("{id:guid}",
-        Results<Ok<AnswerDetailModel>, NotFound<string>> (Guid id, IAnswerDetailFacade answerFacade)
-            => answerFacade.GetById(id) is { } answer
-                ? TypedResults.Ok(answer)
-                : TypedResults.NotFound($"Answer with ID {id} not found."));
+        Results<Ok<AnswerDetailModel>, NotFound<string>, StatusCodeHttpResult> 
+        (Guid id, IAnswerDetailFacade answerFacade, IQuestionDetailFacade questionFacade, IFormDetailFacade formFacade, ClaimsPrincipal userClaims) => 
+        {
+            var userRole = userClaims.FindFirst(ClaimTypes.Role)?.Value;
+            if (!Guid.TryParse(userClaims.FindFirst("userid")?.Value, out var currentUserId))
+                return TypedResults.StatusCode(403); // Forbidden
+
+        AnswerDetailModel? answer = answerFacade.GetById(id);
+            if (answer == null) return TypedResults.NotFound($"Answer with ID {id} not found.");
+
+            FormDetailModel? form = null;
+
+            if(answer.Question != null)
+            {
+                var question = questionFacade.GetById(answer.Question.Id);
+                if (question != null) form = formFacade.GetById(question.FormId);
+            }
+
+        if (userRole == UserRole.Admin.ToString() || 
+            (form != null && form.Creator != null && form.Creator.Id == currentUserId) || 
+            (answer.User != null && answer.User.Id == currentUserId))
+            {
+                var answerDetail = answerFacade.GetById(id);
+                if (answerDetail == null) return TypedResults.NotFound($"Answer with ID {id} not found.");
+                return TypedResults.Ok(answerDetail);
+            }
+        else return TypedResults.StatusCode(403); // Forbidden
+
+        }).RequireAuthorization();
 
     // Create a new answer or update existing
     answerEndpoints.MapPost("", (AnswerSubmitModel answer, IAnswerSubmitFacade answerFacade) =>
