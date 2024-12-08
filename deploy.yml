@@ -16,6 +16,7 @@ variables:
   outputDir: '$(Pipeline.Workspace)/publish'
   SolutionName: 'SharpForms'
   ProjectAPI: 'SharpForms.Api.App'
+  ProjectWeb: 'SharpForms.Web.App'
 
 stages:
 - stage: Build
@@ -40,6 +41,17 @@ stages:
 
     - publish: '$(outputDir)/$(ProjectAPI)'
       artifact: 'artifact.$(ProjectAPI)'
+      
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        projects: '$(SolutionName)/$(ProjectWeb)/$(ProjectWeb).csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(outputDir)/$(ProjectWeb)'
+      displayName: 'Publish $(ProjectWeb)'
+
+    
+    - publish: '$(outputDir)/$(ProjectWeb)'
+      artifact: 'artifact.$(ProjectWeb)'
 
 
 - stage: Deploy
@@ -57,3 +69,16 @@ stages:
         WebAppName: 'app-iw5-2024-team-xkruli03-api'
         ResourceGroupName: '$(ResourceGroup)'
         Package: '$(Pipeline.Workspace)/artifact.$(ProjectAPI)'
+        
+    - download: current
+      artifact: 'artifact.$(ProjectWeb)'
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: '$(AzureSubscriptionId)'
+        appType: 'webApp'
+        WebAppName: 'app-iw5-2024-team-xkruli03-web'
+        ResourceGroupName: '$(ResourceGroup)'
+        Package: '$(Pipeline.Workspace)/artifact.$(ProjectWeb)'
+
