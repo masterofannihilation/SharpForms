@@ -63,14 +63,14 @@ stages:
     - task: DownloadPipelineArtifact@2
       inputs:
         artifact: 'artifact.$(ProjectAPI)'
-        path: '$(Pipeline.Workspace)/artifacts'
+        path: '$(Pipeline.Workspace)'
 
     - task: AzureWebApp@1
       inputs:
         azureSubscription: '$(AzureSubscriptionId)'
         appType: 'webApp'
         appName: 'app-iw5-2024-team-xkruli03-api'
-        package: '$(Pipeline.Workspace)/artifacts/artifact.$(ProjectAPI)/*.zip'
+        package: '$(Pipeline.Workspace)/**/*.zip'
         resourceGroupName: '$(ResourceGroup)'
         deploymentMethod: 'auto'
       displayName: 'Deploy $(ProjectAPI)'
@@ -78,13 +78,13 @@ stages:
     - task: DownloadPipelineArtifact@2
       inputs:
         artifact: 'artifact.$(ProjectWeb)'
-        path: '$(Pipeline.Workspace)/artifacts'
+        path: '$(Pipeline.Workspace)'
     - task: AzureWebApp@1
       inputs:
         azureSubscription: '$(AzureSubscriptionId)'
         appType: 'webApp'
         appName: 'app-iw5-2024-team-xkruli03-web'
-        package: '$(Pipeline.Workspace)/artifacts/artifact.$(ProjectWeb)/*.zip'
+        package: '$(Pipeline.Workspace)/artifact.$(ProjectWeb)'
         resourceGroupName: '$(ResourceGroup)'
         deploymentMethod: 'auto'
       displayName: 'Deploy $(ProjectWeb)'
