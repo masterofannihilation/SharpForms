@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using SharpForms.Common.BL.Facades;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,37 +10,11 @@ namespace SharpForms.Web.BL.Installers
     {
         public void Install(IServiceCollection serviceCollection, string apiBaseUrl)
         {
-            serviceCollection.AddTransient<IUserApiClient, UserApiClient>(provider =>
-            {
-                var client = CreateApiHttpClient(provider, apiBaseUrl);
-                return new UserApiClient(client, apiBaseUrl);
-            });
-            
-            serviceCollection.AddTransient<IFormApiClient, FormApiClient>(provider =>
-            {
-                var client = CreateApiHttpClient(provider, apiBaseUrl);
-                return new FormApiClient(client, apiBaseUrl);
-            });
-            
-            serviceCollection.AddTransient<IQuestionApiClient, QuestionApiClient>(provider =>
-            {
-                var client = CreateApiHttpClient(provider, apiBaseUrl);
-                return new QuestionApiClient(client, apiBaseUrl);
-            });
-            
-            serviceCollection.AddTransient<ICompletedFormApiClient, CompletedFormApiClient>(provider =>
-            {
-                var client = CreateApiHttpClient(provider, apiBaseUrl);
-                return new CompletedFormApiClient(client, apiBaseUrl);
-            });
-            
-            serviceCollection.AddTransient<IAnswerApiClient, AnswerApiClient>(provider =>
-            {
-                var client = CreateApiHttpClient(provider, apiBaseUrl);
-                return new AnswerApiClient(client, apiBaseUrl);
-            });
-            
             serviceCollection.AddScoped<IUserApiClient, UserApiClient>();
+            serviceCollection.AddScoped<IFormApiClient, FormApiClient>();
+            serviceCollection.AddScoped<ICompletedFormApiClient, CompletedFormApiClient>();
+            serviceCollection.AddScoped<IQuestionApiClient, QuestionApiClient>();
+            serviceCollection.AddScoped<IAnswerApiClient, AnswerApiClient>();
         }
 
         public HttpClient CreateApiHttpClient(IServiceProvider serviceProvider, string apiBaseUrl)
