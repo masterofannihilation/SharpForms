@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 using SharpForms.Common.Models.User;
 using SharpForms.Web.BL.ApiClients;
 
@@ -15,12 +16,17 @@ public partial class UserListPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         Users = await UserApiClient.UserGetAsync(SearchQuery, "en");
-
         await base.OnInitializedAsync();
     }
 
     private async Task SearchUsers()
     {
         Users = await UserApiClient.UserGetAsync(SearchQuery, "en");
+    }
+
+    private async Task DeleteUser(Guid userId)
+    {
+        await UserApiClient.UserDeleteAsync(userId, "en");
+        Users = await UserApiClient.UserGetAsync(SearchQuery, "en"); // Refresh list
     }
 }

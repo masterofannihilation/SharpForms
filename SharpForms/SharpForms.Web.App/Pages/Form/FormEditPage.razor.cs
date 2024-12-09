@@ -4,6 +4,9 @@ using SharpForms.Common.Models.Question;
 using SharpForms.Common.Models.SelectOption;
 using SharpForms.Web.BL.ApiClients;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using Microsoft.JSInterop;
+using SharpForms.Common.Models.Answer;
 
 namespace SharpForms.Web.App.Pages.Form;
 
@@ -12,101 +15,71 @@ public partial class FormEditPage : ComponentBase
     [Parameter] public Guid Id { get; set; }
     [Inject] private IQuestionApiClient QuestionApiClient { get; set; } = null!;
     [Inject] private IFormApiClient FormApiClient { get; set; } = null!;
-    private FormDetailModel? Form { get; set; }
-    private List<QuestionDetailModel> QuestionsAll { get; set; } = new();
+    private FormDetailModel Form { get; set; }
+    private ICollection<QuestionDetailModel> Questions { get; set; } = new List<QuestionDetailModel>();
 
-    private QuestionDetailModel EditingQuestion { get; set; } = new()
+    private QuestionDetailModel Question { get; set; } = new()
     {
-        Id = Guid.NewGuid(),
-        FormName = string.Empty,
-        Text = string.Empty,
-        Options = new List<SelectOptionModel>()
+        Id = Guid.NewGuid(), FormName = string.Empty, Text = string.Empty
     };
 
-    private List<ValidationResult> ValidationResults { get; set; } = new();
+    private IList<SelectOptionModel> Options { get; set; } = new List<SelectOptionModel>();
+
     private bool IsEditing { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
         Form = await FormApiClient.FormGetAsync(Id, "en");
         await LoadQuestions();
-        ResetEditingQuestion();
+        InitQuestion();
         await base.OnInitializedAsync();
     }
 
     private async Task LoadQuestions()
     {
         var questionList = await QuestionApiClient.QuestionGetAsync(Id.ToString(), null, null, "en");
-        QuestionsAll = new List<QuestionDetailModel>();
-
+        Questions = new List<QuestionDetailModel>();
         foreach (var question in questionList)
         {
             var questionDetail = await QuestionApiClient.QuestionGetAsync(question.Id, "en");
-            QuestionsAll.Add(questionDetail);
+            Questions.Add(questionDetail);
         }
     }
 
-    private void AddOption()
+    private void InitQuestion()
     {
-        EditingQuestion.Options.Add(new SelectOptionModel
-        {
-            QuestionId = EditingQuestion.Id,
-            Id = Guid.NewGuid(),
-            Value = string.Empty
-        });
+        IsEditing = false;
+        Question.Id = Guid.NewGuid();
+        Question.FormId = Form.Id;
+        Question.FormName = Form.Name;
+        Question.Text = string.Empty;
+        Question.Order = Questions.Count + 1;
+        Question.Description = String.Empty;
+        Question.AnswerType = Common.Enums.AnswerType.Text;
+        Question.Options = new List<SelectOptionModel>();
+        Question.Answers = new List<AnswerListModel>();
     }
 
-    private async Task SaveQuestion()
+    private async Task SubmitQuestion()
     {
-        if (!ValidateQuestion())
-        {
-            return;
-        }
-
-        try
+        if (ValidateQuestion())
         {
             if (IsEditing)
             {
-                await QuestionApiClient.QuestionPutAsync("en", EditingQuestion);
+                await QuestionApiClient.QuestionPutAsync("en", Question);
             }
             else
             {
-                await QuestionApiClient.QuestionPostAsync("en", EditingQuestion);
+                await QuestionApiClient.QuestionPostAsync("en", Question);
             }
             await LoadQuestions();
-            ResetEditingQuestion();
-        }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex.Message);
+            InitQuestion();
+            // Close the modal
+            await InvokeAsync(() => StateHasChanged());
         }
     }
 
-    private bool ValidateQuestion()
-    {
-        var context = new ValidationContext(EditingQuestion);
-        ValidationResults = new List<ValidationResult>();
-        bool isValid = Validator.TryValidateObject(EditingQuestion, context, ValidationResults, true);
-
-        foreach (var option in EditingQuestion.Options)
-        {
-            var optionContext = new ValidationContext(option);
-            isValid &= Validator.TryValidateObject(option, optionContext, ValidationResults, true);
-        }
-        if (EditingQuestion.Options.Count < 2 && EditingQuestion.AnswerType == Common.Enums.AnswerType.Selection)
-        {
-            ValidationResults.Add(new ValidationResult("You must have at least 2 options.", new List<string> { "Options" }));
-        }
-
-        return isValid;
-    }
-
-    private void RemoveOption(SelectOptionModel option)
-    {
-        EditingQuestion.Options.Remove(option);
-    }
-
-    private async Task RemoveQuestion(Guid questionId)
+    private async Task DeleteQuestion(Guid questionId)
     {
         await QuestionApiClient.QuestionDeleteAsync(questionId, "en");
         await LoadQuestions();
@@ -114,7 +87,7 @@ public partial class FormEditPage : ComponentBase
 
     private void EditQuestion(QuestionDetailModel question)
     {
-        EditingQuestion = new QuestionDetailModel
+        Question = new QuestionDetailModel
         {
             Id = question.Id,
             FormId = question.FormId,
@@ -125,31 +98,45 @@ public partial class FormEditPage : ComponentBase
             Order = question.Order,
             Options = new List<SelectOptionModel>(question.Options.Select(o => new SelectOptionModel
             {
-                Id = o.Id,
-                QuestionId = o.QuestionId,
-                Value = o.Value
+                Id = o.Id, QuestionId = o.QuestionId, Value = o.Value
             }))
         };
         IsEditing = true;
     }
 
-    private void CancelEdit()
+    private void AddOption()
     {
-        ResetEditingQuestion();
+        Question.Options.Add(new SelectOptionModel
+        {
+            Id = Guid.NewGuid(), QuestionId = Question.Id, Value = string.Empty
+        });
     }
 
-    private void ResetEditingQuestion()
+    private void DeleteOption(SelectOptionModel option)
     {
-        EditingQuestion = new QuestionDetailModel
+        Question.Options.Remove(option);
+    }
+
+    private List<ValidationResult> ValidationResults { get; set; } = new();
+
+    private bool ValidateQuestion()
+    {
+        var context = new ValidationContext(Question);
+        ValidationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(Question, context, ValidationResults, true);
+
+        foreach (var option in Question.Options)
         {
-            Id = Guid.NewGuid(),
-            FormId = Id,
-            FormName = Form?.Name ?? string.Empty,
-            Text = string.Empty,
-            Order = QuestionsAll.Count + 1,
-            AnswerType = Common.Enums.AnswerType.Text,
-            Options = new List<SelectOptionModel>()
-        };
-        IsEditing = false;
+            var optionContext = new ValidationContext(option);
+            isValid &= Validator.TryValidateObject(option, optionContext, ValidationResults, true);
+        }
+
+        if (Question.Options.Count < 2 && Question.AnswerType == Common.Enums.AnswerType.Selection)
+        {
+            ValidationResults.Add(new ValidationResult("You must have at least 2 options.",
+                new List<string> { "Options" }));
+        }
+
+        return isValid;
     }
 }

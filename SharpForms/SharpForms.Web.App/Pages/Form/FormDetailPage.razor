@@ -8,7 +8,7 @@
 }
 else
 {
-    <div>
+    <div class="mb-3">
         <h4>@Form.Name</h4>
         <p><strong>Open Since:</strong> @Form.OpenSince?.ToString("MM/dd/yyyy")</p>
         <p><strong>Open Until:</strong> @Form.OpenUntil?.ToString("MM/dd/yyyy")</p>
@@ -29,6 +29,38 @@ else
             <p>No questions available for this form.</p>
         }
 
-        <button class="btn btn-danger" @onclick="DeleteAsync">Delete Form</button>
+        @if (CurrentUser != null && CurrentUser.Name == Form.Creator?.Name)
+        {
+            <button class="btn btn-danger mt-3 mb-3" @onclick="DeleteAsync">Delete Form</button>
+        }
+
+        @if (CurrentUser != null && Form.Creator?.Name == CurrentUser.Name)
+        {
+            <h5>Completed Forms</h5>
+            @if (CompletedForms.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var completedForm in CompletedForms)
+                    {
+                        <li class="list-group-item">
+                            @if (@completedForm.UserName != null)
+                            {
+                                <p><strong>User:</strong> @completedForm.UserName</p>
+                            }
+                            else
+                            {
+                                <p><strong>User:</strong> Anonymous</p>
+                            }
+                            <p><strong>Completed Date:</strong> @completedForm.CompletedDate?.ToString("MM/dd/yyyy")</p>
+                            <NavLink class="btn btn-primary" href="@($"/forms/{Form.Id}/detail/{completedForm.Id}")">View Details</NavLink>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No completed forms available for this form.</p>
+            }
+        }
     </div>
 }
