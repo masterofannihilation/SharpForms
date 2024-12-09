@@ -62,7 +62,8 @@ else
                         <td>@form.QuestionCount</td>
                         <td>@form.TimesCompleted</td>
                         <td>
-                            <NavLink>View</NavLink>
+                            <NavLink href="@($"/forms/{form.Id}/detail")" class="btn btn-primary btn-sm" title="View Details">
+                                <i class="bi bi-eye"></i> Detail</NavLink>
                         </td>
                     </tr>
                 }
