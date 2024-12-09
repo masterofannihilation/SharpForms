@@ -3,6 +3,7 @@ using SharpForms.Api.BL.Facades.Common;
 using SharpForms.Api.BL.Facades.Form;
 using SharpForms.Api.BL.Facades.User;
 using SharpForms.Api.DAL.Common.Entities;
+using SharpForms.Api.DAL.Common.Entities.Interfaces;
 using SharpForms.Api.DAL.Common.Repositories;
 using SharpForms.Api.DAL.Memory.Repositories;
 using SharpForms.Common.Enums;
@@ -32,5 +33,22 @@ public class CompletedFormDetailFacade(
             model.Answers = answerListFacade.GetAll(entity.Id, null);
 
         return model;
+    }
+
+    public override Guid Create(CompletedFormDetailModel model)
+    {
+        if (model.Id == new Guid())
+            model.Id = Guid.NewGuid();
+
+        var entity = mapper.Map<CompletedFormEntity>(model);
+        entity.CompletedDate = DateTime.Now;
+        return completedFormRepository.Insert(entity);
+    }
+
+    public override Guid? Update(CompletedFormDetailModel model)
+    {
+        var entity = mapper.Map<CompletedFormEntity>(model);
+        entity.CompletedDate = DateTime.Now;
+        return completedFormRepository.Update(entity);
     }
 }
