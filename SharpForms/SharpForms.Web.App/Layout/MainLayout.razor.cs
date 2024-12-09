@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
-namespace SharpForms.Web.App.Components;
+namespace SharpForms.Web.App.Layout;
 
-public partial class LoginDisplay : ComponentBase
+public partial class MainLayout : LayoutComponentBase, IDisposable
 {
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -13,9 +13,9 @@ public partial class LoginDisplay : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        if (AuthenticationStateProvider is { } authStateProvider)
+        if (AuthenticationStateProvider != null)
         {
-            authStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+            AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         }
 
         await UpdateDisplayNameAsync();
@@ -44,9 +44,9 @@ public partial class LoginDisplay : ComponentBase
 
     public void Dispose()
     {
-        if (AuthenticationStateProvider is { } authStateProvider)
+        if (AuthenticationStateProvider != null)
         {
-            authStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
         }
     }
 }

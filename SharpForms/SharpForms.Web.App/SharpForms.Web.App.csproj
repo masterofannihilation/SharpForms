@@ -7,28 +7,33 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazor.Bootstrap" Version="3.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.11"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0"/>
+        <PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.11" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
         <PackageReference Include="Microsoft.JSInterop.WebAssembly" Version="8.0.11" />
         <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.11" />
         <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="8.0.11" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SharpForms.Common.Models\SharpForms.Common.Models.csproj"/>
-        <ProjectReference Include="..\SharpForms.Web.BL\SharpForms.Web.BL.csproj"/>
+        <ProjectReference Include="..\SharpForms.Common.Models\SharpForms.Common.Models.csproj" />
+        <ProjectReference Include="..\SharpForms.Web.BL\SharpForms.Web.BL.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Components\" />
     </ItemGroup>
 
 </Project>
