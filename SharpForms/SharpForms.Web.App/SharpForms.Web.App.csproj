@@ -13,7 +13,12 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.11" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.JSInterop.WebAssembly" Version="8.0.11" />
+        <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.11" />
+        <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="8.0.11" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup>

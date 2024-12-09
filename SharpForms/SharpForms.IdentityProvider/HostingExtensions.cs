@@ -38,13 +38,6 @@ internal static class HostingExtensions
             policy.AllowAnyOrigin();
         });
 
-        app.Use(async (context, next) =>
-        {
-            context.Response.Headers["Content-Security-Policy"] =
-                "frame-ancestors 'self' https://localhost:7143;";
-            await next();
-        });
-
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
