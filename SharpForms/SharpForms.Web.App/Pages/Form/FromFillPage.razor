@@ -23,7 +23,11 @@
             {
                 <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
             }
-            else if (question.AnswerType == Common.Enums.AnswerType.Selection)
+            else if (question.AnswerType == AnswerType.Decimal)
+            {
+                <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
+            }
+            else if (question.AnswerType == AnswerType.Selection)
             {
                 <div class="mt-2 d-flex flex-wrap">
                     @foreach (var option in question.Options)

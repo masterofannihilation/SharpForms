@@ -4,7 +4,7 @@
 
 <h3>Create New Form</h3>
 
-<EditForm Model="FormDetailModel" OnValidSubmit="SubmitAsync">
+<EditForm Model="Form" OnValidSubmit="SubmitAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -17,19 +17,19 @@
 
     <div class="mb-3">
         <label for="Name" class="form-label">Form Name</label>
-        <InputText id="Name" class="form-control w-auto" @bind-Value="FormDetailModel.Name" />
+        <InputText id="Name" class="form-control w-auto" @bind-Value="Form.Name" />
     </div>
 
     <div class="mb-3">
         <label for="OpenSince" class="form-label">Open Since</label>
-        <InputDate id="OpenSince" class="form-control w-auto" @bind-Value="FormDetailModel.OpenSince" />
-        <ValidationMessage For="@(() => FormDetailModel.OpenSince)" />
+        <InputDate id="OpenSince" class="form-control w-auto" @bind-Value="Form.OpenSince" />
+        <ValidationMessage For="@(() => Form.OpenSince)" />
     </div>
 
     <div class="mb-3">
         <label for="OpenUntil" class="form-label">Open Until</label>
-        <InputDate id="OpenUntil" class="form-control w-auto" @bind-Value="FormDetailModel.OpenUntil" />
-        <ValidationMessage For="@(() => FormDetailModel.OpenUntil)" />
+        <InputDate id="OpenUntil" class="form-control w-auto" @bind-Value="Form.OpenUntil" />
+        <ValidationMessage For="@(() => Form.OpenUntil)" />
     </div>
     
     <button type="submit" class="btn btn-success">Create Form</button>
