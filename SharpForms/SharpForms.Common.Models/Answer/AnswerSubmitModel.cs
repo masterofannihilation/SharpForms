@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using SharpForms.Common.Models.Question;
 using SharpForms.Common.Models.SelectOption;
 using SharpForms.Common.Enums;
@@ -23,8 +24,13 @@ namespace SharpForms.Common.Models.Answer
         public IList<SelectOptionModel> Options { get; set; } = new List<SelectOptionModel>();
 
         // Answer value depending on the type of Question (AnswerType)
+        [Required(ErrorMessage = "This field is required.")]
         public string? TextAnswer { get; set; }
+        [Required(ErrorMessage = "This field is required.")]
+
         public double? NumberAnswer { get; set; }
+        [Required(ErrorMessage = "This field is required.")]
+
         public Guid? SelectOptionId { get; set; }
     }
 }
