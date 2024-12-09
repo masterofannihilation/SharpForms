@@ -29,6 +29,7 @@ public partial class FormDetailPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        Form = await FormApiClient.FormGetAsync(Id, "en");
         var authState = await AuthenticationStateTask;
         var user = authState.User;
         IsUserAuthenticated = user.Identity?.IsAuthenticated ?? false;
@@ -45,11 +46,10 @@ public partial class FormDetailPage : ComponentBase
                     CurrentUser = await UserApiClient.UserGetAsync(userDetail.Id, "en");
                 }
             }
+            
+            CompletedForms = await CompletedFormApiClient.CompletedFormGetAsync(Id.ToString(), null, "en");
         }
         
-        
-        Form = await FormApiClient.FormGetAsync(Id, "en");
-        CompletedForms = await CompletedFormApiClient.CompletedFormGetAsync(Id.ToString(), null, "en");
         await base.OnInitializedAsync();
     }
 

@@ -246,8 +246,7 @@ void UseCompletedFormEndpoints(RouteGroupBuilder routeGroupBuilder)
              }
              else // All completions of specific form
              {
-                 if (userRole == UserRole.Admin.ToString()) return facade.GetAllCopletionsOfForm(Guid.Parse(formId));    
-                 return facade.GetAllCompletionsOfFormMadeByUser(Guid.Parse(formId), currentUserId);
+                 return facade.GetAllCopletionsOfForm(Guid.Parse(formId));
              }
 
          }

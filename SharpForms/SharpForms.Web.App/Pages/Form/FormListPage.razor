@@ -48,7 +48,7 @@
                         <NavLink href="@($"/forms/{form.Id}/fill")" class="btn btn-primary btn-sm mx-1" title="Fill Form">
                             <i class="bi bi-pencil-fill"></i> Fill
                         </NavLink>
-                        @if (CurrentUser != null && form.CreatorName == CurrentUser.Name)
+                        @if (CurrentUser != null && (form.CreatorName == CurrentUser.Name || CurrentUser.Role == Common.Enums.UserRole.Admin))
 
                         {
                             <NavLink href="@($"/forms/{form.Id}/edit")" class="btn btn-secondary btn-sm mx-1" title="Edit Form">

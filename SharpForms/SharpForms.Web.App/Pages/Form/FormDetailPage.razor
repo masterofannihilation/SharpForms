@@ -47,7 +47,7 @@ else
                     <p>No questions available for this form.</p>
                 }
 
-                @if (CurrentUser != null && CurrentUser.Name == Form.Creator?.Name)
+                @if (CurrentUser != null && (CurrentUser.Name == Form.Creator?.Name || CurrentUser.Role == Common.Enums.UserRole.Admin))
 
                 {
                     <button class="btn btn-danger mt-3 mb-3" @onclick="DeleteAsync">Delete Form</button>

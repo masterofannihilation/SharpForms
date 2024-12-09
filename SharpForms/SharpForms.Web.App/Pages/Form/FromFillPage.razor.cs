@@ -63,7 +63,7 @@ public partial class FromFillPage : ComponentBase
             Questions.Add(questionDetail);
         }
     }
-    
+
     private void InitCompletedForm()
     {
         CompletedForm.FormId = Form!.Id;
@@ -90,7 +90,8 @@ public partial class FromFillPage : ComponentBase
 
     private async Task HandleValidSubmit()
     {
-        if(AreAllQuestionsAnswered()){
+        if (AreAllQuestionsAnswered())
+        {
             foreach (var answer in Answers)
             {
                 await AnswerApiClient.AnswerPostAsync("en", answer);
@@ -105,13 +106,13 @@ public partial class FromFillPage : ComponentBase
             ValidationMessage = "Please answer all questions before submitting the form.";
         }
     }
-    
+
     private void SelectOption(Guid questionId, Guid optionId)
     {
         var answer = Answers.First(a => a.QuestionId == questionId);
         answer.SelectOptionId = optionId;
     }
-    
+
     private bool AreAllQuestionsAnswered()
     {
         var unansweredQuestions = Answers.Where(answer =>
@@ -126,5 +127,5 @@ public partial class FromFillPage : ComponentBase
 
         return true;
     }
-    
+
 }

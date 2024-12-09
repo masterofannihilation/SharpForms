@@ -3,61 +3,47 @@
 
 <PageTitle>@Form?.Name</PageTitle>
 
-@if (Form == null)
+<h3 class="mb-4">@Form?.Name</h3>
+
+@if (!string.IsNullOrEmpty(ValidationMessage))
 
 {
-    <p>Loading...</p>
+    <div class="alert alert-danger">@ValidationMessage</div>
 }
 
-else
+<EditForm Model="Answers" OnValidSubmit="HandleValidSubmit" class="mb-4">
+    @foreach (var question in Questions)
 
-{
-    <div class="container my-5" style="max-width: 800px;">
-        <div class="card shadow">
-            <div class="card-body">
-                <h1 class="text-center mb-4">@Form?.Name</h1>
+    {
+        <div class="mb-3">
+            <label class="form-label">@question.Text</label>
+            @if (question.AnswerType == AnswerType.Text)
 
-                @if (!string.IsNullOrEmpty(ValidationMessage))
+            {
+                <InputText @bind-Value="Answers.First(a => a.QuestionId == question.Id).TextAnswer" class="form-control" />
+            }
 
-                {
-                    <div class="alert alert-danger">@ValidationMessage</div>
-                }
+            else if (question.AnswerType == AnswerType.Integer)
 
-                <EditForm Model="Answers" OnValidSubmit="HandleValidSubmit" class="mb-4">
-                    @foreach (var question in Questions)
+            {
+                <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
+            }
+
+            else if (question.AnswerType == Common.Enums.AnswerType.Selection)
+
+            {
+                <div class="mt-2 d-flex flex-wrap">
+                    @foreach (var option in question.Options)
+
                     {
-                        <div class="mb-3">
-                            <label class="form-label">@question.Text</label>
-                            @if (question.AnswerType == AnswerType.Text)
-                            {
-                                <InputText @bind-Value="Answers.First(a => a.QuestionId == question.Id).TextAnswer" class="form-control" />
-                            }
-                            else if (question.AnswerType == AnswerType.Integer)
-                            {
-                                <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
-                            }
-                            else if (question.AnswerType == AnswerType.Selection)
-                            {
-                                <div class="mt-2 d-flex flex-wrap">
-                                    @foreach (var option in question.Options)
-                                    {
-                                        <button type="button" class="btn me-2 mb-2 @(Answers.First(a => a.QuestionId == question.Id).SelectOptionId == option.Id ? "btn-primary" : "btn-outline-primary")"
-                                                @onclick="() => SelectOption(question.Id, option.Id)">
-                                            @option.Value
-                                        </button>
-                                    }
-                                </div>
-                            }
-                        </div>
+                        <button type="button" class="btn me-2 mb-2 @(Answers.First(a => a.QuestionId == question.Id).SelectOptionId == option.Id ? "btn-primary" : "btn-outline-primary")"
+                                @onclick="() => SelectOption(question.Id, option.Id)">
+                            @option.Value
+                        </button>
                     }
-
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </EditForm>
-
-                <div class="d-flex justify-content-center gap-2 mt-4">
-                    <NavLink class="btn btn-info" href="/forms">Go Back</NavLink>
                 </div>
-            </div>
+            }
         </div>
-    </div>
-}
+    }
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
