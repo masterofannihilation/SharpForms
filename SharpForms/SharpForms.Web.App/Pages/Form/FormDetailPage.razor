@@ -3,64 +3,97 @@
 <PageTitle>Form Detail</PageTitle>
 
 @if (Form == null)
+
 {
     <p>Loading...</p>
 }
+
 else
+
 {
-    <div class="mb-3">
-        <h4>@Form.Name</h4>
-        <p><strong>Open Since:</strong> @Form.OpenSince?.ToString("MM/dd/yyyy")</p>
-        <p><strong>Open Until:</strong> @Form.OpenUntil?.ToString("MM/dd/yyyy")</p>
-        <p><strong>Created By:</strong> @Form.Creator?.Name</p>
+    <div class="container my-5" style="max-width: 800px;">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="text-center mb-4">@Form.Name</h1>
 
-        <h5>Questions</h5>
-        @if (Form.Questions.Any())
-        {
-            <ul>
-                @foreach (var question in Form.Questions)
-                {
-                    <li>@question.Text</li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>No questions available for this form.</p>
-        }
-
-        @if (CurrentUser != null && CurrentUser.Name == Form.Creator?.Name)
-        {
-            <button class="btn btn-danger mt-3 mb-3" @onclick="DeleteAsync">Delete Form</button>
-        }
-
-        @if (CurrentUser != null && Form.Creator?.Name == CurrentUser.Name)
-        {
-            <h5>Completed Forms</h5>
-            @if (CompletedForms.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var completedForm in CompletedForms)
-                    {
-                        <li class="list-group-item">
-                            @if (@completedForm.UserName != null)
-                            {
-                                <p><strong>User:</strong> @completedForm.UserName</p>
-                            }
-                            else
-                            {
-                                <p><strong>User:</strong> Anonymous</p>
-                            }
-                            <p><strong>Completed Date:</strong> @completedForm.CompletedDate?.ToString("MM/dd/yyyy")</p>
-                            <NavLink class="btn btn-primary" href="@($"/forms/{Form.Id}/detail/{completedForm.Id}")">View Details</NavLink>
-                        </li>
-                    }
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item">
+                        <strong>Open Since:</strong> @Form.OpenSince?.ToString("MM/dd/yyyy")
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Open Until:</strong> @Form.OpenUntil?.ToString("MM/dd/yyyy")
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Created By:</strong> @Form.Creator?.Name
+                    </li>
                 </ul>
-            }
-            else
-            {
-                <p>No completed forms available for this form.</p>
-            }
-        }
+
+                <h5>Questions</h5>
+                @if (Form.Questions.Any())
+
+                {
+                    <ul class="list-group">
+                        @foreach (var question in Form.Questions)
+
+                        {
+                            <li class="list-group-item">@question.Text</li>
+                        }
+                    </ul>
+                }
+
+                else
+
+                {
+                    <p>No questions available for this form.</p>
+                }
+
+                @if (CurrentUser != null && CurrentUser.Name == Form.Creator?.Name)
+
+                {
+                    <button class="btn btn-danger mt-3 mb-3" @onclick="DeleteAsync">Delete Form</button>
+                }
+
+                @if (CurrentUser != null && Form.Creator?.Name == CurrentUser.Name)
+
+                {
+                    <h5>Completed Forms</h5>
+                    @if (CompletedForms.Any())
+
+                    {
+                        <ul class="list-group">
+                            @foreach (var completedForm in CompletedForms)
+
+                            {
+                                <li class="list-group-item">
+                                    @if (@completedForm.UserName != null)
+
+                                    {
+                                        <p><strong>User:</strong> @completedForm.UserName</p>
+                                    }
+
+                                    else
+
+                                    {
+                                        <p><strong>User:</strong> Anonymous</p>
+                                    }
+                                    <p><strong>Completed Date:</strong> @completedForm.CompletedDate?.ToString("MM/dd/yyyy")</p>
+                                    <NavLink class="btn btn-primary" href="@($"/forms/{Form.Id}/detail/{completedForm.Id}")">View Details</NavLink>
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                    else
+
+                    {
+                        <p>No completed forms available for this form.</p>
+                    }
+                }
+
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <NavLink class="btn btn-info" href="/forms">Go Back</NavLink>
+                </div>
+            </div>
+        </div>
     </div>
 }
