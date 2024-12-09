@@ -1,0 +1,31 @@
+@page "/forms/{id:guid}/detail/{completedFormId:guid}"
+
+@if (CompletedForm == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>@CompletedForm.FormName</h3>
+    <div>
+        @if (@CompletedForm.User?.Name != null)
+        {
+            <p><strong>User:</strong> @CompletedForm.User?.Name</p>
+        }
+        else
+        {
+            <p><strong>User:</strong> Anonymous</p>
+        }
+        <ul class="list-group">
+            @foreach (var question in Questions)
+            {
+                <li class="list-group-item">
+                    <strong>Question:</strong> @question.Text
+                    <br />
+                    <strong>Answer:</strong> @CompletedForm.Answers.FirstOrDefault(a => a.Order == question.Order)?.Answer
+                </li>
+            }
+        </ul>
+        <NavLink class="btn btn-primary mt-3" href="@($"/forms/{Id}/detail")">Back</NavLink>
+    </div>
+}
