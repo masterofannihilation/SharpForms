@@ -19,6 +19,7 @@
         <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.11" />
         <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="8.0.11" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>

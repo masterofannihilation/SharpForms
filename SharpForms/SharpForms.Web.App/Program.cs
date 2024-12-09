@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 using SharpForms.Web.App;
 using SharpForms.Web.BL.Installers;
 using SharpForms.Web.BL.Extensions;
@@ -13,18 +14,22 @@ builder.Services.AddBlazorBootstrap();
 
 builder.Configuration.AddJsonFile("appsettings.json");
 
-var apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
-builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl!);
+string apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl")!;
+builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl);
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
 builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri(apiBaseUrl))
     .AddHttpMessageHandler(serviceProvider
-        => serviceProvider?.GetService<CustomAuthorizationMessageHandler>()
-            ?.ConfigureHandler(
-                authorizedUrls: new[] { apiBaseUrl },
-                scopes: new[] { "sharpforms_api", }));
+        =>
+    {
+        var authService = serviceProvider.GetService<CustomAuthorizationMessageHandler>();
+        return authService!.ConfigureHandler(authorizedUrls: [apiBaseUrl],
+            scopes: ["sharpforms_api"]);
+    });
 builder.Services.AddScoped<HttpClient>(serviceProvider =>
-    serviceProvider.GetService<IHttpClientFactory>().CreateClient("api"));
+    serviceProvider.GetService<IHttpClientFactory>()!.CreateClient("api"));
+
+builder.Services.AddLocalization();
 
 builder.Services.AddOidcAuthentication(options =>
 {
@@ -37,7 +42,7 @@ builder.Services.AddOidcAuthentication(options =>
 });
 
 var app = builder.Build();
-    
+
 await app.RunAsync();
 
 
