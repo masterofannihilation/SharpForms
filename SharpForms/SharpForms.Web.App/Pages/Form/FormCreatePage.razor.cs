@@ -58,7 +58,7 @@ namespace SharpForms.Web.App.Pages.Form
                 _errorMessage = "The 'OpenSince' date must be today or in the future.";
             }
 
-            if (FormDetailModel.OpenUntil.HasValue && FormDetailModel.OpenUntil.Value <= FormDetailModel.OpenSince)
+            if (FormDetailModel.OpenUntil.HasValue && FormDetailModel.OpenUntil.Value < FormDetailModel.OpenSince)
             {
                 _errorMessage = "The 'OpenUntil' date must be later than the 'OpenSince' date.";
             }
