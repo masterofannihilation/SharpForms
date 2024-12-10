@@ -38,7 +38,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             // Load related completed forms
             clonedUser.CompletedForms = _completedForms
                 .Where(form => form.UserId == userEntity.Id)
-                .Select(form => form.DeepCopy())
+                .Select(form => form.CreateSafeCopy())
                 .ToList();
 
             // Load related created forms

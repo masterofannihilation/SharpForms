@@ -20,4 +20,8 @@
         <ProjectReference Include="..\SharpForms.Api.DAL.Seeds\SharpForms.Api.DAL.Seeds.csproj"/>
         <ProjectReference Include="..\SharpForms.Common\SharpForms.Common.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="keys\is-signing-key-BA8FE79AAB350B30D4BCF79E134A65A9.json" />
+    </ItemGroup>
 </Project>
