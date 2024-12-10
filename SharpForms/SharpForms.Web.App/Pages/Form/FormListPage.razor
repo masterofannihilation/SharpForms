@@ -6,10 +6,8 @@
 <h3>Forms List</h3>
 
 <div class="d-flex align-items-center gap-3 mb-3">
-    <!-- Search Bar -->
     <InputText @bind-Value="SearchQuery" class="form-control w-auto" placeholder="Search forms..." />
 
-    <!-- Buttons -->
     <button class="btn btn-primary" @onclick="SearchForms">Search</button>
     @if (CurrentUser != null)
     {
