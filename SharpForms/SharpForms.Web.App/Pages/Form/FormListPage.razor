@@ -45,9 +45,14 @@
                         <NavLink href="@($"/forms/{form.Id}/detail")" class="btn btn-primary btn-sm" title="View Details">
                             <i class="bi bi-eye"></i> Detail
                         </NavLink>
-                        <NavLink href="@($"/forms/{form.Id}/fill")" class="btn btn-primary btn-sm mx-1" title="Fill Form">
-                            <i class="bi bi-pencil-fill"></i> Fill
-                        </NavLink>
+                        @if (form.OpenSince.HasValue && form.OpenSince.Value.Date <= DateTime.Today && 
+                            form.OpenUntil.HasValue && form.OpenUntil.Value.Date >= DateTime.Today)
+
+                        {
+                            <NavLink href="@($"/forms/{form.Id}/fill")" class="btn btn-primary btn-sm mx-1" title="Fill Form">
+                                <i class="bi bi-pencil-fill"></i> Fill
+                            </NavLink>
+                        }
                         @if (CurrentUser != null && (form.CreatorName == CurrentUser.Name || CurrentUser.Role == Common.Enums.UserRole.Admin))
 
                         {
