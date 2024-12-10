@@ -11,7 +11,7 @@
 else
 
 {
-    <div class="container my-5" style="max-width: 800px;">
+    <div class="container mt-0" style="max-width: 800px;">
         <div class="card shadow">
             <div class="card-body">
                 <h1 class="text-center mb-4">@Form.Name</h1>
@@ -53,41 +53,30 @@ else
                     <button class="btn btn-danger mt-3 mb-3" @onclick="DeleteAsync">Delete Form</button>
                 }
 
-                @if (CurrentUser != null && Form.Creator?.Name == CurrentUser.Name)
-
+                <h5>Completed Forms</h5>
+                @if (CompletedForms.Any())
                 {
-                    <h5>Completed Forms</h5>
-                    @if (CompletedForms.Any())
-
-                    {
-                        <ul class="list-group">
-                            @foreach (var completedForm in CompletedForms)
-
-                            {
-                                <li class="list-group-item">
-                                    @if (@completedForm.UserName != null)
-
-                                    {
-                                        <p><strong>User:</strong> @completedForm.UserName</p>
-                                    }
-
-                                    else
-
-                                    {
-                                        <p><strong>User:</strong> Anonymous</p>
-                                    }
-                                    <p><strong>Completed Date:</strong> @completedForm.CompletedDate?.ToString("MM/dd/yyyy")</p>
-                                    <NavLink class="btn btn-primary" href="@($"/forms/{Form.Id}/detail/{completedForm.Id}")">View Details</NavLink>
-                                </li>
-                            }
-                        </ul>
-                    }
-
-                    else
-
-                    {
-                        <p>No completed forms available for this form.</p>
-                    }
+                    <ul class="list-group">
+                        @foreach (var completedForm in CompletedForms)
+                        {
+                            <li class="list-group-item">
+                                @if (@completedForm.UserName != null)
+                                {
+                                    <p><strong>User:</strong> @completedForm.UserName</p>
+                                }
+                                else
+                                {
+                                    <p><strong>User:</strong> Anonymous</p>
+                                }
+                                <p><strong>Completed Date:</strong> @completedForm.CompletedDate?.ToString("MM/dd/yyyy")</p>
+                                <NavLink class="btn btn-primary" href="@($"/forms/{Form.Id}/detail/{completedForm.Id}")">View Details</NavLink>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No completed forms available for this form.</p>
                 }
 
                 <div class="d-flex justify-content-center gap-2 mt-4">

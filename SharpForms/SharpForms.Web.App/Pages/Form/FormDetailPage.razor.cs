@@ -46,8 +46,10 @@ public partial class FormDetailPage : ComponentBase
                     CurrentUser = await UserApiClient.UserGetAsync(userDetail.Id, "en");
                 }
             }
-            
-            CompletedForms = await CompletedFormApiClient.CompletedFormGetAsync(Id.ToString(), null, "en");
+            if(Form.Creator?.Id == CurrentUser?.Id) // Get all completions        
+                CompletedForms = await CompletedFormApiClient.CompletedFormGetAsync(Id.ToString(), null, "en");
+            else
+                CompletedForms = await CompletedFormApiClient.CompletedFormGetAsync(Id.ToString(), CurrentUser?.Id.ToString(), "en");
         }
         
         await base.OnInitializedAsync();

@@ -3,47 +3,56 @@
 
 <PageTitle>@Form?.Name</PageTitle>
 
-<h3 class="mb-4">@Form?.Name</h3>
-
-@if (!string.IsNullOrEmpty(ValidationMessage))
+@if (Form == null)
 
 {
-    <div class="alert alert-danger">@ValidationMessage</div>
+    <p>Loading...</p>
 }
 
-<EditForm Model="Answers" OnValidSubmit="HandleValidSubmit" class="mb-4">
-    @foreach (var question in Questions)
+else
 
-    {
-        <div class="mb-3">
-            <label class="form-label">@question.Text</label>
-            @if (question.AnswerType == AnswerType.Text)
+{
+    <div class="container mt-0" style="max-width: 800px;">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="text-center mb-4">@Form.Name</h1>
 
-            {
-                <InputText @bind-Value="Answers.First(a => a.QuestionId == question.Id).TextAnswer" class="form-control" />
-            }
+                @if (!string.IsNullOrEmpty(ValidationMessage))
 
-            else if (question.AnswerType == AnswerType.Integer)
+                {
+                    <div class="alert alert-danger">@ValidationMessage</div>
+                }
 
-            {
-                <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
-            }
-
-            else if (question.AnswerType == Common.Enums.AnswerType.Selection)
-
-            {
-                <div class="mt-2 d-flex flex-wrap">
-                    @foreach (var option in question.Options)
-
+                <EditForm Model="Answers" OnValidSubmit="HandleValidSubmit">
+                    @foreach (var question in Questions)
                     {
-                        <button type="button" class="btn me-2 mb-2 @(Answers.First(a => a.QuestionId == question.Id).SelectOptionId == option.Id ? "btn-primary" : "btn-outline-primary")"
-                                @onclick="() => SelectOption(question.Id, option.Id)">
-                            @option.Value
-                        </button>
+                        <div class="mb-3">
+                            <label class="form-label">@question.Text</label>
+                            @if (question.AnswerType == AnswerType.Text)
+                            {
+                                <InputText @bind-Value="Answers.First(a => a.QuestionId == question.Id).TextAnswer" class="form-control" />
+                            }
+                            else if (question.AnswerType == AnswerType.Integer)
+                            {
+                                <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
+                            }
+                            else if (question.AnswerType == AnswerType.Selection)
+                            {
+                                <div class="mt-2 d-flex flex-wrap">
+                                    @foreach (var option in question.Options)
+                                    {
+                                        <button type="button" class="btn me-2 mb-2 @(Answers.First(a => a.QuestionId == question.Id).SelectOptionId == option.Id ? "btn-primary" : "btn-outline-primary")"
+                                                @onclick="() => SelectOption(question.Id, option.Id)">
+                                            @option.Value
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </div>
                     }
-                </div>
-            }
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
         </div>
-    }
-    <button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+    </div>
+}
