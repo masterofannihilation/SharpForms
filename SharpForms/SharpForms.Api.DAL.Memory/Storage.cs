@@ -75,14 +75,23 @@ namespace SharpForms.Api.DAL.Memory
                 Id = new Guid("5be6ddb2-1c20-46e2-8b73-d9291d5afd3a"),
                 Name = "Course Evaluation",
                 CreatorId = user3.Id,
-                OpenSince = DateTime.UtcNow,
+                OpenSince = DateTime.UtcNow.AddDays(1),
                 OpenUntil = DateTime.UtcNow.AddDays(30),
+            };
+            var form6 = new FormEntity
+            {
+                Id = new Guid("f99e85e1-1e18-4d1e-b563-4e5cba146f4a"),
+                Name = "Consent Form",
+                CreatorId = user3.Id,
+                OpenSince = DateTime.UtcNow.AddDays(-20),
+                OpenUntil = DateTime.UtcNow.AddDays(-1),
             };
             Forms.Add(form1);
             Forms.Add(form2);
             Forms.Add(form3);
             Forms.Add(form4);
             Forms.Add(form5);
+            Forms.Add(form6);
 
             /***************************************************************************************
             * Questions for Form 1 - customer feedback

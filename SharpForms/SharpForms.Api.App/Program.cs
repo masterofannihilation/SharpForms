@@ -24,6 +24,7 @@ using Microsoft.Extensions.Localization;
 using SharpForms.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.AspNetCore.Components.Routing;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -286,10 +287,16 @@ void UseCompletedFormEndpoints(RouteGroupBuilder routeGroupBuilder)
     }).RequireAuthorization();
 
     // Create new completedForm
-    compFormEndpoints.MapPost("", (CompletedFormDetailModel form, ICompletedFormDetailFacade formFacade) =>
+    compFormEndpoints.MapPost("", (CompletedFormDetailModel form, ICompletedFormDetailFacade completedFormFacade, IFormDetailFacade formFacade) =>
     {
-        var createdFormId = formFacade.Create(form);
-        return TypedResults.Ok(createdFormId);
+        var originalForm = formFacade.GetById(form.FormId);
+        if(originalForm != null && originalForm.OpenSince.HasValue && originalForm.OpenSince.Value.Date <= DateTime.Today &&
+            originalForm.OpenUntil.HasValue && originalForm.OpenUntil.Value.Date >= DateTime.Today)
+        {
+            var createdFormId = completedFormFacade.Create(form);
+            return TypedResults.Ok(createdFormId);
+        }
+        return Results.Forbid();
     });
 
     // Delete form - can be done by admin or the user that completed the form

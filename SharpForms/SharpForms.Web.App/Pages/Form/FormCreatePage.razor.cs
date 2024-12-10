@@ -4,17 +4,20 @@ using SharpForms.Common.Enums;
 using SharpForms.Common.Models.CompletedForm;
 using SharpForms.Common.Models.Form;
 using SharpForms.Common.Models.Question;
+using SharpForms.Common.Models.User;
 using SharpForms.Common.Models.SelectOption;
 using SharpForms.Web.BL.ApiClients;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace SharpForms.Web.App.Pages.Form
 {
     public partial class FormCreatePage : ComponentBase
     {
+        [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
         [Inject] private IFormApiClient FormApiClient { get; set; } = null!;
         [Inject] private IUserApiClient UserApiClient { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-        
+        private UserListModel? CurrentUser { get; set; }
         [Parameter] public Guid Id { get; init; }
 
 
@@ -31,7 +34,21 @@ namespace SharpForms.Web.App.Pages.Form
 
         // Variable to store error message for displaying warnings
         private string? _errorMessage;
-        
+
+        protected override async Task OnInitializedAsync()
+        {
+            var authState = await AuthenticationStateTask;
+            var user = authState.User;
+            var username = user.Identity?.Name;
+            if (!string.IsNullOrEmpty(username))
+            {
+                var userList = await UserApiClient.UserGetAsync(username, "en");
+                CurrentUser = userList.FirstOrDefault();
+            }
+
+            await base.OnInitializedAsync();
+        }
+
         private void ValidateFormDates()
         {
             _errorMessage = null;
@@ -49,6 +66,9 @@ namespace SharpForms.Web.App.Pages.Form
 
         private async Task SubmitAsync()
         {
+            var authState = await AuthenticationStateTask;
+            var user = authState.User;
+
             try
             {
                 ValidateFormDates();
@@ -63,6 +83,9 @@ namespace SharpForms.Web.App.Pages.Form
                 }
 
                 FormDetailModel.Id = Guid.NewGuid();
+
+                FormDetailModel.Creator = CurrentUser;  
+
                 await FormApiClient.FormPostAsync("en", FormDetailModel);
                 NavigationManager.NavigateTo("/forms");
             }
