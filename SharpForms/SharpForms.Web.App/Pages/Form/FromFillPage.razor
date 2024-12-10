@@ -4,13 +4,10 @@
 <PageTitle>@Form?.Name</PageTitle>
 
 @if (Form == null)
-
 {
     <p>Loading...</p>
 }
-
 else
-
 {
     <div class="container mt-0" style="max-width: 800px;">
         <div class="card shadow">
@@ -18,7 +15,6 @@ else
                 <h1 class="text-center mb-4">@Form.Name</h1>
 
                 @if (!string.IsNullOrEmpty(ValidationMessage))
-
                 {
                     <div class="alert alert-danger">@ValidationMessage</div>
                 }
@@ -35,6 +31,26 @@ else
                             else if (question.AnswerType == AnswerType.Integer)
                             {
                                 <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
+                                @if (question.MinNumber.HasValue)
+                                {
+                                    <small class="form-text text-muted">Min: @question.MinNumber</small>
+                                }
+                                @if (question.MaxNumber.HasValue)
+                                {
+                                    <small class="form-text text-muted">Max: @question.MaxNumber</small>
+                                }
+                            }
+                            else if (question.AnswerType == AnswerType.Decimal)
+                            {
+                                <InputNumber @bind-Value="Answers.First(a => a.QuestionId == question.Id).NumberAnswer" class="form-control" />
+                                @if (question.MinNumber.HasValue)
+                                {
+                                    <small class="form-text text-muted">Min: @question.MinNumber</small>
+                                }
+                                @if (question.MaxNumber.HasValue)
+                                {
+                                    <small class="form-text text-muted">Max: @question.MaxNumber</small>
+                                }
                             }
                             else if (question.AnswerType == AnswerType.Selection)
                             {

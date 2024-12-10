@@ -101,10 +101,6 @@ public partial class FromFillPage : ComponentBase
 
             NavigationManager.NavigateTo("/forms");
         }
-        else
-        {
-            ValidationMessage = "Please answer all questions before submitting the form.";
-        }
     }
 
     private void SelectOption(Guid questionId, Guid optionId)
@@ -122,6 +118,18 @@ public partial class FromFillPage : ComponentBase
 
         if (unansweredQuestions.Any())
         {
+            ValidationMessage = "Please answer all questions before submitting the form.";
+            return false;
+        }
+        
+        var invalidAnswers = Answers.Where(answer =>
+            (answer.AnswerType == AnswerType.Integer || answer.AnswerType == AnswerType.Decimal) &&
+            ((answer.NumberAnswer.HasValue && Questions.First(q => q.Id == answer.QuestionId).MinNumber.HasValue && answer.NumberAnswer < Questions.First(q => q.Id == answer.QuestionId).MinNumber) ||
+             (answer.NumberAnswer.HasValue && Questions.First(q => q.Id == answer.QuestionId).MaxNumber.HasValue && answer.NumberAnswer > Questions.First(q => q.Id == answer.QuestionId).MaxNumber))).ToList();
+
+        if (invalidAnswers.Any())
+        {
+            ValidationMessage = "Please ensure all numeric answers meet the Min and Max conditions.";
             return false;
         }
 

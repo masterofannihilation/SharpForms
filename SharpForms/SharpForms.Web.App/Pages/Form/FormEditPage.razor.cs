@@ -25,7 +25,7 @@ public partial class FormEditPage : ComponentBase
 
     private IList<SelectOptionModel> Options { get; set; } = new List<SelectOptionModel>();
 
-    private bool IsEditing { get; set; } = false;
+    private bool IsEditing { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,6 +56,8 @@ public partial class FormEditPage : ComponentBase
         Question.Order = Questions.Count + 1;
         Question.Description = String.Empty;
         Question.AnswerType = Common.Enums.AnswerType.Text;
+        Question.MinNumber = null;
+        Question.MaxNumber = null;
         Question.Options = new List<SelectOptionModel>();
         Question.Answers = new List<AnswerListModel>();
     }
@@ -66,6 +68,12 @@ public partial class FormEditPage : ComponentBase
         {
             if (IsEditing)
             {
+                if (Question.AnswerType == Common.Enums.AnswerType.Selection ||
+                    Question.AnswerType == Common.Enums.AnswerType.Text)
+                {
+                    Question.MinNumber = null;
+                    Question.MaxNumber = null;
+                }
                 await QuestionApiClient.QuestionPutAsync("en", Question);
             }
             else
@@ -75,7 +83,7 @@ public partial class FormEditPage : ComponentBase
             await LoadQuestions();
             InitQuestion();
             // Close the modal
-            await InvokeAsync(() => StateHasChanged());
+            // await InvokeAsync(() => StateHasChanged());
         }
     }
 
@@ -95,6 +103,8 @@ public partial class FormEditPage : ComponentBase
             Text = question.Text,
             Description = question.Description,
             AnswerType = question.AnswerType,
+            MinNumber = question.MinNumber,
+            MaxNumber = question.MaxNumber,
             Order = question.Order,
             Options = new List<SelectOptionModel>(question.Options.Select(o => new SelectOptionModel
             {
@@ -102,6 +112,7 @@ public partial class FormEditPage : ComponentBase
             }))
         };
         IsEditing = true;
+        
     }
 
     private void AddOption()
@@ -135,6 +146,14 @@ public partial class FormEditPage : ComponentBase
         {
             ValidationResults.Add(new ValidationResult("You must have at least 2 options.",
                 new List<string> { "Options" }));
+        }
+        
+        if ((Question.AnswerType == Common.Enums.AnswerType.Integer || Question.AnswerType == Common.Enums.AnswerType.Decimal) &&
+            Question.MinNumber.HasValue && Question.MaxNumber.HasValue && Question.MinNumber >= Question.MaxNumber)
+        {
+            ValidationResults.Add(new ValidationResult("Min value must be less than Max value.",
+                new List<string> { "MinNumber", "MaxNumber" }));
+            isValid = false;
         }
 
         return isValid;
