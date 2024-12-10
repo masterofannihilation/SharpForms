@@ -8,6 +8,7 @@ namespace SharpForms.Common.Models.CompletedForm
     {
         public Guid FormId { get; set; }
         public required string FormName { get; set; }
+        public DateTime CompletedDate { get; set; }
 
         public UserListModel? User { get; set; }
         public IList<AnswerListModel> Answers { get; set; } = new List<AnswerListModel>();

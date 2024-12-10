@@ -41,14 +41,14 @@ public class CompletedFormDetailFacade(
             model.Id = Guid.NewGuid();
 
         var entity = mapper.Map<CompletedFormEntity>(model);
-        entity.CompletedDate = DateTime.Now;
+        entity.CompletedDate = DateTime.Today;
         return completedFormRepository.Insert(entity);
     }
 
     public override Guid? Update(CompletedFormDetailModel model)
     {
         var entity = mapper.Map<CompletedFormEntity>(model);
-        entity.CompletedDate = DateTime.Now;
+        entity.CompletedDate = DateTime.Today;
         return completedFormRepository.Update(entity);
     }
 }

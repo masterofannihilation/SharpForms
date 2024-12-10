@@ -59,6 +59,7 @@ namespace SharpForms.Api.BL.IntegrationTests.CompletedForm
             Assert.Equal("Customer Feedback", insertedModel.FormName);
             Assert.Equal(new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"), insertedModel.FormId);
             Assert.Empty(insertedModel.Answers);
+            Assert.Equal(DateTime.Today, insertedModel.CompletedDate);
         }
 
         [Fact]
