@@ -26,6 +26,7 @@ namespace SharpForms.Api.BL.Facades.Question
             entity.Order = model.Order;
             entity.MinNumber = model.MinNumber;
             entity.MaxNumber = model.MaxNumber;
+            entity.Description = model.Description;
 
             // If answerType is not Selection, update entity and return
             if (model.AnswerType != entity.AnswerType)

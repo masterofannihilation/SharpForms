@@ -104,6 +104,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
                 Text = "What is your favourite number?",
                 AnswerType = Common.Enums.AnswerType.Decimal,
                 FormName = "Customer Feedback",
+                Description= "hahaha",
                 MinNumber = 0.0,
                 MaxNumber = 10.0
                 
@@ -117,6 +118,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
             Assert.Equal(newQuestion.Text, createdQuestion.Text);
             Assert.Equal(0.0, createdQuestion.MinNumber);
             Assert.Equal(10.0, createdQuestion.MaxNumber);
+            Assert.Equal(newQuestion.Description, createdQuestion.Description);
         }
 
         [Fact]
@@ -131,6 +133,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
             model.Order = 3;
             model.MinNumber = 2;
             model.MaxNumber = 10;
+            model.Description = "hahaha";
 
             var updatedId = _questionDetailFacade.Update(model);
 
@@ -141,6 +144,7 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
             Assert.NotNull(updatedModel.Answers);
             Assert.Equal(model.MinNumber, updatedModel.MinNumber);
             Assert.Equal(model.MaxNumber, updatedModel.MaxNumber);
+            Assert.Equal(model.Description, updatedModel.Description);
         }
 
 
