@@ -14,14 +14,7 @@ namespace SharpForms.Api.DAL.Common.Entities
 
         public ICollection<AnswerEntity> Answers { get; set; } = new List<AnswerEntity>();
         
-        // Override Equals to compare collections properly
-        public bool EqualsWithAnswers(CompletedFormEntity other)
-        {
-            // Use the default Equals() for record's value comparison
-            return Equals(other) && Answers.SequenceEqual(other.Answers);
-        }
-        
-        public CompletedFormEntity DeepCopy()
+        public CompletedFormEntity CreateSafeCopy()
         {
             return this with
             {

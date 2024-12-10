@@ -5,9 +5,6 @@ using SharpForms.Common.Enums;
 
 namespace SharpForms.Common.Models.Answer
 {
-    /// <summary>
-    /// This model should be used for submitting or editing the answer.
-    /// </summary>
     public record AnswerSubmitModel : BaseModel
     {
         public Guid FilledFormId { get; set; } // ID of CompletedFormEntity

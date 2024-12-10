@@ -12,8 +12,6 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddBlazorBootstrap();
 
-builder.Configuration.AddJsonFile("appsettings.json");
-
 string apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl")!;
 builder.Services.AddInstaller<WebBLInstaller>(apiBaseUrl);
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
