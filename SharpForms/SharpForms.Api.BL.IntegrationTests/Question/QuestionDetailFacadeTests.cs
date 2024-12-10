@@ -93,6 +93,56 @@ namespace SharpForms.Api.BL.IntegrationTests.Question
             Assert.Contains(sOpt2, createdQuestion.Options);
         }
 
+        [Fact]
+        public void Add_New_Question_Min_Max()
+        {
+            var newQuestion = new QuestionDetailModel
+            {
+                Id = Guid.NewGuid(),
+                FormId = new Guid("01e7e4c9-1ad7-4688-883e-69b6591338b8"), // Seed form
+                Order = 3,
+                Text = "What is your favourite number?",
+                AnswerType = Common.Enums.AnswerType.Decimal,
+                FormName = "Customer Feedback",
+                MinNumber = 0.0,
+                MaxNumber = 10.0
+                
+            };
+
+            var createdId = _questionDetailFacade.Create(newQuestion);
+            var createdQuestion = _questionDetailFacade.GetById(createdId);
+            Assert.NotNull(createdQuestion);
+
+            Assert.NotNull(createdQuestion);
+            Assert.Equal(newQuestion.Text, createdQuestion.Text);
+            Assert.Equal(0.0, createdQuestion.MinNumber);
+            Assert.Equal(10.0, createdQuestion.MaxNumber);
+        }
+
+        [Fact]
+        public void Update_QuestionDetailModel_Min_Max()
+        {
+            var existingId = new Guid("a09b47c0-71cb-4294-93e8-92941fb8f1fd");
+            var model = _questionDetailFacade.GetById(existingId);
+
+            Assert.NotNull(model);
+
+            model.Text = "Updated question text";
+            model.Order = 3;
+            model.MinNumber = 2;
+            model.MaxNumber = 10;
+
+            var updatedId = _questionDetailFacade.Update(model);
+
+            var updatedModel = _questionDetailFacade.GetById(updatedId.Value);
+            Assert.NotNull(updatedModel);
+            Assert.Equal(3, updatedModel.Order);
+            Assert.Equal("Updated question text", updatedModel.Text);
+            Assert.NotNull(updatedModel.Answers);
+            Assert.Equal(model.MinNumber, updatedModel.MinNumber);
+            Assert.Equal(model.MaxNumber, updatedModel.MaxNumber);
+        }
+
 
 
         [Fact]

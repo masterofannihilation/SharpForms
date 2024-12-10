@@ -24,6 +24,8 @@ namespace SharpForms.Api.BL.Facades.Question
 
             entity.Text = model.Text;
             entity.Order = model.Order;
+            entity.MinNumber = model.MinNumber;
+            entity.MaxNumber = model.MaxNumber;
 
             // If answerType is not Selection, update entity and return
             if (model.AnswerType != entity.AnswerType)
@@ -104,6 +106,8 @@ namespace SharpForms.Api.BL.Facades.Question
                 selectOptionFacade.Create(newOption);
 
             var entity = mapper.Map<QuestionEntity>(model);
+            entity.MinNumber = model.MinNumber;
+            entity.MaxNumber = model.MaxNumber;
             return questionRepository.Insert(entity);
         }
     }

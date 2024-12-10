@@ -194,7 +194,9 @@ namespace SharpForms.Api.DAL.Memory
                 FormId = form2.Id,
                 Order = 6,
                 Text = "What are your monthly salary expectations?",
-                AnswerType = AnswerType.Decimal
+                AnswerType = AnswerType.Decimal,
+                MinNumber = 500.0,
+                MaxNumber = 3000.0
             };
 
             /***************************************************************************************
@@ -222,7 +224,7 @@ namespace SharpForms.Api.DAL.Memory
                 FormId = form3.Id,
                 Order = 3,
                 Text = "How many guests will you be bringing?",
-                AnswerType = AnswerType.Integer
+                AnswerType = AnswerType.Integer,
             };
             var question34 = new QuestionEntity
             {
