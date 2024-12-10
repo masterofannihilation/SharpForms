@@ -6,6 +6,8 @@
 # Ignore JWK files
 tempkey.jwk
 
+/SharpForms/SharpForms.IdentityProvider/keys/*.json
+
 # User-specific files
 *.rsuser
 *.suo

@@ -29,7 +29,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             var cfs = new List<CompletedFormEntity>();
             foreach (var f in _completedForms)
             {
-                cfs.Add(IncludeEntities(f.DeepCopy()));
+                cfs.Add(IncludeEntities(f.CreateSafeCopy()));
             }
             
             return cfs;
@@ -50,12 +50,12 @@ namespace SharpForms.Api.DAL.Memory.Repositories
             if (completedForm == null)
                 return null;
 
-            return IncludeEntities(completedForm.DeepCopy());
+            return IncludeEntities(completedForm.CreateSafeCopy());
         }
 
         public Guid Insert(CompletedFormEntity completedForm)
         {
-            var completedFormCopy = completedForm.DeepCopy();
+            var completedFormCopy = completedForm.CreateSafeCopy();
             _completedForms.Add(completedFormCopy);
             return completedFormCopy.Id;
         }
@@ -100,7 +100,7 @@ namespace SharpForms.Api.DAL.Memory.Repositories
 
             var cfs = new List<CompletedFormEntity>();
             foreach (var cf in filtered)
-                cfs.Add(IncludeEntities(cf.DeepCopy()));
+                cfs.Add(IncludeEntities(cf.CreateSafeCopy()));
 
             return cfs;
         }
